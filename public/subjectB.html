@@ -15,7 +15,7 @@
         <a href="forum.html">Forum</a>
         <a href="subjects.html">Subjects</a>
         <a href="about.html">About</a>
-        <a href="subjectB.html">Subject B</a>
+        <a href="subjectB.html">OOPS</a>
       </nav>
       <div class="actions" id="actions-area">
         <button id="theme-toggle">Toggle Theme</button>
@@ -24,3 +24,56 @@
         <button id="logout-btn" class="hidden">Logout</button>
       </div>
     </header>
+        <main class="container">
+      <h1>Object Oriented Programming Through Java</h1>
+      <section class="cards">
+        <article class="card"><h3>Q1 : Describe the key features of java.How does java achieve platform independence? </h3>
+        <p><b>Answer:</b></p><p><b style="color: crimson;">Key Features of Java:</b></p>
+      <p>Java is a popular, high-level, object-oriented programming language developed by Sun Microsystems (now owned by Oracle). It provides several important features that make it powerful and widely used.</p>
+    <p><b style="color: crimson;">1. Simple:</b></p>
+  <p>Java is easy to learn and use because it removes complex features like pointers, operator overloading, and multiple inheritance.</p>
+      <p><b style="color: crimson;">2. Object-Oriented:</b></p>
+      <p>Everything in Java is treated as an object. It supports OOP concepts such as inheritance, encapsulation, polymorphism, and abstraction.</p>
+      <p><b style="color: crimson;">3. Platform Independent:</b></p>
+      <p>Java code can run on any platform (Windows, Mac, Linux, etc.) without modification, thanks to the Java Virtual Machine (JVM).</p>
+       <p><b style="color: crimson;">4. Secure:</b></p>
+       <p>Java provides a secure environment through features like bytecode verification, sandboxing, and absence of explicit pointers.</p>
+         <p><b style="color: crimson;">5. Robust:</b></p><p>Java handles errors effectively with exception handling and has strong memory management using automatic garbage collection.</p>
+         <P><b style="color: crimson;">6. Multithreaded:</b></P><p>Java allows the execution of multiple threads (lightweight processes) simultaneously, improving performance.</p>
+         <p><b style="color: crimson;">7. Portable:</b></p><p>Java programs are portable because the same .class file can run anywhere a JVM is installed.</p>
+         <p><b style="color: crimson;">8. High Performance (with JIT):</b></p><p>The Just-In-Time (JIT) compiler improves performance by converting bytecode into native machine code at runtime.</p></article>
+         </section>
+    </main>
+    <main class="container">
+      <section class="cards">
+        <article class="card"><h3>2. What is constructor in java? Explain it with suitable example.</h3><p><b>Answer:</b></p>
+          <p></p></article>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; UniForum - University Project</p>
+    </footer>
+  </div>
+
+  <div id="auth-modal" class="modal hidden">
+    <div class="modal-card">
+      <h3 id="auth-title">Login</h3>
+      <form id="auth-form">
+        <label>Username<input name="username" required></label>
+        <label>Password<input name="password" type="password" required></label>
+        <div class="modal-actions">
+          <button type="submit" id="auth-submit">Login</button>
+          <button type="button" id="auth-cancel">Cancel</button>
+        </div>
+      </form>
+      <div id="auth-error" class="error"></div>
+      <div style="margin-top:10px; font-size:13px;">
+        <a href="#" id="toggle-to-register">Don't have an account? Register</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
