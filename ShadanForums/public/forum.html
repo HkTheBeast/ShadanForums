@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>UniForum - Forum</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* small override for editor */
+    #editor { min-height: 180px; background: var(--card-bg); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><a href="/">UniForum</a></div>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/forum.html">Forum</a>
+        <a href="/subjects.html">Subjects</a>
+        <a href="/about.html">About</a>
+        <a href="/subjectB.html">Subject B</a>
+      </nav>
+      <div class="actions" id="actions-area">
+        <button id="theme-toggle">Toggle Theme</button>
+        <button id="login-btn">Login</button>
+        <div id="user-info" class="hidden"></div>
+        <button id="logout-btn" class="hidden">Logout</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <h1>Forum</h1>
+      <div id="post-area" class="card">
+        <h3>Create Post</h3>
+        <div id="auth-warning" class="hint">You must <a href="#" id="open-auth">register or login</a> before posting.</div>
+        <input id="post-title" placeholder="Title (optional)" />
+        <div id="editor"></div>
+        <div class="post-actions">
+          <button id="submit-post">Post</button>
+        </div>
+        <p class="hint">Use the editor to format text, add links, images (by URL) and embed videos.</p>
+      </div>
+
+      <section id="posts" class="posts-list"></section>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; UniForum - University Project</p>
+    </footer>
+  </div>
+
+  <div id="auth-modal" class="modal hidden">
+    <div class="modal-card">
+      <h3 id="auth-title">Login</h3>
+      <form id="auth-form">
+        <label>Username<input name="username" required></label>
+        <label>Password<input name="password" type="password" required></label>
+        <div class="modal-actions">
+          <button type="submit" id="auth-submit">Login</button>
+          <button type="button" id="auth-cancel">Cancel</button>
+        </div>
+      </form>
+      <div id="auth-error" class="error"></div>
+      <div style="margin-top:10px; font-size:13px;">
+        <a href="#" id="toggle-to-register">Don't have an account? Register</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <script src="/js/forum.js"></script>
+</body>
+</html>

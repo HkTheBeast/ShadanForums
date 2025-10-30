@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>UniForum - Home</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><a href="/">UniForum</a></div>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/forum.html">Forum</a>
+        <a href="/subjects.html">Subjects</a>
+        <a href="/about.html">About</a>
+        <a href="/subjectB.html">Subject B</a>
+      </nav>
+      <div class="actions" id="actions-area">
+        <button id="theme-toggle">Toggle Theme</button>
+        <button id="login-btn">Login</button>
+        <div id="user-info" class="hidden"></div>
+        <button id="logout-btn" class="hidden">Logout</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <h1>Welcome to UniForum</h1>
+      <p class="lead">Click Forum to view and post discussions.</p>
+      <section class="cards">
+        <article class="card">
+          <h3>Rules</h3>
+          <p>Be respectful. Use real links for images/videos. Register to post discussions.</p>
+        </article>
+        <article class="card">
+          <h3>How it works</h3>
+          <p>Register or log in to create posts. Posts are persisted using SQLite.</p>
+        </article>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; Made with love by Affan.</p>
+    </footer>
+  </div>
+
+  <div id="auth-modal" class="modal hidden">
+    <div class="modal-card">
+      <h3 id="auth-title">Login</h3>
+      <form id="auth-form">
+        <label>Username<input name="username" required></label>
+        <label>Password<input name="password" type="password" required></label>
+        <div class="modal-actions">
+          <button type="submit" id="auth-submit">Login</button>
+          <button type="button" id="auth-cancel">Cancel</button>
+        </div>
+      </form>
+      <div id="auth-error" class="error"></div>
+      <div style="margin-top:10px; font-size:13px;">
+        <a href="#" id="toggle-to-register">Don't have an account? Register</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>
