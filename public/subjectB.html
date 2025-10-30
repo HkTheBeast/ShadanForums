@@ -24,3 +24,36 @@
         <button id="logout-btn" class="hidden">Logout</button>
       </div>
     </header>
+        <main class="container">
+      <h1>zubair</h1>
+      <section class="cards">
+        <article class="card"><h3>Q1 : find the </h3><p>hi</p></article>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; UniForum - University Project</p>
+    </footer>
+  </div>
+
+  <div id="auth-modal" class="modal hidden">
+    <div class="modal-card">
+      <h3 id="auth-title">Login</h3>
+      <form id="auth-form">
+        <label>Username<input name="username" required></label>
+        <label>Password<input name="password" type="password" required></label>
+        <div class="modal-actions">
+          <button type="submit" id="auth-submit">Login</button>
+          <button type="button" id="auth-cancel">Cancel</button>
+        </div>
+      </form>
+      <div id="auth-error" class="error"></div>
+      <div style="margin-top:10px; font-size:13px;">
+        <a href="#" id="toggle-to-register">Don't have an account? Register</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
