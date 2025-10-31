@@ -29,11 +29,15 @@
       </div>
     </header>
 
+
     <main class="container">
       <h1>Computer Organization & Architecture</h1>
+      <h2>Important Questions & Answers</h2>
+       <button class="collapsible"><b style="color: black;">Q1 :Give a detailed overview of digital computers,including 
+          their key characteristics and application</b></button>
+          <div class="content">
       <section class="cards">
-        <article class="card"><h3>Q1 :Give a detailed overview of digital computers,including 
-          their key characteristics and application</h3><b>Answer:</b><p>a digital computers is an electronic system that processes
+        <article class="card"><b>Answer:</b><p>a digital computers is an electronic system that processes
           information using binary digits (0&1).it accepts data,performss operations according to instructions,stores intermediate
           results, and generates output.
           </p><b style="color: blueviolet;">KEY CHARACTERISTICS :</b><ul>
@@ -51,22 +55,33 @@
   <b style="color: blueviolet;">SUMMARY:</b><p>Digital computers are fast,accurate and versatile machines used
      across science,business,engineering and daily life</p></UL></article>
       </section>
+      </div>
     </main>
+
+
     <main class="container">
+       <button class="collapsible"><b style="color: black;">Q2 : Explain bus system for four registers</b></button>
+       <div class="content">
       <section class="cards">
-        <artical class="card"><h3>Q2 : Explain bus system for four registers</h3><b>ANSWER:</b><p>A bus system provides a common pathway for data transfer among components
+        <article class="card"><b>Answer :</b><p>A bus system provides a common pathway for data transfer among components
           in a system with four registers(R1-R4).
           <ul><li><b style="color: blueviolet;">MULTIPLEXER:</b><P>Selects which register sends data to the bus</P></li><li><b style="color: blueviolet;">Decoder:</b><p>Activates the correct destination register to recieve data</p></li><li><b style="color: blueviolet;">CONTROL LINES:</b><p>manage read /write operation</p></li></ul>
           <b style="color: blueviolet;">SUMMARY:</b><p>A bus system reduces hardware complexity while allowing multiple
             registers to share a single data path.
           </p>
-
-        </p></artical>
+        </p></article>
       </section>
+      </div>
     </main>
+
+
+
+
     <main class="container">
-      <section class="cards">
-        <article class="card"><h3>Q3 Explain the following terms. </h3> <ul><li>a) Desing of control unit</li>
+      <button class="collapsible"><b style="color: black;">Q3 : Explain the following terms. </b></button>
+      <div class="content">
+      <section class="cards"> 
+        <article class="card"><b>Answer :</b><ul><li>a) Desing of control unit</li>
         <li>b) Compare between hardwired control unit & microprogram control unit</li></ul>
         <b style="color: blueviolet;">a)CONTROL UNIT DESIGN:</b>
         <p>The CU directs operations in the CPU by generating control signals.
@@ -80,35 +95,47 @@
         <p>Uses microinstructions stored in control memory, slower but flexible, easy to modify, used in CISC processors</p></li></UL>
         <b style="color: blueviolet;">SUMMARY:</b><p>Hardwired CU= fast but rigid;
          <br> microprogrammed CU=flexible but slower
-        </p>
-        
-          
-          
+        </p>    
        </article>
-    </main>
+       </section>
+      </div>
+      </main>
+
     <main class="container">
+      <button class="collapsible"><b style="color: black;">Q4 : Explain various addressing modes with examples </b></button>
+      <div class="content">
       <section class="cards">
-        <article class="card"><h3>Q4 Explain various addressing modes with examples</h3>
-        <b>ANSWER:</b><P>Addressing modes defines how operands are accessed in instructions</P>
+        <article class="card">
+        <b>Answer :</b><P>Addressing modes defines how operands are accessed in instructions</P>
       <ul><li><b style="color: blueviolet;">IMMEDIATE:</b>operands in instruction</li>
-      <li><b style="color: black;">EXAMPLE:</b>MOV A, #5</li>
+      <li><b>EXAMPLE:</b>MOV A, #5</li>
     <li><b style="color: blueviolet;">DIRECT:</b>Address of operand given in instruction </li>
-  <li><b style="color: black;">EXAMPLE:</b>MOV A, 1000</li>
+  <li><b>EXAMPLE:</b>MOV A, 1000</li>
 <li><b style="color: blueviolet;">INDIRECT:</b>Instruction pointd to memory location containg operands address </li>
-<li><b style="color: black;">EXAMPLE;</b>MOV A, (R1)</li>
+<li><b>EXAMPLE;</b>MOV A, (R1)</li>
 <li><b style="color: blueviolet;">REGISTER:</b>Operand in register</li>
-<li><b style="color: black;">EXAMPLE:</b>ADDA, R1</li>
+<li><b>EXAMPLE:</b>ADDA, R1</li>
 <li><b style="color: blueviolet;">indexed</b>Effective address=base+index register</li>
-<li><b style="color: black;">EXAMPLE:</b>MOV A, 1000(R2)</li>
+<li><b>EXAMPLE:</b>MOV A, 1000(R2)</li>
 <li><b style="color: blueviolet;">RELATIVE:</b>Address relative to PC </li>
-<li><b style="color: black;">EXAMPLE:</b>JMP 20</li>
+<li><b>EXAMPLE:</b>JMP 20</li>
 <b style="color: blueviolet;">SUMMARY:</b>Addressing modes provide flexible ways to access operands during instruction execution
-</ul></article>
+</ul>
+</article>
+      </section>
+      </div>
     </main>
+    
+
+
+
+
     <main class="container">
+      <button class="collapsible"><b style="color: black;">Q5 : Discuss about floating point representation </b></button>
+      <div class="content">
       <section class="cards">
-        <article class="card"><h3> Q5: Discuss about floating point representation</h3>
-        <b>ANSWER:</b>Floating point representation is used to store real numbers ( fractions, very large, or small values).
+        <article class="card">
+        <b>Answer:</b><p>Floating point representation is used to store real numbers ( fractions, very large, or small values).</p>
       <ul><li><b style="color: blueviolet;"> GENERAL FORM:</b> N=(-1)³xMx2⁶</li>
       <li><b>IEEE 754 SINGLE PRECISION (32-BITS):</b>
       <li><b>1 bit:</b>sing(S)</li>
@@ -116,6 +143,8 @@
   <li><b>23 bits:</b>mantissa(M)</li>
 <b style="color: blueviolet;">EXAMPLE:</b>5.75->Sign=1, exponent in biased form , mantissa is binary fraction.</ul>
 <b style="color: blueviolet;">SUMMARY:</b>Floating point allows storage of very large/small real numbers efficiently.</article>
+      </section>
+      </div>
     </main>
     
 
