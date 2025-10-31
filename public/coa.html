@@ -93,7 +93,17 @@
       <ul><li><b style="color: blueviolet;">IMMEDIATE:</b>operands in instruction</li>
       <li><b style="color: black;">EXAMPLE:</b>MOV A, #5</li>
     <li><b style="color: blueviolet;">DIRECT:</b>Address of operand given in instruction </li>
-  <li><b style="color: black;"></b></li></LI></ul></article>
+  <li><b style="color: black;">EXAMPLE:</b>MOV A, 1000</li>
+<li><b style="color: blueviolet;">INDIRECT:</b>Instruction pointd to memory location containg operands address </li>
+<li><b style="color: black;">EXAMPLE;</b>MOV A, (R1)</li>
+<li><b style="color: blueviolet;">REGISTER:</b>Operand in register</li>
+<li><b style="color: black;">EXAMPLE:</b>ADDA, R1</li>
+<li><b style="color: blueviolet;">indexed</b>Effective address=base+index register</li>
+<li><b style="color: black;">EXAMPLE:</b>MOV A, 1000(R2)</li>
+<li><b style="color: blueviolet;">RELATIVE:</b>Address relative to PC </li>
+<li><b style="color: black;">EXAMPLE:</b>JMP 20</li>
+<b style="color: blueviolet;">SUMMARY:</b>Addressing modes provide flexible ways to access operands during instruction execution
+</ul></article>
     </main>
     
 
