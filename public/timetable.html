@@ -2,15 +2,10 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>UniForum - Forum</title>
+  <title>UniForum - Subjects</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" type="image/png" href="images/shadanlogo.png">
-  <style>
-    /* small override for editor */
-    #editor { min-height: 180px; background: var(--card-bg); }
-  </style>
 </head>
 <body>
   <div class="app">
@@ -22,8 +17,8 @@
         <a href="timetable.html">TimeTables</a>
         <a href="subjects.html">Subjects</a>
         <a href="about.html">About</a>
-        <a href="oops.html">OOPS</a>
-        <a href="coa.html">COA</a>
+        <a href="oops.html">OOPS</a> 
+        <a href="coa.html">COA</a>  
       </nav>
       <div class="actions" id="actions-area">
         <button id="theme-toggle">Toggle Theme</button>
@@ -34,21 +29,16 @@
     </header>
 
     <main class="container">
-      <h1>Forum</h1>
-      <div id="post-area" class="card">
-        <h3>Create Post</h3>
-        <div id="auth-warning" class="hint">You must <a href="#" id="open-auth">register or login</a> before posting.</div>
-        <input id="post-title" placeholder="Title (optional)" />
-        <div id="editor"></div>
-        <div class="post-actions">
-          <button id="submit-post">Post</button>
-        </div>
-        <p class="hint">Use the editor to format text, add links, images (by URL) and embed videos.</p>
-      </div>
-
-      <section id="posts" class="posts-list"></section>
+      <h1>Time Tables For IInd Year Ist semester</h1>
+      <section class="cards">
+        <article class="card"><h3 style="color: goldenrod;">Second Year Academic Calender :</h3><img src="images/timetable.png" alt="academiccalender" style="width: 500px; height: auto;"></article>
+      </section>
     </main>
-
+    <main class="container">
+      <section class="cards">
+        <article class="card"><h3 style="color: goldenrod;">Weekly Time Table:</h3><img src="images/routine.png" alt="timetable" style="width: 500px; height: auto;"></article>
+      </section>
+    </main>
     <footer class="footer">
       <p>&copy; UniForum - University Project</p>
     </footer>
@@ -71,8 +61,6 @@
       </div>
     </div>
   </div>
-
-  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-  <script src="js/forum.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>
