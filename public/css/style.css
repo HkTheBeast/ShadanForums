@@ -63,3 +63,30 @@ input, textarea{width:100%; padding:8px; border-radius:8px; border:1px solid rgb
 /* Quill overrides to blend with theme */
 .ql-toolbar.ql-snow{background:var(--card-bg); border:none; border-radius:8px 8px 0 0}
 .ql-container.ql-snow{border:none; border-radius:0 0 8px 8px; background:var(--card-bg)}
+
+
+
+
+.collapsible {
+  background-color: #2eddb7;
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.active, .collapsible:hover {
+  background-color: #33598b;
+}
+
+.content {
+  padding: 0 18px;
+  max-height: 0; /* Initially hide content */
+  overflow: hidden;
+  transition: max-height 0.2s ease-out; /* Smooth transition */
+  
+}
