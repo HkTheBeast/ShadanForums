@@ -41,7 +41,7 @@ db.serialize(() => {
 });
 
 // Serve static files
-app.use('/', express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Helper: password complexity (simple check)
 function validPassword(p){

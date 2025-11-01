@@ -1,17 +1,30 @@
 (function(){
-  // Theme toggle
-  const toggle = document.querySelectorAll('#theme-toggle');
+  // Enhanced Theme Toggle with proper button text
+  const themeToggle = document.getElementById('theme-toggle');
+  
   function applyTheme(){
     const t = localStorage.getItem('theme') || 'light';
-    if(t === 'dark') document.documentElement.setAttribute('data-theme','dark');
-    else document.documentElement.removeAttribute('data-theme');
+    if(t === 'dark') {
+      document.documentElement.setAttribute('data-theme','dark');
+      if(themeToggle) themeToggle.textContent = '☀️ Light Mode';
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      if(themeToggle) themeToggle.textContent = '🌙 Dark Mode';
+    }
   }
+  
+  // Initialize theme
   applyTheme();
-  toggle.forEach(btn => btn && btn.addEventListener('click', () => {
-    const current = localStorage.getItem('theme') || 'light';
-    localStorage.setItem('theme', current === 'dark' ? 'light' : 'dark');
-    applyTheme();
-  }));
+  
+  // Theme toggle handler
+  if(themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const current = localStorage.getItem('theme') || 'light';
+      const newTheme = current === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', newTheme);
+      applyTheme();
+    });
+  }
 
   // Elements
   const loginBtn = document.getElementById('login-btn');
@@ -97,21 +110,20 @@
 
   // Initial check
   refreshAuthUI();
+
+  // Collapsible functionality
+  var coll = document.getElementsByClassName("collapsible");
+  var i;
+
+  for (i = 0; i < coll.length; i++) {
+    coll[i].addEventListener("click", function() {
+      this.classList.toggle("active");
+      var content = this.nextElementSibling;
+      if (content.style.maxHeight){
+        content.style.maxHeight = null;
+      } else {
+        content.style.maxHeight = content.scrollHeight + "px"; // Set max-height to content's scroll height
+      } 
+    });
+  }
 })();
-  
-
-
-var coll = document.getElementsByClassName("collapsible");
-var i;
-
-for (i = 0; i < coll.length; i++) {
-  coll[i].addEventListener("click", function() {
-    this.classList.toggle("active");
-    var content = this.nextElementSibling;
-    if (content.style.maxHeight){
-      content.style.maxHeight = null;
-    } else {
-      content.style.maxHeight = content.scrollHeight + "px"; // Set max-height to content's scroll height
-    } 
-  });
-}

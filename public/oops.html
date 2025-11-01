@@ -12,14 +12,21 @@
     <header class="topbar">
       <div class="brand"><a href="index.html">ShadanForums</a></div>
       <nav>
-        <a href="index.html" style="color: blueviolet;">Home</a>
-        <a href="forum.html" style="color: crimson;">Forums</a>
-        <a href="timetable.html" style="color: darkolivegreen;">Time Tables</a>
-        <a href="subjectinformations.html" style="color: lightseagreen;">Subject Information</a>
-        <a href="about.html" style="color: orangered;">About</a>
-        <a href="oops.html" style="color: darksalmon;">OOPS</a> 
-        <a href="coa.html" style="color: cornflowerblue;">COA</a>  
-        <a href="datastructures.html" style="color: gold;">Data Structures</a>
+        <a href="index.html">Home</a>
+        <a href="forum.html">Forums</a>
+        <a href="timetable.html">Time Tables</a>
+        <div class="dropdown">
+          <a href="subjects.html" class="dropdown-toggle">Subjects ▼</a>
+          <div class="dropdown-content">
+            <a href="oops.html">OOPS</a>
+            <a href="coa.html">COA</a>
+            <a href="datastructures.html">Data Structures</a>
+            <a href="sdc.html">SDC</a>
+            <a href="maths.html">Maths</a>
+            <a href="digitalelectronics.html">Digital Electronics</a>
+          </div>
+        </div>
+        <a href="about.html">About</a>
       </nav>
       <div class="actions" id="actions-area">
         <button id="theme-toggle">Toggle Theme</button>
@@ -28,114 +35,135 @@
         <button id="logout-btn" class="hidden">Logout</button>
       </div>
     </header>
-        <main class="container">
+
+    <main class="container">
       <h1>Object Oriented Programming Through Java</h1>
       <h2>Important Questions & Answers</h2>
-      <button class="collapsible"><b style="color: black;">Q1: Describe the key features of java. How does java achieve platform independence? </b></button>
-      <div class="content">
-      <section class="cards">
-        <article class="card">
-        <p><b>Answer:</b></p><p><b style="color: crimson;">Key Features of Java:</b></p>
-      <p>Java is a popular, high-level, object-oriented programming language developed by Sun Microsystems (now owned by Oracle). It provides several important features that make it powerful and widely used.</p>
-    <p><b style="color: crimson;">1. Simple:</b></p>
-  <p>Java is easy to learn and use because it removes complex features like pointers, operator overloading, and multiple inheritance.</p>
-      <p><b style="color: crimson;">2. Object-Oriented:</b></p>
-      <p>Everything in Java is treated as an object. It supports OOP concepts such as inheritance, encapsulation, polymorphism, and abstraction.</p>
-      <p><b style="color: crimson;">3. Platform Independent:</b></p>
-      <p>Java code can run on any platform (Windows, Mac, Linux, etc.) without modification, thanks to the Java Virtual Machine (JVM).</p>
-       <p><b style="color: crimson;">4. Secure:</b></p>
-       <p>Java provides a secure environment through features like bytecode verification, sandboxing, and absence of explicit pointers.</p>
-         <p><b style="color: crimson;">5. Robust:</b></p><p>Java handles errors effectively with exception handling and has strong memory management using automatic garbage collection.</p>
-         <P><b style="color: crimson;">6. Multithreaded:</b></P><p>Java allows the execution of multiple threads (lightweight processes) simultaneously, improving performance.</p>
-         <p><b style="color: crimson;">7. Portable:</b></p><p>Java programs are portable because the same .class file can run anywhere a JVM is installed.</p>
-         <p><b style="color: crimson;">8. High Performance (with JIT):</b></p><p>The Just-In-Time (JIT) compiler improves performance by converting bytecode into native machine code at runtime.</p></article>
-         </section>
-         </div>
-    </main>
-    <main class="container">
-      <button class="collapsible"><b style="color: black;">Q2: What is constructor in java? Explain it with suitable example. </b></button>
-      <div class="content">
-      <section class="cards">
-        <article class="card"><p><b>Answer:</b></p>
-          <p>→ Constructor is like a special method used in object creation & most importantly to initialise non-static properties during the object creation.</p>
-          <p>→ The name of the constructor would be always similar to class name & it do not contain any return type.</p>
-          <p>→ We can’t create Java program without the constructors. Since compiler automatically adds the constructor if the developer forgets to add it.</p>
-          <p><b style="color: crimson;">Syntax:</b></p><p>[Access Specifier] ClassName(F.A’s)</p><p> { </p><p>  // statements</p>
-            <p>}</p><p><b style="color: crimson;">Types of Constructors:</b></p><p>→ We have three types of constructors.</p>
-            <p><b style="color:crimson;"> 1. Default Constructor:</b></p><p> Whenever developer creates a class without constructor, compiler mandatory/compulsarily adds the constructor without formal arguments known as default constructor.</p>
-            <p><b style="color: crimson;"> 2. Non-Argument Constructor:</b></p><p>If a developer add constructor without formal arguments known as Non-Argument constructor </p>
-           <p>Ex:A obj = new A();</p><p><b style="color: crimson;"> 3. Parameterized Constructor:</b></p><p>A constructor add by developer with formal arguments known as Parameterized constructor which is </p>
-           <p><u>mainly used to initialized non static properties during the object creation  </u></p>
-           <p><B style="color: crimson;">Example:</B></p><p>U.L</p><P>A obj 1 = new (10,20);</P>
-           <p>B.P</p><P>A(int a, int b){</P><p>This.a=a;</p><p>This.b=b;</p><p>}</p>
-          </article>
-          </section>
-          </div>
-    </main>
-  </main>
-    <main class="container">
-            <button class="collapsible"><b style="color: black;">Q3: What is inheritance? Explain the types of inheritance  </b></button>
-            <div class="content">
-      <section class="cards">
-        <article class="card"><p><b>Answer:</b></p>
-          <p><b style="color: crimson;">Inheritance</b></p>
-          <p>It is similar to parent & child relationship where non-static properties & behaviour of an parent class/superclass are acquired by sub class object by using extends keyword btw the classes called as Inheritance.</p>
-          <p><b style="color: crimson;">Child class (or) Sub class</b></p><p>A child which acquires another class properties & behaviour is known as sub class /child class. </p>
-          <p><b style="color: crimson;">Parent class (or) super class</b></p><p>A class which provide the property & behaviour to another class is known as parent class/ super class</p>
-          <p>Only non-static properties & behaviour are inherited to sub class</p>
-          <p><b style="color: crimson;">Types of inheritance</b></p>
-          <p>There are 5 types of inheritancein java, they are </p>
-          <ul>
-            <li>Single level inheritance</li>
-            <li> Multi-level inheritance</li>
-            <li> Multiple inheritance</li>
-            <li> Hierarchical inheritance</li>
-            <li> Hybrid inheritance</li>
-          </ul>
-            <b style="color: crimson;">1. Single level inheritence:</b><p>A subclass inherits from only one superclass.</p>
-            <p><img src="images/a.png" alt="diagram"></p>
-            <p><b style="color: crimson;">2. Multi-level inheritance:</b></p>
-            <p>Inheritance with respect to more than one level is known M-LI</p>
-            <p><img src="images/c.png" alt="diagram" style="width: 250px; height: auto;"></p>
-            <b style="color: crimson;">3. Multiple inheritance:</b>
-            <p>one sub class having multiple super class in a same level is known as m-ln</p>
-            <p><img src="images/b.png" alt="diagram" style="width: 250px; height: auto;"></p>
-            <p><b style="color: crimson;">4. Hierarchical inheritance:</b></p>
-            <p>one super class having multiple sub class in a same level is known as hierarchical inheritance</p> 
-            <p><img src="images/d.png" alt="diagram" style="width: 300px;height: auto;"></p>          
-            <b style="color: crimson;">5. Hybrid inheritance:</b>
-            <p>combination of any two types of inheritance is known as hybrid inheritance.</p>
-            <p><img src="images/e.png" alt="diagram" style="width:500px;height: auto;"></p>
-           </article>
-           </section>
-           </div>
-            </main>
-    <main class="container">
-        <button class="collapsible"><b style="color: black;">Q4: Define package. Explain different types of packages and their advantages. [Syntax is important]  </b></button>
+      
+      <div class="collapsible-container">
+        <button class="collapsible"><b>Q1: Describe the key features of java. How does java achieve platform independence?</b></button>
         <div class="content">
-      <section class="cards">
-        <article class="card">
-         <b>Answer:</b>
-         <p> In Java, a package is a collection of related classes, interfaces, and sub-packages that 
-            are grouped together to avoid name conflicts and to organize files properly.
-            It acts as a namespace that helps to categorize classes logically
-             (like folders in a computer).</p>
-             <b style="color: crimson;">Example:</b>
-             <p>package mypackage; <P>
-                    <p> public class Example { </p>
-                        <p> public void display() {  </p> 
-                          <p> System.out.println("This is a package example");  </p> 
-                <p>  }  </p> 
-             </p> } <P>
-              <b style="color:rgb(220, 190, 20);"> Types of Packages:</b>
-            </b style;">1. Built-in Packages (Predefined Packages):</b>
-             </ul>
-            <p></li>These are packages provided by Java itself.<li></p>
-              <ul>
+          <section class="cards">
+            <article class="card">
+              <p><b>Answer:</b></p>
+              <p><b style="color: crimson;">Key Features of Java:</b></p>
+              <p>Java is a popular, high-level, object-oriented programming language developed by Sun Microsystems (now owned by Oracle). It provides several important features that make it powerful and widely used.</p>
+              <p><b style="color: crimson;">1. Simple:</b></p>
+              <p>Java is easy to learn and use because it removes complex features like pointers, operator overloading, and multiple inheritance.</p>
+              <p><b style="color: crimson;">2. Object-Oriented:</b></p>
+              <p>Everything in Java is treated as an object. It supports OOP concepts such as inheritance, encapsulation, polymorphism, and abstraction.</p>
+              <p><b style="color: crimson;">3. Platform Independent:</b></p>
+              <p>Java code can run on any platform (Windows, Mac, Linux, etc.) without modification, thanks to the Java Virtual Machine (JVM).</p>
+              <p><b style="color: crimson;">4. Secure:</b></p>
+              <p>Java provides a secure environment through features like bytecode verification, sandboxing, and absence of explicit pointers.</p>
+              <p><b style="color: crimson;">5. Robust:</b></p>
+              <p>Java handles errors effectively with exception handling and has strong memory management using automatic garbage collection.</p>
+              <p><b style="color: crimson;">6. Multithreaded:</b></p>
+              <p>Java allows the execution of multiple threads (lightweight processes) simultaneously, improving performance.</p>
+              <p><b style="color: crimson;">7. Portable:</b></p>
+              <p>Java programs are portable because the same .class file can run anywhere a JVM is installed.</p>
+              <p><b style="color: crimson;">8. High Performance (with JIT):</b></p>
+              <p>The Just-In-Time (JIT) compiler improves performance by converting bytecode into native machine code at runtime.</p>
             </article>
-           </section>
-           </div>
-            </main>
+          </section>
+        </div>
+
+        <button class="collapsible"><b>Q2: What is constructor in java? Explain it with suitable example.</b></button>
+        <div class="content">
+          <section class="cards">
+            <article class="card">
+              <p><b>Answer:</b></p>
+              <p>→ Constructor is like a special method used in object creation & most importantly to initialise non-static properties during the object creation.</p>
+              <p>→ The name of the constructor would be always similar to class name & it do not contain any return type.</p>
+              <p>→ We can't create Java program without the constructors. Since compiler automatically adds the constructor if the developer forgets to add it.</p>
+              <p><b style="color: crimson;">Syntax:</b></p>
+              <p>[Access Specifier] ClassName(F.A's)</p>
+              <p>{</p>
+              <p> // statements</p>
+              <p>}</p>
+              <p><b style="color: crimson;">Types of Constructors:</b></p>
+              <p>→ We have three types of constructors.</p>
+              <p><b style="color:crimson;">1. Default Constructor:</b></p>
+              <p> Whenever developer creates a class without constructor, compiler mandatory/compulsarily adds the constructor without formal arguments known as default constructor.</p>
+              <p><b style="color: crimson;">2. Non-Argument Constructor:</b></p>
+              <p>If a developer add constructor without formal arguments known as Non-Argument constructor</p>
+              <p>Ex: A obj = new A();</p>
+              <p><b style="color: crimson;">3. Parameterized Constructor:</b></p>
+              <p>A constructor add by developer with formal arguments known as Parameterized constructor which is</p>
+              <p><u>mainly used to initialized non static properties during the object creation</u></p>
+              <p><b style="color: crimson;">Example:</b></p>
+              <p>U.L</p>
+              <p>A obj 1 = new (10,20);</p>
+              <p>B.P</p>
+              <p>A(int a, int b){</p>
+              <p>This.a=a;</p>
+              <p>This.b=b;</p>
+              <p>}</p>
+            </article>
+          </section>
+        </div>
+
+        <button class="collapsible"><b>Q3: What is inheritance? Explain the types of inheritance</b></button>
+        <div class="content">
+          <section class="cards">
+            <article class="card">
+              <p><b>Answer:</b></p>
+              <p><b style="color: crimson;">Inheritance</b></p>
+              <p>It is similar to parent & child relationship where non-static properties & behaviour of an parent class/superclass are acquired by sub class object by using extends keyword btw the classes called as Inheritance.</p>
+              <p><b style="color: crimson;">Child class (or) Sub class</b></p>
+              <p>A child which acquires another class properties & behaviour is known as sub class /child class.</p>
+              <p><b style="color: crimson;">Parent class (or) super class</b></p>
+              <p>A class which provide the property & behaviour to another class is known as parent class/ super class</p>
+              <p>Only non-static properties & behaviour are inherited to sub class</p>
+              <p><b style="color: crimson;">Types of inheritance</b></p>
+              <p>There are 5 types of inheritance in java, they are</p>
+              <ul>
+                <li>Single level inheritance</li>
+                <li>Multi-level inheritance</li>
+                <li>Multiple inheritance</li>
+                <li>Hierarchical inheritance</li>
+                <li>Hybrid inheritance</li>
+              </ul>
+              <p><b style="color: crimson;">1. Single level inheritance:</b> A subclass inherits from only one superclass.</p>
+              <p><img src="images/a.png" alt="diagram"></p>
+              <p><b style="color: crimson;">2. Multi-level inheritance:</b></p>
+              <p>Inheritance with respect to more than one level is known M-LI</p>
+              <p><img src="images/c.png" alt="diagram"></p>
+              <p><b style="color: crimson;">3. Multiple inheritance:</b></p>
+              <p>one sub class having multiple super class in a same level is known as m-ln</p>
+              <p><img src="images/b.png" alt="diagram"></p>
+              <p><b style="color: crimson;">4. Hierarchical inheritance:</b></p>
+              <p>one super class having multiple sub class in a same level is known as hierarchical inheritance</p>
+              <p><img src="images/d.png" alt="diagram"></p>
+              <p><b style="color: crimson;">5. Hybrid inheritance:</b></p>
+              <p>combination of any two types of inheritance is known as hybrid inheritance.</p>
+              <p><img src="images/e.png" alt="diagram"></p>
+            </article>
+          </section>
+        </div>
+
+        <button class="collapsible"><b>Q4: Define package. Explain different types of packages and their advantages. [Syntax is important]</b></button>
+        <div class="content">
+          <section class="cards">
+            <article class="card">
+              <p><b>Answer:</b></p>
+              <p>In Java, a package is a collection of related classes, interfaces, and sub-packages that are grouped together to avoid name conflicts and to organize files properly. It acts as a namespace that helps to categorize classes logically (like folders in a computer).</p>
+              <p><b style="color: crimson;">Example:</b></p>
+              <p>package mypackage;</p>
+              <p>public class Example {</p>
+              <p>public void display() {</p>
+              <p>System.out.println("This is a package example");</p>
+              <p>}</p>
+              <p>}</p>
+              <p><b style="color: rgb(220, 190, 20);">Types of Packages:</b></p>
+              <p><b>1. Built-in Packages (Predefined Packages):</b></p>
+              <p>These are packages provided by Java itself.</p>
+            </article>
+          </section>
+        </div>
+      </div>
+    </main>
+
     <footer class="footer">
       <p>&copy; Shadan Forums</p>
     </footer>
