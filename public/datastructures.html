@@ -122,6 +122,84 @@ At 142 locations in the hash table the record 23 will be placed</p>
 </article> 
 </section>
 </div>
+<button class="collapsible"><b>Q3 : Define a Queue. Write algorithms for enqueue() and dequeue() operations and illustrate them with examples</b></button>
+        <div class="content">
+          <section class="cards">
+            <article class="card">
+            <p><b> QUEUES</b></p>
+            <p><ul><li>Queue is a linear data structures where the first elements is inserted from one end called REAR and deleted from the other end called as FRONT
+              <li>Front points to the begining of the queue and Rear points to the end of the queue</li> <li> Queue follows the FIFO (First In Fisrt Out) structure</li> 
+              <li> According to its FIFO  structure,element inserted first will also be removed first</li> <li>
+                In a queue, one end is always used to insert data (enqueue) and the
+otherisused to delete data (dequeue), because queue is open at both its ends
+                </li> <li> The enqueue() and dequeue() are two importantfunctions used in a
+queue.</li>
+<p> <img src="images/queue.png" alt="Table"></p>
+<p><b> enQueue(value)-Inserting an element into the Queue </b></p>
+<p> We can use the following steps to insert a new nod into the queue</p>
+<p><ul><li>STEP 1: Create a newNode with given value and set "newNode-->next" to NULL</li> <li>
+  STEP 2: Check whether queue is is Empty(rear=NULL)
+</li> <li> STEP 3: If it is Empty then,set front=newNode and rear=newNode</li> <li> STEP 4: If it is Not Empty then set rear->next=newNode and rear=newNode</li></ul></p>
+<p><b> deQueue(value)-Deleting an Element from Queue </b></p>
+<p>We can use the following steps todelete a node from the queue</p>
+<p><ul><li>STEP 1:Check whether queueis Empty (front==NULL)</li> <li>STEP 2:If it is Empty, then display "Queue is Empty!! Deletion is not possible!!! and terminate from the function </li> <li>
+  STEP 3: If it isNot Empty then, define a Node pointer'temp and set it to'front
+</li> <li> STEP 4:Then set front =front next' and delete 'temp'(free(temp)).</li></ul></p>
+<p><b>display()-Displaying the elements to Queue</b></p>
+<p>We can use the following steps to display the elements (nodes) of a Queue</p>
+<p><ul><li> STEP 1: Check whether queueis Empty (front == NULL).</li><li>STEP 2:-If it is Empty then, display 'Queueis Empty!!" and terminate thefunction.</li>
+<li>STEP 3:-If itisNot Emptythen,define a Node pointer 'temp'andinitializewith front.</li> <li>
+  STEP 4:- Display temp data --> and move it to the next node. Repeat the same
+until 'temp' reaches to 'rear (tempnext I=NULL).
+</li> <li>STEP 5-Finally! Display 'temp data->NULL.</li></ul></p>
+<p> <img src="images/enqueue.png" alt="table"></p>
+<p><img src="images/dequeue.png" alt="tables"></p>
+
+
+
+
+<<<<<<< HEAD
+            </li></ul></p>  
+            </article>
+          </section>
+        </div>
+        <button class="collapsible"><b>Q4 : What are the three possible cases to consider while deleting a node from a Binary Search Tree(BST)</b></button>
+        <div class="content">
+          <section class="cards">
+            <article class="card">
+            <p> Binary Search Tree Deletion:</p>
+            <p> 1. Delete the Function is used to delete the specified node from a binary search tree </p> 
+            <p> 2. First we have to check with deleted node with root node if it is less than root node then we have to check left side of the
+             tree if node to be deleted is greater than parent node we have to check right side of the tree 
+            </p> 
+            <p> 3.There are three situations of deleting a node from a binary search tree</p>
+            <p><b>1.Node to be deleted is leaf node</b>
+         </p>
+         <p>It is the simplest case , in this case,replace the leaf node with the NULL and simple free the allocated space </p>
+         <p>In the image we are deleting the node 85 since the node is a leaf node therefore the node will be replaced with NULL and allocated space will be freed
+         </p>
+         <p><img src="images/node85.png" alt="tree">
+        </p>
+        <p><b>2.The node to be deleted has only one child</b></p>
+        <p>In this case replace the node with its child and delete the child node which now contaims the value which is to be deleted.Simply replace it with the NULL and free the allocated space .</p>
+        <p>In the following image the node 12 is to be deleted it has only one child.The node will be replaced with its child node and the replaced node 12(which is now leaf node)will simply be deleted.
+        </p>
+        <p><img src="images/node12.png" alt="tree"></p>
+        <p><b>3. Node to be deleted has two childrens</b></p>
+        <p>Node which has to deleted has two children then we can replace that node with </p>
+        <p>a. In order predecessor </p>
+        <p>b. In order successor </p>
+        <p> <img src="images/node50.png" alt="tree"></p>
+        <p>In the following image the node 50 is to be deleted which is the root node of the tree</p>
+        <p>The in order traversal of the given tree below </p>
+        <p> 6,25,30,50,52,60,70,75</p>
+        <p> replace 50 with in its order successor 52.Now 50 will be moved to the leaf of the tree which will be simply deleted </p>
+        
+
+                 </article>
+          </section>
+        </div>
+=======
 
 
 
@@ -130,10 +208,7 @@ At 142 locations in the hash table the record 23 will be placed</p>
 
 
 
-
-
-
-
+>>>>>>> 2b0bbf31d99c081c80141cf1053c1c649575056a
 
    </div>
     </main>
