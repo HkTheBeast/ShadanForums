@@ -1,32 +1,5 @@
 (function(){
-  // Enhanced Theme Toggle with proper button text
-  const themeToggle = document.getElementById('theme-toggle');
-  
-  function applyTheme(){
-    const t = localStorage.getItem('theme') || 'light';
-    if(t === 'dark') {
-      document.documentElement.setAttribute('data-theme','dark');
-      if(themeToggle) themeToggle.textContent = '☀️ Light Mode';
-    } else {
-      document.documentElement.removeAttribute('data-theme');
-      if(themeToggle) themeToggle.textContent = '🌙 Dark Mode';
-    }
-  }
-  
-  // Initialize theme
-  applyTheme();
-  
-  // Theme toggle handler
-  if(themeToggle) {
-    themeToggle.addEventListener('click', () => {
-      const current = localStorage.getItem('theme') || 'light';
-      const newTheme = current === 'dark' ? 'light' : 'dark';
-      localStorage.setItem('theme', newTheme);
-      applyTheme();
-    });
-  }
-
-  // Elements
+  // Elements - Only authentication functionality remains
   const loginBtn = document.getElementById('login-btn');
   const logoutBtn = document.getElementById('logout-btn');
   const userInfo = document.getElementById('user-info');
@@ -54,13 +27,34 @@
       authLinkToggle.mode = 'login';
     }
   }
-  function hideAuthModal(){ if(authModal) authModal.classList.add('hidden'); }
+  
+  function hideAuthModal(){ 
+    if(authModal) authModal.classList.add('hidden'); 
+  }
 
   // Attach handlers
-  if(openAuthLinks) openAuthLinks.forEach(el => { if(el) el.addEventListener('click', (e)=>{ e.preventDefault(); showAuthModal('login'); }) });
-  if(toggleToRegister) toggleToRegister.addEventListener('click', (e)=>{ e.preventDefault(); showAuthModal('register'); });
-  if(authCancel) authCancel.addEventListener('click', (e)=>{ e.preventDefault(); hideAuthModal(); });
-  if(loginBtn) loginBtn.addEventListener('click', (e)=>{ e.preventDefault(); showAuthModal('login'); });
+  if(openAuthLinks) openAuthLinks.forEach(el => { 
+    if(el) el.addEventListener('click', (e)=>{ 
+      e.preventDefault(); 
+      showAuthModal('login'); 
+    }) 
+  });
+  
+  if(toggleToRegister) toggleToRegister.addEventListener('click', (e)=>{ 
+    e.preventDefault(); 
+    showAuthModal('register'); 
+  });
+  
+  if(authCancel) authCancel.addEventListener('click', (e)=>{ 
+    e.preventDefault(); 
+    hideAuthModal(); 
+  });
+  
+  if(loginBtn) loginBtn.addEventListener('click', (e)=>{ 
+    e.preventDefault(); 
+    showAuthModal('login'); 
+  });
+  
   if(logoutBtn) logoutBtn.addEventListener('click', async (e)=>{
     e.preventDefault();
     await fetch('/api/logout', { method:'POST', credentials:'include' });
@@ -74,11 +68,17 @@
     if(data && data.user){
       if(loginBtn) loginBtn.classList.add('hidden');
       if(logoutBtn) logoutBtn.classList.remove('hidden');
-      if(userInfo){ userInfo.classList.remove('hidden'); userInfo.textContent = 'Logged in as ' + data.user.username; }
+      if(userInfo){ 
+        userInfo.classList.remove('hidden'); 
+        userInfo.textContent = 'Logged in as ' + data.user.username; 
+      }
     } else {
       if(loginBtn) loginBtn.classList.remove('hidden');
       if(logoutBtn) logoutBtn.classList.add('hidden');
-      if(userInfo){ userInfo.classList.add('hidden'); userInfo.textContent = ''; }
+      if(userInfo){ 
+        userInfo.classList.add('hidden'); 
+        userInfo.textContent = ''; 
+      }
     }
   }
 
@@ -86,10 +86,19 @@
     authForm.addEventListener('submit', async (e)=>{
       e.preventDefault();
       const fd = new FormData(authForm);
-      const payload = { username: fd.get('username'), password: fd.get('password') };
+      const payload = { 
+        username: fd.get('username'), 
+        password: fd.get('password') 
+      };
       const mode = authLinkToggle.mode || 'login';
       const url = mode === 'register' ? '/api/register' : '/api/login';
-      const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload), credentials: 'include' });
+      const res = await fetch(url, { 
+        method:'POST', 
+        headers:{'Content-Type':'application/json'}, 
+        body: JSON.stringify(payload), 
+        credentials: 'include' 
+      });
+      
       if(res.ok){
         const j = await res.json();
         hideAuthModal();
@@ -105,7 +114,10 @@
 
   // Wire toggle links in case multiple pages have them
   document.addEventListener('click', (e)=>{
-    if(e.target && e.target.id === 'open-auth'){ e.preventDefault(); showAuthModal('login'); }
+    if(e.target && e.target.id === 'open-auth'){ 
+      e.preventDefault(); 
+      showAuthModal('login'); 
+    }
   });
 
   // Initial check
@@ -122,7 +134,7 @@
       if (content.style.maxHeight){
         content.style.maxHeight = null;
       } else {
-        content.style.maxHeight = content.scrollHeight + "px"; // Set max-height to content's scroll height
+        content.style.maxHeight = content.scrollHeight + "px";
       } 
     });
   }
