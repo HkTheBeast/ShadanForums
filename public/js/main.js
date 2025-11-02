@@ -208,3 +208,192 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+// About Page Enhanced JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize animations and interactions
+  initAboutPage();
+});
+
+function initAboutPage() {
+  // Add intersection observer for scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        entry.target.style.transition = 'all 0.8s ease';
+      }
+    });
+  }, observerOptions);
+
+  // Observe all about sections
+  const aboutSections = document.querySelectorAll('.about-section');
+  aboutSections.forEach(section => {
+    section.style.opacity = '0';
+    section.style.transform = 'translateY(30px)';
+    observer.observe(section);
+  });
+
+  // Observe hero content
+  const heroContent = document.querySelector('.hero-content');
+  if (heroContent) {
+    heroContent.style.opacity = '0';
+    heroContent.style.transform = 'translateY(20px)';
+    heroContent.style.transition = 'all 1s ease';
+    setTimeout(() => {
+      heroContent.style.opacity = '1';
+      heroContent.style.transform = 'translateY(0)';
+    }, 300);
+  }
+
+  // Add hover effects for interactive elements
+  const interactiveElements = document.querySelectorAll('.feature-item, .vision-card, .platform-card, .tech-stat');
+  
+  interactiveElements.forEach(element => {
+    element.addEventListener('mouseenter', function() {
+      this.style.zIndex = '10';
+    });
+    
+    element.addEventListener('mouseleave', function() {
+      this.style.zIndex = '1';
+    });
+  });
+
+  // Enhanced CTA button interactions
+  const ctaButtons = document.querySelectorAll('.cta-button');
+  
+  ctaButtons.forEach(button => {
+    // Add ripple effect
+    button.addEventListener('click', function(e) {
+      const ripple = document.createElement('span');
+      const rect = this.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const x = e.clientX - rect.left - size / 2;
+      const y = e.clientY - rect.top - size / 2;
+      
+      ripple.style.cssText = 'position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.6); transform: scale(0); animation: ripple 0.6s linear; width: ' + size + 'px; height: ' + size + 'px; left: ' + x + 'px; top: ' + y + 'px;';
+      
+      this.appendChild(ripple);
+      
+      setTimeout(() => {
+        ripple.remove();
+      }, 600);
+    });
+
+    // Add loading state
+    button.addEventListener('click', function(e) {
+      if (this.href && !this.href.includes('#')) {
+        const originalText = this.innerHTML;
+        this.innerHTML = '<span class="loading-spinner"></span>Loading...';
+        this.style.pointerEvents = 'none';
+        this.style.opacity = '0.8';
+        
+        // Simulate loading for demo purposes
+        setTimeout(() => {
+          this.innerHTML = originalText;
+          this.style.pointerEvents = 'auto';
+          this.style.opacity = '1';
+        }, 2000);
+      }
+    });
+  });
+
+  // Add CSS for animations
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes ripple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+    
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid transparent;
+      border-top: 2px solid currentColor;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Smooth scrolling for anchor links
+  const smoothScrollLinks = document.querySelectorAll('a[href^="#"]');
+  
+  smoothScrollLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      const targetId = this.getAttribute('href');
+      if (targetId === '#') return;
+      
+      const targetElement = document.querySelector(targetId);
+      if (targetElement) {
+        targetElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
+
+  // Performance optimization: Lazy load images
+  const images = document.querySelectorAll('img[data-src]');
+  const imageObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        img.src = img.getAttribute('data-src');
+        img.classList.remove('lazy');
+        imageObserver.unobserve(img);
+      }
+    });
+  });
+
+  images.forEach(img => imageObserver.observe(img));
+
+  // Add viewport checker for elements
+  const viewportChecker = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+      }
+    });
+  }, { threshold: 0.3 });
+
+  // Observe all interactive elements
+  const allInteractiveElements = document.querySelectorAll('.feature-item, .vision-card, .platform-card, .tech-stat, .cta-button');
+  allInteractiveElements.forEach(el => viewportChecker.observe(el));
+
+  console.log('About page enhanced successfully!');
+}
+
+// Utility function for analytics tracking
+function trackEvent(category, action, label) {
+  if (typeof gtag !== 'undefined') {
+    gtag('event', action, {
+      'event_category': category,
+      'event_label': label
+    });
+  }
+  console.log('Event tracked:', category, action, label);
+}
+
+// Export for module use
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { initAboutPage, trackEvent };
+}
