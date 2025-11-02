@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Computer Organization & Architecture</title>
+  <title>Computer Organization & Architecture - ShadanForums</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" type="image/png" href="images/shadanlogo.png">
@@ -33,173 +33,221 @@
       </div>
     </header>
 
-
     <main class="container">
-    <div class="collapsible-container">
-
-
-
-
-
       <h1>Computer Organization & Architecture</h1>
       <h2>Important Questions & Answers</h2>
-       <button class="collapsible"><b>Q1 :Give a detailed overview of digital computers,including 
-          their key characteristics and application</b></button>
-          <div class="content">
-      <section class="cards">
-        <article class="card"><b>Answer:</b><p>a digital computers is an electronic system that processes
-          information using binary digits (0&1).it accepts data,performss operations according to instructions,stores intermediate
-          results, and generates output.
-          </p><b style="color: blueviolet;">KEY CHARACTERISTICS :</b><ul>
-            <li>works on binary system (0&1)</li>
-            <li>high speed & accuracy</li>
-            <li>programmable & versatile</li>
-            <li>large storage capacity</li>
-            <li>automation and reliability</li>
-          </ul><b style="color: blueviolet;">APPLICATION:</b><ul>
-            <li>scientific research (simulations,weather forecasting).</li>
-        <li>(payroll,banking,accounts).</li>
-      <li>(CAD tools,circuit design).</li>
-    <li>medical (diagnosis,imaging).</li>
-  <li>education & communication(online learning,networking).</li></ul><br>
-  <b style="color: blueviolet;">SUMMARY:</b><p>Digital computers are fast,accurate and versatile machines used
-     across science,business,engineering and daily life</p></UL></article>
-      </section>
+      
+      <div class="qa-container">
+        <!-- Question 1 -->
+        <div class="qa-item">
+          <button class="qa-question">
+            <span class="question-text">Q1: Give a detailed overview of digital computers, including their key characteristics and applications</span>
+            <span class="toggle-icon">+</span>
+          </button>
+          <div class="qa-answer">
+            <div class="answer-content">
+              <p><b>Answer:</b></p>
+              <p>A digital computer is an electronic system that processes information using binary digits (0 & 1). It accepts data, performs operations according to instructions, stores intermediate results, and generates output.</p>
+              
+              <p><b>KEY CHARACTERISTICS:</b></p>
+              <ul>
+                <li>Works on binary system (0 & 1)</li>
+                <li>High speed & accuracy</li>
+                <li>Programmable & versatile</li>
+                <li>Large storage capacity</li>
+                <li>Automation and reliability</li>
+              </ul>
+              
+              <p><b>APPLICATIONS:</b></p>
+              <ul>
+                <li>Scientific research (simulations, weather forecasting)</li>
+                <li>Business applications (payroll, banking, accounts)</li>
+                <li>Engineering (CAD tools, circuit design)</li>
+                <li>Medical (diagnosis, imaging)</li>
+                <li>Education & communication (online learning, networking)</li>
+              </ul>
+              
+              <p><b>SUMMARY:</b></p>
+              <p>Digital computers are fast, accurate and versatile machines used across science, business, engineering and daily life.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="qa-item">
+          <button class="qa-question">
+            <span class="question-text">Q2: Explain bus system for four registers</span>
+            <span class="toggle-icon">+</span>
+          </button>
+          <div class="qa-answer">
+            <div class="answer-content">
+              <p><b>Answer:</b></p>
+              <p>A bus system provides a common pathway for data transfer among components in a system with four registers (R1-R4).</p>
+              
+              <ul>
+                <li>
+                  <b>MULTIPLEXER:</b>
+                  <p>Selects which register sends data to the bus</p>
+                </li>
+                <li>
+                  <b>DECODER:</b>
+                  <p>Activates the correct destination register to receive data</p>
+                </li>
+                <li>
+                  <b>CONTROL LINES:</b>
+                  <p>Manage read/write operations</p>
+                </li>
+              </ul>
+              
+              <p><b>SUMMARY:</b></p>
+              <p>A bus system reduces hardware complexity while allowing multiple registers to share a single data path.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="qa-item">
+          <button class="qa-question">
+            <span class="question-text">Q3: Explain the following terms: a) Design of control unit, b) Compare between hardwired control unit & microprogram control unit</span>
+            <span class="toggle-icon">+</span>
+          </button>
+          <div class="qa-answer">
+            <div class="answer-content">
+              <p><b>Answer:</b></p>
+              
+              <p><b>a) CONTROL UNIT DESIGN:</b></p>
+              <p>The Control Unit (CU) directs operations in the CPU by generating control signals. Inputs include the instruction register, flags, and clock. Outputs are signals to ALU, memory, and input/output devices.</p>
+              
+              <p><b>b) COMPARISON:</b></p>
+              <ul>
+                <li>
+                  <b>HARDWIRED CU:</b>
+                  <p>Implemented with combinational logic, very fast but inflexible, used in RISC processors</p>
+                </li>
+                <li>
+                  <b>MICROPROGRAMMED CU:</b>
+                  <p>Uses microinstructions stored in control memory, slower but flexible, easy to modify, used in CISC processors</p>
+                </li>
+              </ul>
+              
+              <p><b>SUMMARY:</b></p>
+              <p>Hardwired CU = fast but rigid; Microprogrammed CU = flexible but slower</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="qa-item">
+          <button class="qa-question">
+            <span class="question-text">Q4: Explain various addressing modes with examples</span>
+            <span class="toggle-icon">+</span>
+          </button>
+          <div class="qa-answer">
+            <div class="answer-content">
+              <p><b>Answer:</b></p>
+              <p>Addressing modes define how operands are accessed in instructions.</p>
+              
+              <ul>
+                <li>
+                  <b>IMMEDIATE:</b> Operand in instruction
+                  <p><b>Example:</b> MOV A, #5</p>
+                </li>
+                <li>
+                  <b>DIRECT:</b> Address of operand given in instruction
+                  <p><b>Example:</b> MOV A, 1000</p>
+                </li>
+                <li>
+                  <b>INDIRECT:</b> Instruction points to memory location containing operand's address
+                  <p><b>Example:</b> MOV A, (R1)</p>
+                </li>
+                <li>
+                  <b>REGISTER:</b> Operand in register
+                  <p><b>Example:</b> ADD A, R1</p>
+                </li>
+                <li>
+                  <b>INDEXED:</b> Effective address = base + index register
+                  <p><b>Example:</b> MOV A, 1000(R2)</p>
+                </li>
+                <li>
+                  <b>RELATIVE:</b> Address relative to PC
+                  <p><b>Example:</b> JMP 20</p>
+                </li>
+              </ul>
+              
+              <p><b>SUMMARY:</b></p>
+              <p>Addressing modes provide flexible ways to access operands during instruction execution.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="qa-item">
+          <button class="qa-question">
+            <span class="question-text">Q5: Discuss about floating point representation</span>
+            <span class="toggle-icon">+</span>
+          </button>
+          <div class="qa-answer">
+            <div class="answer-content">
+              <p><b>Answer:</b></p>
+              <p>Floating point representation is used to store real numbers (fractions, very large, or small values).</p>
+              
+              <ul>
+                <li><b>GENERAL FORM:</b> N = (-1)³ × M × 2⁶</li>
+                <li>
+                  <b>IEEE 754 SINGLE PRECISION (32-BITS):</b>
+                  <ul>
+                    <li><b>1 bit:</b> Sign (S)</li>
+                    <li><b>8 bits:</b> Exponent (E), bias = 127</li>
+                    <li><b>23 bits:</b> Mantissa (M)</li>
+                  </ul>
+                </li>
+                <li><b>EXAMPLE:</b> 5.75 → Sign = 1, exponent in biased form, mantissa is binary fraction</li>
+              </ul>
+              
+              <p><b>SUMMARY:</b></p>
+              <p>Floating point allows storage of very large/small real numbers efficiently.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="qa-item">
+          <button class="qa-question">
+            <span class="question-text">Q6: a) Difference between computer organization and architecture, b) Explain instruction format, c) Define data types</span>
+            <span class="toggle-icon">+</span>
+          </button>
+          <div class="qa-answer">
+            <div class="answer-content">
+              <p><b>Answer:</b></p>
+              
+              <p><b>a) COMPUTER ORGANIZATION:</b></p>
+              <p>Internal hardware implementation details (ALU, memory, control signals), not visible to programmers.</p>
+              
+              <p><b>COMPUTER ARCHITECTURE:</b></p>
+              <p>Programmer's view (Instruction set, addressing modes, data types) visible to programmers.</p>
+              
+              <p><b>b) INSTRUCTION FORMAT:</b></p>
+              <p>Defines binary layout of instruction with fields like opcode, mode, register, and address.</p>
+              
+              <p><b>c) DATA TYPES:</b></p>
+              <ul>
+                <li>Integer</li>
+                <li>Floating point</li>
+                <li>Character</li>
+                <li>String</li>
+              </ul>
+              
+              <p><b>SUMMARY:</b></p>
+              <p>Organization = hardware details. Architecture = programmer's view. Instruction format structures instruction. Data types define kinds of values.</p>
+            </div>
+          </div>
+        </div>
+
+        
       </div>
-   
+    </main>
 
-
-    
-       <button class="collapsible"><b>Q2 : Explain bus system for four registers</b></button>
-       <div class="content">
-      <section class="cards">
-        <article class="card"><b>Answer :</b><p>A bus system provides a common pathway for data transfer among components
-          in a system with four registers(R1-R4).
-          <ul><li><b style="color: blueviolet;">MULTIPLEXER:</b><P>Selects which register sends data to the bus</P></li><li><b style="color: blueviolet;">Decoder:</b><p>Activates the correct destination register to recieve data</p></li><li><b style="color: blueviolet;">CONTROL LINES:</b><p>manage read /write operation</p></li></ul>
-          <b style="color: blueviolet;">SUMMARY:</b><p>A bus system reduces hardware complexity while allowing multiple
-            registers to share a single data path.
-          </p>
-        </p></article>
-      </section>
-      </div>
-    
-
-
-
-    
-      <button class="collapsible"><b>Q3 : Explain the following terms. </b></button>
-      <div class="content">
-      <section class="cards"> 
-        <article class="card"><b>Answer :</b><ul><li>a) Desing of control unit</li>
-        <li>b) Compare between hardwired control unit & microprogram control unit</li></ul>
-        <b style="color: blueviolet;">a)CONTROL UNIT DESIGN:</b>
-        <p>The CU directs operations in the CPU by generating control signals.
-          inputs include the instruction register, flag, and clock.outputs are 
-          signals and ALU, memory & input devices</p>
-          <b style="color: blueviolet;">b) COMPARISON:</b>
-          <UL><LI><b style="color: black;">HARDWIRED CU:</b><P> implementented with combinational logic, veryfast
-            but inflexible, used in RISC processors
-          </P></LI>
-        <li><b style="color: black;">MICROPROGRAMMED:</b>
-        <p>Uses microinstructions stored in control memory, slower but flexible, easy to modify, used in CISC processors</p></li></UL>
-        <b style="color: blueviolet;">SUMMARY:</b><p>Hardwired CU= fast but rigid;
-         <br> microprogrammed CU=flexible but slower
-        </p>    
-       </article>
-       </section>
-      </div>
-
-  
-      <button class="collapsible"><b>Q4 : Explain various addressing modes with examples </b></button>
-      <div class="content">
-      <section class="cards">
-        <article class="card">
-        <b>Answer :</b><P>Addressing modes defines how operands are accessed in instructions</P>
-      <ul><li><b style="color: blueviolet;">IMMEDIATE:</b>operands in instruction</li>
-      <li><b>EXAMPLE:</b>MOV A, #5</li>
-    <li><b style="color: blueviolet;">DIRECT:</b>Address of operand given in instruction </li>
-  <li><b>EXAMPLE:</b>MOV A, 1000</li>
-<li><b style="color: blueviolet;">INDIRECT:</b>Instruction pointd to memory location containg operands address </li>
-<li><b>EXAMPLE;</b>MOV A, (R1)</li>
-<li><b style="color: blueviolet;">REGISTER:</b>Operand in register</li>
-<li><b>EXAMPLE:</b>ADDA, R1</li>
-<li><b style="color: blueviolet;">indexed</b>Effective address=base+index register</li>
-<li><b>EXAMPLE:</b>MOV A, 1000(R2)</li>
-<li><b style="color: blueviolet;">RELATIVE:</b>Address relative to PC </li>
-<li><b>EXAMPLE:</b>JMP 20</li>
-<b style="color: blueviolet;">SUMMARY:</b>Addressing modes provide flexible ways to access operands during instruction execution
-</ul>
-</article>
-      </section>
-      </div>
-    
-    
-
-
-
-
-
-
-    
-      <button class="collapsible"><b>Q5 : Discuss about floating point representation </b></button>
-      <div class="content">
-      <section class="cards">
-        <article class="card">
-        <b>Answer:</b><p>Floating point representation is used to store real numbers ( fractions, very large, or small values).</p>
-      <ul><li><b style="color: blueviolet;"> GENERAL FORM:</b> N=(-1)³xMx2⁶</li>
-      <li><b>IEEE 754 SINGLE PRECISION (32-BITS):</b>
-      <li><b>1 bit:</b>sing(S)</li>
-    <li><b>8 bits:</b>Exponent(E), bias=127</li>
-  <li><b>23 bits:</b>mantissa(M)</li>
-<b style="color: blueviolet;">EXAMPLE:</b>5.75->Sign=1, exponent in biased form , mantissa is binary fraction.</ul>
-<b style="color: blueviolet;">SUMMARY:</b>Floating point allows storage of very large/small real numbers efficiently.</article>
-      </section>
-      </div>
-    
-
-
-
-
-    
-
-
-      <button class ="collapsible"><b>Q6 difference bitween computer organization and Architecture
-        b) Explain instruction format
-        c) Define data types 
-      </b></button>
-      <div class="content">
-        <section class="cards">
-        <article class="card">
-      <b style="color: blueviolet;">a) COMPUTER ORGANIZATION:</b>
-      <P>Internal hardware implementation details (ALU, memory, control signals), not visible to programers </P>
-      <li><b style="color: blueviolet;">COMPUTER ARCHITECTURE:</b>
-      <p>Programmers view(Instruction set, addressing modes, data types visible to programmers </p></li>
-      <b style="color: blueviolet;">b)INSTRUCTION FORMAT:</b>Define binary input of instruction with field like op code, mode, register,and address.<br>
-      <b style="color: blueviolet;">c)DATA TYPES:</b><UL><LI>integer
-      </LI><li>floating point</li>
-    <li>character</li>
-  <li>string</li></UL>
-  <b style="color: blueviolet;">SUMMARY:</b>Organization =hardware details. 
-  Architecture=programmers view instruction format structure instruction. data types define kinds of values
-  </article>
-  </section>
-    </div>
-
-
-
-
-
-
-
-     </div>
-     </main>
-    
-
-
-
-    
-
-        <footer class="footer">
+    <footer class="footer">
       <div class="footer-content">
         <div class="footer-logo">
           <h3>ShadanForums</h3>
@@ -213,6 +261,7 @@
       </div>
     </footer>
   </div>
+
   <script src="js/main.js"></script>
 </body>
 </html>
