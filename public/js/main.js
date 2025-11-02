@@ -183,3 +183,28 @@
   });
 
 })();
+
+
+// Q&A Collapsible Functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const qaQuestions = document.querySelectorAll('.qa-question');
+  
+  qaQuestions.forEach(question => {
+    question.addEventListener('click', function() {
+      // Toggle active class on question
+      this.classList.toggle('active');
+      
+      // Toggle active class on answer
+      const answer = this.nextElementSibling;
+      answer.classList.toggle('active');
+      
+      // Close other questions if needed (optional)
+      // qaQuestions.forEach(otherQuestion => {
+      //   if (otherQuestion !== this) {
+      //     otherQuestion.classList.remove('active');
+      //     otherQuestion.nextElementSibling.classList.remove('active');
+      //   }
+      // });
+    });
+  });
+});
