@@ -208,6 +208,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+
+
+
+
+
+
+
+
+
+
 // About Page Enhanced JavaScript
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize animations and interactions
@@ -249,6 +259,19 @@ function initAboutPage() {
       heroContent.style.opacity = '1';
       heroContent.style.transform = 'translateY(0)';
     }, 300);
+  }
+
+  // Add special animation for credits button
+  const creditsButton = document.querySelector('.credits-button');
+  if (creditsButton) {
+    creditsButton.style.opacity = '0';
+    creditsButton.style.transform = 'scale(0.8)';
+    creditsButton.style.transition = 'all 0.6s ease 0.3s';
+    
+    setTimeout(() => {
+      creditsButton.style.opacity = '1';
+      creditsButton.style.transform = 'scale(1)';
+    }, 800);
   }
 
   // Add hover effects for interactive elements
