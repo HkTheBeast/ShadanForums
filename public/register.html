@@ -590,33 +590,40 @@
 <body>
     <div class="app">
         <!-- Top Navigation Bar -->
-        <header class="topbar">
-            <div class="brand">
-                <a href="index.html">StudyPortal</a>
-            </div>
-            <nav>
-                <a href="index.html">Home</a>
-                <div class="dropdown">
-                    <a href="#" class="dropdown-toggle">Subjects</a>
-                    <div class="dropdown-content">
-                        <a href="oops.html">Object Oriented Programming</a>
-                        <a href="coa.html">Computer Organization</a>
-                        <a href="datastructures.html">Data Structures</a>
-                        <a href="sdc.html">Software Development</a>
-                        <a href="maths.html">Mathematics</a>
-                        <a href="digitalelectronics.html">Digital Electronics</a>
-                    </div>
-                </div>
-                <a href="about.html">About</a>
-                <a href="contact.html">Contact</a>
-            </nav>
-            <div class="actions">
-                <button class="login-button" onclick="window.location.href='login.html'">Login</button>
-                <button id="theme-toggle" style="display: none;">Toggle Theme</button>
-                <button id="logout-btn" style="display: none;">Logout</button>
-                <div id="user-info" style="display: none;"></div>
-            </div>
-        </header>
+        <!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Register/Login - ShadanForums</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/png" href="images/shadanlogo.png">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><a href="index.html">ShadanForums</a></div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="forum.html">Forums</a>
+        <a href="announcements.html">Announcements</a>
+        <div class="dropdown">
+          <a href="" class="dropdown-toggle">Subjects</a>
+          <div class="dropdown-content">
+            <a href="oops.html">OOPS</a>
+            <a href="coa.html">COA</a>
+            <a href="datastructures.html">Data Structures</a>
+            <a href="sdc.html">SDC</a>
+            <a href="maths.html">Maths</a>
+            <a href="digitalelectronics.html">Digital Electronics</a>
+          </div>
+        </div>
+        <a href="about.html">About Us</a>
+      </nav>
+      <div class="actions" id="actions-area">
+        <a href="register.html" class="login-button">Login</a>
+      </div>
+    </header>
 
         <!-- Auth Container -->
         <div class="auth-container">
