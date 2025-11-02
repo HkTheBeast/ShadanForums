@@ -419,4 +419,144 @@ function trackEvent(category, action, label) {
 // Export for module use
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { initAboutPage, trackEvent };
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Timetable Page JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+  initTimetablePage();
+});
+
+function initTimetablePage() {
+  // Add image zoom functionality
+  const timetableImages = document.querySelectorAll('.timetable-image');
+  
+  timetableImages.forEach(img => {
+    img.addEventListener('click', function() {
+      this.classList.toggle('zoomed');
+      
+      if (this.classList.contains('zoomed')) {
+        this.style.transform = 'scale(1.8)';
+        this.style.zIndex = '1000';
+        this.style.position = 'relative';
+      } else {
+        this.style.transform = 'scale(1)';
+        this.style.zIndex = '1';
+      }
+    });
+    
+    // Close zoom when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!img.contains(e.target) && img.classList.contains('zoomed')) {
+        img.classList.remove('zoomed');
+        img.style.transform = 'scale(1)';
+        img.style.zIndex = '1';
+      }
+    });
+  });
+
+  // Add progress animation
+  const progressFill = document.querySelector('.progress-fill');
+  if (progressFill) {
+    setTimeout(() => {
+      progressFill.style.width = '53%';
+    }, 500);
+  }
+
+  // Add download tracking
+  const downloadButtons = document.querySelectorAll('.download-btn');
+  
+  downloadButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      const fileName = this.querySelector('.btn-text').textContent;
+      console.log(`Downloading: ${fileName}`);
+      
+      // You can add analytics tracking here
+      // trackDownload(fileName);
+    });
+  });
+
+  // Add smooth scrolling for anchor links
+  const smoothScrollLinks = document.querySelectorAll('a[href^="#"]');
+  
+  smoothScrollLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      const targetId = this.getAttribute('href');
+      if (targetId === '#') return;
+      
+      const targetElement = document.querySelector(targetId);
+      if (targetElement) {
+        targetElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
+
+  // Add hover effects for cards
+  const timetableCards = document.querySelectorAll('.timetable-card');
+  
+  timetableCards.forEach(card => {
+    card.addEventListener('mouseenter', function() {
+      this.style.zIndex = '10';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+      this.style.zIndex = '1';
+    });
+  });
+
+  // Add loading animation for images
+  const imageContainers = document.querySelectorAll('.image-container');
+  
+  imageContainers.forEach(container => {
+    const img = container.querySelector('img');
+    if (img) {
+      img.style.opacity = '0';
+      img.style.transition = 'opacity 0.5s ease';
+      
+      img.onload = function() {
+        this.style.opacity = '1';
+      };
+      
+      // Fallback in case image is already loaded
+      if (img.complete) {
+        img.style.opacity = '1';
+      }
+    }
+  });
+
+  console.log('Timetable page enhanced successfully!');
+}
+
+// Utility function for download tracking
+function trackDownload(fileName) {
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'download', {
+      'event_category': 'Timetable',
+      'event_label': fileName
+    });
+  }
+}
+
+// Export for module use
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { initTimetablePage, trackDownload };
 }

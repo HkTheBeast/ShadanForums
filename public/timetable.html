@@ -2,12 +2,12 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Time Tables</title>
+  <title>Time Tables - ShadanForums</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" type="image/png" href="images/shadanlogo.png">
 </head>
-<body>
+<body class="other-page">
   <div class="app">
     <header class="topbar">
       <div class="brand"><a href="index.html">ShadanForums</a></div>
@@ -33,26 +33,184 @@
       </div>
     </header>
 
-    <main class="container">
-      <h1>Time Tables For IInd Year Ist semester</h1>
-      <section class="cards">
-        <article class="card"><h3 style="color: goldenrod;">Second Year Academic Calender :</h3><img src="images/timetable.png" alt="academiccalender" style="width: 400px; height: auto;"></article>
+    <main class="timetable-container">
+      <!-- Hero Section -->
+      <section class="timetable-hero">
+        <div class="hero-content">
+          <h1>📅 Academic Timetables</h1>
+          <p class="hero-subtitle">II Year I Semester Schedule & Important Dates</p>
+          <div class="academic-info">
+            <div class="info-item">
+              <span class="info-icon">🎓</span>
+              <span class="info-text">Bachelor of Technology</span>
+            </div>
+            <div class="info-item">
+              <span class="info-icon">📚</span>
+              <span class="info-text">Computer Science & Engineering</span>
+            </div>
+            <div class="info-item">
+              <span class="info-icon">📅</span>
+              <span class="info-text">2024-2025 Academic Year</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Timetable Grid -->
+      <div class="timetable-grid">
+        <!-- Academic Calendar -->
+        <section class="timetable-card calendar-card">
+          <div class="card-header">
+            <div class="card-icon">📆</div>
+            <h2>Academic Calendar</h2>
+            <p class="card-subtitle">Complete Semester Schedule & Important Dates</p>
+          </div>
+          <div class="card-content">
+            <div class="image-container">
+              <img src="images/timetable.png" alt="Academic Calendar" class="timetable-image">
+            </div>
+            <div class="card-features">
+              <div class="feature">
+                <span class="feature-icon">🏁</span>
+                <span class="feature-text">Semester Start & End Dates</span>
+              </div>
+              <div class="feature">
+                <span class="feature-icon">📝</span>
+                <span class="feature-text">Examination Schedule</span>
+              </div>
+              <div class="feature">
+                <span class="feature-icon">🎉</span>
+                <span class="feature-text">Holidays & Breaks</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Weekly Routine -->
+        <section class="timetable-card routine-card">
+          <div class="card-header">
+            <div class="card-icon">🕒</div>
+            <h2>Weekly Class Schedule</h2>
+            <p class="card-subtitle">Daily Timings & Subject Distribution</p>
+          </div>
+          <div class="card-content">
+            <div class="image-container">
+              <img src="images/routine.png" alt="Weekly Routine" class="timetable-image">
+            </div>
+            <div class="schedule-highlights">
+              <h3>📋 Schedule Highlights</h3>
+              <ul class="highlight-list">
+                <li>⏰ Morning 9:30 AM Start</li>
+                <li>🍽️ Lunch Break Included</li>
+                <li>📖 6-7 Periods Daily</li>
+                <li>🏠 Evening 4:00 PM End</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Midterm 1 Schedule -->
+        <section class="timetable-card midterm-card">
+          <div class="card-header">
+            <div class="card-icon">📊</div>
+            <h2>Midterm Examination - I</h2>
+            <p class="card-subtitle">First Internal Assessment Schedule</p>
+          </div>
+          <div class="card-content">
+            <div class="image-container">
+              <img src="images/mid1.png" alt="Midterm 1 Schedule" class="timetable-image">
+            </div>
+            <div class="exam-info">
+              <h3>🎯 Exam Guidelines</h3>
+              <div class="guidelines">
+                <div class="guideline">
+                  <span class="guideline-icon">⏰</span>
+                  <span class="guideline-text">Reporting Time: 9:00 AM</span>
+                </div>
+                <div class="guideline">
+                  <span class="guideline-icon">📝</span>
+                  <span class="guideline-text">Duration: 2 Hours Each</span>
+                </div>
+                <div class="guideline">
+                  <span class="guideline-icon">📚</span>
+                  <span class="guideline-text">All Subjects Covered</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Quick Info Section -->
+      <section class="quick-info">
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="info-icon">📅</div>
+            <h3>Current Week</h3>
+            <p>Week 8 of Semester</p>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 53%"></div>
+            </div>
+            <span class="progress-text">53% Complete</span>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">📝</div>
+            <h3>Upcoming Exams</h3>
+            <p>Midterm 1 Completed</p>
+            <div class="countdown">
+              <span class="countdown-text">Next: Midterm 2</span>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">🎯</div>
+            <h3>Important Dates</h3>
+            <ul class="date-list">
+              <li>📅 Midterm 2: Nov 15-20</li>
+              <li>📅 End Semester: Dec 10-20</li>
+              <li>🎉 Semester End: Dec 25</li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">📚</div>
+            <h3>Subjects This Sem</h3>
+            <p>6 Core Subjects</p>
+            <div class="subjects-list">
+              <span class="subject-tag">OOPS</span>
+              <span class="subject-tag">COA</span>
+              <span class="subject-tag">DS</span>
+              <span class="subject-tag">SDC</span>
+              <span class="subject-tag">Maths</span>
+              <span class="subject-tag">DE</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Download Section -->
+      <section class="download-section">
+        <div class="download-content">
+          <h2>📥 Download Timetables</h2>
+          <p>Get printable versions of all schedules for offline reference</p>
+          <div class="download-buttons">
+            <a href="images/timetable.png" download class="download-btn">
+              <span class="btn-icon">📥</span>
+              <span class="btn-text">Academic Calendar</span>
+            </a>
+            <a href="images/routine.png" download class="download-btn">
+              <span class="btn-icon">📥</span>
+              <span class="btn-text">Weekly Schedule</span>
+            </a>
+            <a href="images/mid1.png" download class="download-btn">
+              <span class="btn-icon">📥</span>
+              <span class="btn-text">Midterm Schedule</span>
+            </a>
+          </div>
+        </div>
       </section>
     </main>
-    <main class="container">
-      <section class="cards">
-        <article class="card"><h3 style="color: goldenrod;">Weekly Time Table :</h3><img src="images/routine.png" alt="timetable" style="width: 500px; height: auto;"></article>
-      </section>
-    </main>
-    <main class="container">
-      <section class="cards">
-        <article class="card"><h3 style="color: goldenrod;">Midterms 1 Time Table :</h3><img src="images/mid1.png" alt="mid1" style="width: 700px; height: auto;"></article>
-      </section>
-    </main>
-
-
-
-
 
     <footer class="footer">
       <div class="footer-content">
@@ -69,5 +227,6 @@
     </footer>
   </div>
   <script src="js/main.js"></script>
+  <script src="js/timetable.js"></script>
 </body>
 </html>
