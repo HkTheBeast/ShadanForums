@@ -49,7 +49,7 @@ body {
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   background-color: var(--bg);
-  overflow-x: hidden; /* Prevent horizontal scroll on curved monitors */
+  overflow-x: hidden;
 }
 
 .app {
@@ -80,7 +80,7 @@ body {
 }
 
 .brand a {
-  font-size: clamp(1.8rem, 4vw, 2.2rem); /* Responsive font size */
+  font-size: clamp(1.8rem, 4vw, 2.2rem);
   font-weight: 800;
   text-decoration: none;
   background: linear-gradient(135deg, var(--sea-green), var(--emerald), var(--crimson));
@@ -272,7 +272,7 @@ body {
   z-index: 1;
 }
 
-/* Hero Section - Complete Transparency with Black Glass Boxes */
+/* Hero Section - FIXED TEXT STAYS IN PLACE */
 .hero-section {
   text-align: center;
   padding: clamp(2rem, 6vw, 4rem) clamp(1rem, 4vw, 2rem);
@@ -281,6 +281,9 @@ body {
   position: relative;
   max-width: 100vw;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .hero-section h1 {
@@ -294,15 +297,16 @@ body {
   display: inline-block;
   background: var(--card-bg) !important;
   backdrop-filter: blur(10px);
-  -webkit-background-clip: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 2px solid var(--emerald);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
   color: var(--emerald);
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  max-width: 90%;
+  max-width: min(90%, 800px); /* FIX: Prevents stretching on large screens */
   word-wrap: break-word;
   white-space: normal;
   line-height: 1.2;
+  text-align: center;
 }
 
 .hero-section .lead {
@@ -320,10 +324,11 @@ body {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  max-width: 90%;
+  max-width: min(90%, 700px); /* FIX: Prevents stretching on large screens */
   word-wrap: break-word;
   white-space: normal;
   line-height: 1.4;
+  text-align: center;
 }
 
 /* Enhanced Hero Section - Black Glass Stats */
@@ -883,33 +888,70 @@ body {
   word-wrap: break-word;
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
+/* ===== MOBILE DROPDOWN FIXES ===== */
 @media (max-width: 768px) {
   .topbar {
     flex-direction: column;
     gap: 1rem;
     padding: 1rem;
+    position: relative;
   }
   
   .topbar nav {
     flex-wrap: wrap;
     justify-content: center;
     gap: 0.5rem;
+    order: 2;
+    width: 100%;
+  }
+  
+  .brand {
+    order: 1;
+  }
+  
+  .actions {
+    order: 3;
+    margin-top: 1rem;
   }
   
   .topbar nav a {
     font-size: 0.9rem;
-    padding: 0.7rem 1.5rem;
+    padding: 0.7rem 1.2rem;
+  }
+  
+  /* MOBILE DROPDOWN FIX */
+  .dropdown {
+    position: static; /* Change for mobile */
+  }
+  
+  .dropdown-content {
+    position: static;
+    width: 100%;
+    margin-top: 0.5rem;
+    display: none;
+    box-shadow: none;
+    border: 2px solid var(--emerald);
+    border-radius: 12px;
+  }
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  
+  .dropdown.active .dropdown-content {
+    display: block;
   }
   
   .hero-section h1 {
     font-size: 2.2rem;
-    padding: 1.2rem 2rem;
+    padding: 1.2rem 1.5rem;
+    max-width: 95%;
   }
   
   .hero-section .lead {
     font-size: 1.1rem;
-    padding: 0.8rem 1.5rem;
+    padding: 0.8rem 1.2rem;
+    max-width: 95%;
   }
   
   .hero-stats {
@@ -982,12 +1024,12 @@ body {
   
   .hero-section h1 {
     font-size: 1.8rem;
-    padding: 1rem 1.5rem;
+    padding: 1rem 1.2rem;
   }
   
   .hero-section .lead {
     font-size: 1rem;
-    padding: 0.7rem 1.2rem;
+    padding: 0.7rem 1rem;
   }
   
   .hero-stats {
@@ -1022,6 +1064,12 @@ body {
     font-size: 0.8rem;
     padding: 0.6rem 1rem;
   }
+  
+  /* MOBILE DROPDOWN FIX */
+  .dropdown-content {
+    position: static;
+    width: 100%;
+  }
 }
 
 /* Ultra-wide screen support */
@@ -1034,7 +1082,7 @@ body {
   
   .hero-section h1,
   .hero-section .lead {
-    max-width: 70%;
+    max-width: 60%; /* Prevents stretching on ultra-wide screens */
   }
 }
 
@@ -1048,5 +1096,10 @@ body {
   .app {
     max-width: 2000px;
     width: 100%;
+  }
+  
+  .hero-section h1,
+  .hero-section .lead {
+    max-width: 50%; /* Further prevents stretching on curved monitors */
   }
 }
