@@ -150,3 +150,122 @@ app.delete('/api/posts/:id', ensureAuth, (req, res) => {
 app.listen(PORT, () => {
   console.log('Server running on port', PORT);
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
+
+// Create uploads directory
+const uploadsDir = path.join(__dirname, 'public', 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, uploadsDir);
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + '-' + file.originalname);
+    }
+});
+
+const upload = multer({ 
+    storage: storage,
+    limits: {
+        fileSize: 10 * 1024 * 1024 // 10MB limit
+    }
+});
+
+// Update posts table to store file info
+db.serialize(() => {
+    db.run(`CREATE TABLE IF NOT EXISTS posts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        author TEXT NOT NULL,
+        title TEXT,
+        content TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME
+    )`);
+    
+    db.run(`CREATE TABLE IF NOT EXISTS attachments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        post_id INTEGER,
+        filename TEXT NOT NULL,
+        originalname TEXT NOT NULL,
+        mimetype TEXT,
+        size INTEGER,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(post_id) REFERENCES posts(id) ON DELETE CASCADE
+    )`);
+});
+
+// Update POST /api/posts to handle file uploads
+app.post('/api/posts', ensureAuth, upload.array('attachments', 5), (req, res) => {
+    const { title, content } = req.body;
+    const author = req.session.user.username;
+    
+    db.run(`INSERT INTO posts (author, title, content) VALUES (?,?,?)`, [author, title || '', content], function(err){
+        if(err) return res.status(500).json({ ok:false, error: err.message });
+        
+        const postId = this.lastID;
+        
+        // Handle file attachments
+        if(req.files && req.files.length > 0) {
+            const attachments = req.files.map(file => [postId, file.filename, file.originalname, file.mimetype, file.size]);
+            const placeholders = req.files.map(() => '(?, ?, ?, ?, ?)').join(',');
+            
+            db.run(`INSERT INTO attachments (post_id, filename, originalname, mimetype, size) VALUES ${placeholders}`, 
+                attachments.flat(), function(attachErr) {
+                    if(attachErr) {
+                        console.error('Error saving attachments:', attachErr);
+                    }
+                    // Continue even if attachment saving fails
+                    sendPostResponse();
+                });
+        } else {
+            sendPostResponse();
+        }
+        
+        function sendPostResponse() {
+            db.get(`SELECT * FROM posts WHERE id = ?`, [postId], (e, row) => {
+                if(e) return res.status(500).json({ ok:false, error: e.message });
+                
+                // Get attachments for this post
+                db.all(`SELECT * FROM attachments WHERE post_id = ?`, [postId], (attachErr, attachments) => {
+                    if(attachErr) {
+                        console.error('Error fetching attachments:', attachErr);
+                        attachments = [];
+                    }
+                    
+                    return res.json({ 
+                        ok:true, 
+                        post: { ...row, attachments } 
+                    });
+                });
+            });
+        }
+    });
+});
+
+// Serve uploaded files
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));

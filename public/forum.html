@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Forums - ShadanForums</title>
     <style>
-        /* Reset and Base Styles */
+        /* All your existing CSS remains exactly the same */
         * {
             margin: 0;
             padding: 0;
@@ -13,15 +13,12 @@
         }
 
         :root {
-            /* Dark Theme Colors */
             --bg: #0b0f14;
             --text: #e6eef8;
             --card-bg: #0f1720;
             --muted: #9aa6b2;
             --accent: #58a6ff;
             --dark-bg: #0f1720;
-            
-            /* Color Palette */
             --olive: #9ACD32;
             --crimson: #FF6B6B;
             --sea-green: #2E8B57;
@@ -37,14 +34,11 @@
             --light-bg: #1a2432;
             --text-light: #FFFFFF;
             --gray: #94a3b8;
-            
-            /* Gradients */
             --gradient-primary: linear-gradient(135deg, var(--sea-green), var(--emerald));
             --gradient-secondary: linear-gradient(135deg, var(--olive), var(--dark-olive));
             --gradient-accent: linear-gradient(135deg, var(--crimson), var(--dark-crimson));
         }
 
-        /* Import Fonts */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
@@ -69,7 +63,6 @@
             z-index: 1;
         }
 
-        /* ===== NAVBAR STYLES ===== */
         .topbar {
             background: var(--card-bg);
             padding: 1rem 2rem;
@@ -144,7 +137,6 @@
             color: white !important;
         }
 
-        /* DROPDOWN STYLES */
         .dropdown {
             position: relative;
             display: inline-block;
@@ -223,7 +215,6 @@
             }
         }
 
-        /* Colorful Subject Dropdown Items */
         .dropdown-content a[href="oops.html"] { border-left: 4px solid #FF6B35 !important; }
         .dropdown-content a[href="coa.html"] { border-left: 4px solid #4ECDC4 !important; }
         .dropdown-content a[href="datastructures.html"] { border-left: 4px solid #FFD166 !important; }
@@ -231,7 +222,6 @@
         .dropdown-content a[href="maths.html"] { border-left: 4px solid #A78BFA !important; }
         .dropdown-content a[href="digitalelectronics.html"] { border-left: 4px solid #2DD4BF !important; }
 
-        /* NAVBAR ACTIONS */
         .nav-actions {
             display: flex !important;
             gap: 1rem;
@@ -297,7 +287,6 @@
             font-weight: bold;
         }
 
-        /* ===== FORUMS CONTENT ===== */
         .forums-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -340,7 +329,6 @@
             border: 1px solid var(--emerald);
         }
 
-        /* Auth Forms */
         .auth-container {
             max-width: 500px;
             margin: 2rem auto;
@@ -417,6 +405,33 @@
             resize: vertical;
         }
 
+        /* NEW: File upload styles */
+        .file-upload {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .file-upload-label {
+            padding: 0.5rem 1rem;
+            background: var(--emerald);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-label:hover {
+            background: var(--sea-green);
+        }
+
+        .file-name {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
         .btn {
             padding: 0.8rem 1.5rem;
             border: none;
@@ -453,7 +468,6 @@
             font-size: 0.8rem;
         }
 
-        /* Forums Content */
         .forums-content {
             display: none;
         }
@@ -505,7 +519,6 @@
             transform: translateY(-2px);
         }
 
-        /* Threads List */
         .threads-list {
             display: grid;
             gap: 1.5rem;
@@ -564,11 +577,44 @@
             white-space: pre-wrap;
         }
 
+        /* NEW: Attachment styles */
+        .thread-attachments {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .attachment {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0.8rem;
+            background: var(--light-bg);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .attachment:hover {
+            background: var(--emerald);
+            color: white;
+        }
+
+        .attachment img {
+            width: 20px;
+            height: 20px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        /* FIXED: Thread actions - only one delete button */
         .thread-actions {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
-            flex-wrap: wrap;
             gap: 1rem;
         }
 
@@ -586,7 +632,6 @@
             background: var(--dark-crimson);
         }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -639,7 +684,6 @@
             color: var(--crimson);
         }
 
-        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 3rem 2rem;
@@ -664,7 +708,6 @@
             margin-bottom: 1.5rem;
         }
 
-        /* Loading and Error States */
         .loading {
             text-align: center;
             padding: 2rem;
@@ -689,7 +732,6 @@
             text-align: center;
         }
 
-        /* ===== FOOTER ===== */
         .footer {
             background: var(--dark-bg);
             color: var(--text-light);
@@ -737,7 +779,6 @@
             word-wrap: break-word;
         }
 
-        /* MOBILE STYLES */
         @media (max-width: 768px) {
             .topbar {
                 flex-direction: column;
@@ -767,7 +808,6 @@
                 padding: 0.7rem 1.2rem;
             }
             
-            /* MOBILE DROPDOWN FIX */
             .dropdown {
                 position: static;
             }
@@ -979,6 +1019,15 @@
                     <label for="thread-content">Content</label>
                     <textarea id="thread-content" required placeholder="Share your thoughts, questions, or ideas..."></textarea>
                 </div>
+                <!-- NEW: File attachment section -->
+                <div class="form-group">
+                    <label>Attachments</label>
+                    <div class="file-upload">
+                        <label for="thread-attachments" class="file-upload-label">Choose Files</label>
+                        <input type="file" id="thread-attachments" multiple style="display: none;">
+                        <span id="file-names" class="file-name">No files selected</span>
+                    </div>
+                </div>
                 <button type="submit" class="btn btn-primary">Create Thread</button>
             </form>
         </div>
@@ -1004,6 +1053,8 @@
             const createThreadModal = document.getElementById('create-thread-modal');
             const closeModalBtn = document.querySelector('.close-modal');
             const createThreadForm = document.getElementById('create-thread-form');
+            const threadAttachments = document.getElementById('thread-attachments');
+            const fileNames = document.getElementById('file-names');
             const authTabs = document.querySelectorAll('.auth-tab');
             const authForms = document.querySelectorAll('.auth-form');
             const loginForm = document.getElementById('login-form');
@@ -1047,6 +1098,17 @@
                 emptyCreateBtn.addEventListener('click', openCreateThreadModal);
                 closeModalBtn.addEventListener('click', closeCreateThreadModal);
                 createThreadForm.addEventListener('submit', handleCreateThread);
+
+                // File attachment handling
+                threadAttachments.addEventListener('change', function() {
+                    const files = this.files;
+                    if (files.length > 0) {
+                        const names = Array.from(files).map(f => f.name).join(', ');
+                        fileNames.textContent = names;
+                    } else {
+                        fileNames.textContent = 'No files selected';
+                    }
+                });
 
                 // Logout
                 navLogoutBtn.addEventListener('click', handleLogout);
@@ -1295,6 +1357,7 @@
                     const date = new Date(post.created_at).toLocaleDateString();
                     const isAuthor = currentUser && post.author === currentUser.username;
                     
+                    // FIXED: Only one delete button in thread-actions
                     threadCard.innerHTML = `
                         <div class="thread-header">
                             <div>
@@ -1304,19 +1367,26 @@
                                     <span class="thread-date">${date}</span>
                                 </div>
                             </div>
-                            ${isAuthor ? `<button class="btn btn-danger btn-small delete-thread" data-id="${post.id}">Delete</button>` : ''}
                         </div>
                         <div class="thread-content">${escapeHtml(post.content)}</div>
+                        ${post.attachments && post.attachments.length > 0 ? `
+                            <div class="thread-attachments">
+                                ${post.attachments.map(attachment => `
+                                    <a href="/uploads/${attachment.filename}" class="attachment" target="_blank">
+                                        📎 ${attachment.originalname}
+                                    </a>
+                                `).join('')}
+                            </div>
+                        ` : ''}
                         <div class="thread-actions">
-                            <div></div>
                             ${isAuthor ? `<button class="delete-thread" data-id="${post.id}">Delete</button>` : ''}
                         </div>
                     `;
                     
                     threadsList.appendChild(threadCard);
                     
+                    // Add delete event listener only if the button exists
                     const deleteBtn = threadCard.querySelector('.delete-thread');
-                    
                     if (deleteBtn) {
                         deleteBtn.addEventListener('click', () => {
                             if (confirm('Are you sure you want to delete this thread?')) {
@@ -1339,6 +1409,8 @@
             function closeCreateThreadModal() {
                 createThreadModal.style.display = 'none';
                 createThreadForm.reset();
+                threadAttachments.value = '';
+                fileNames.textContent = 'No files selected';
             }
 
             async function handleCreateThread(e) {
@@ -1346,6 +1418,7 @@
                 
                 const title = document.getElementById('thread-title').value;
                 const content = document.getElementById('thread-content').value;
+                const files = threadAttachments.files;
                 
                 if (!content) {
                     alert('Please fill in the content field');
@@ -1353,13 +1426,19 @@
                 }
                 
                 try {
+                    const formData = new FormData();
+                    formData.append('title', title);
+                    formData.append('content', content);
+                    
+                    // Add files to formData
+                    for (let i = 0; i < files.length; i++) {
+                        formData.append('attachments', files[i]);
+                    }
+                    
                     const response = await fetch(`${API_BASE}/posts`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
                         credentials: 'include',
-                        body: JSON.stringify({ title, content })
+                        body: formData
                     });
                     
                     const data = await response.json();
