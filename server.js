@@ -6,7 +6,7 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(bodyParser.json({limit: '5mb'}));
