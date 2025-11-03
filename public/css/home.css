@@ -1,0 +1,312 @@
+/* Homepage Specific Styles - Only affects home page */
+body.home-page {
+  background: url('../images/campus.png') no-repeat center center fixed;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+body.home-page .app {
+  background: transparent;
+  min-height: 100vh;
+}
+
+/* Enhanced Homepage Animations - Only for home page */
+body.home-page .home-container {
+  opacity: 0;
+  animation: fadeIn 1s ease 0.3s forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* FIXED: Main hero container COMPLETELY invisible - no background, no border */
+body.home-page .hero-section {
+  text-align: center;
+  padding: clamp(3rem, 8vw, 6rem) clamp(1rem, 4vw, 2rem);
+  margin-bottom: 2rem;
+  background: transparent !important; /* No background */
+  border: none !important; /* No border */
+  margin: 2rem auto;
+  max-width: 95%;
+  opacity: 0;
+  animation: fadeInScale 1s ease 0.5s forwards;
+}
+
+/* Keep the individual text containers with normal backgrounds and borders */
+body.home-page .hero-section h1 {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  margin-bottom: 1.5rem;
+  font-weight: 800;
+  color: var(--emerald);
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  background: var(--card-bg);
+  padding: clamp(1.5rem, 4vw, 2rem) clamp(2rem, 5vw, 3rem);
+  border-radius: 30px;
+  display: inline-block;
+  border: 3px solid var(--emerald);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+body.home-page .hero-section .lead {
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  color: var(--emerald);
+  margin-bottom: 2rem;
+  font-weight: 600;
+  background: var(--card-bg);
+  padding: clamp(1rem, 2.5vw, 1.5rem) clamp(2rem, 4vw, 3rem);
+  border-radius: 25px;
+  display: inline-block;
+  border: 2px solid var(--emerald);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+body.home-page .hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  margin-top: 3rem;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeInUp 1s ease 0.8s forwards;
+}
+
+body.home-page .stat {
+  text-align: center;
+  background: var(--light-bg);
+  padding: clamp(1.5rem, 3vw, 2rem);
+  border-radius: 20px;
+  border: 2px solid var(--emerald);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  min-width: min(160px, 30vw);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+body.home-page .stat:nth-child(1) { animation-delay: 1s; }
+body.home-page .stat:nth-child(2) { animation-delay: 1.2s; }
+body.home-page .stat:nth-child(3) { animation-delay: 1.4s; }
+
+body.home-page .stat:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(46, 139, 87, 0.4);
+}
+
+body.home-page .stat-number {
+  display: block;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 800;
+  color: var(--emerald);
+}
+
+body.home-page .stat-label {
+  display: block;
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Rest of the CSS remains the same... */
+body.home-page .quick-nav {
+  max-width: 1200px;
+  margin: 0 auto 4rem auto;
+  padding: 0 clamp(1rem, 3vw, 2rem);
+  opacity: 0;
+  animation: fadeInUp 1s ease 1.6s forwards;
+}
+
+body.home-page .nav-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: clamp(1.5rem, 3vw, 2rem);
+}
+
+body.home-page .nav-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2rem);
+  background: var(--card-bg);
+  border-radius: 20px;
+  text-decoration: none;
+  border: 2px solid var(--emerald);
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+body.home-page .nav-card:nth-child(1) { animation-delay: 1.8s; }
+body.home-page .nav-card:nth-child(2) { animation-delay: 2s; }
+body.home-page .nav-card:nth-child(3) { animation-delay: 2.2s; }
+
+body.home-page .nav-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(46, 139, 87, 0.4);
+  background: var(--sea-green);
+  border-color: var(--sea-green);
+}
+
+body.home-page .nav-card:hover .nav-icon,
+body.home-page .nav-card:hover .nav-title,
+body.home-page .nav-card:hover .nav-desc {
+  color: white;
+}
+
+body.home-page .nav-icon {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  margin-bottom: 1.5rem;
+  color: var(--emerald);
+  transition: all 0.3s ease;
+}
+
+body.home-page .nav-title {
+  font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+body.home-page .nav-desc {
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
+  color: var(--muted);
+  transition: all 0.3s ease;
+}
+
+body.home-page .content-section {
+  padding: clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 3vw, 2.5rem);
+  max-width: 1200px;
+  margin: 0 auto 3rem auto;
+  background: var(--card-bg);
+  border-radius: 25px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  border: 2px solid var(--emerald);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+body.home-page .content-section:nth-child(1) { animation-delay: 2.4s; }
+body.home-page .content-section:nth-child(2) { animation-delay: 2.6s; }
+body.home-page .content-section:nth-child(3) { animation-delay: 2.8s; }
+body.home-page .content-section:nth-child(4) { animation-delay: 3s; }
+body.home-page .content-section:nth-child(5) { animation-delay: 3.2s; }
+
+body.home-page .content-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: var(--gradient-primary);
+  border-radius: 25px 25px 0 0;
+}
+
+body.home-page .cta-section {
+  text-align: center;
+  padding: clamp(3rem, 6vw, 5rem) clamp(2rem, 4vw, 3rem);
+  background: linear-gradient(135deg, var(--sea-green) 0%, var(--emerald) 100%);
+  margin-top: 4rem;
+  border-top: 3px solid var(--emerald);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  animation: fadeInUp 1s ease 3.4s forwards;
+}
+
+body.home-page .hero-section h1,
+body.home-page .hero-section .lead,
+body.home-page .content-section h2,
+body.home-page .content-text p,
+body.home-page .styled-list li,
+body.home-page .nav-title,
+body.home-page .nav-desc {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  body.home-page .hero-section {
+    padding: 2rem 1rem;
+    margin: 1rem auto;
+  }
+  
+  body.home-page .hero-section h1 {
+    font-size: 2.2rem;
+    padding: 1.5rem 2rem;
+  }
+  
+  body.home-page .hero-section .lead {
+    font-size: 1.2rem;
+    padding: 1rem 1.5rem;
+  }
+  
+  body.home-page .hero-stats {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  body.home-page .stat {
+    min-width: 200px;
+    width: 100%;
+    max-width: 250px;
+  }
+  
+  body.home-page .nav-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  body.home-page .hero-section h1 {
+    font-size: 1.8rem;
+    padding: 1.2rem 1.5rem;
+  }
+  
+  body.home-page .hero-section .lead {
+    font-size: 1rem;
+    padding: 0.8rem 1.2rem;
+  }
+}
