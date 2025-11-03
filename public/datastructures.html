@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <title>Data Structures - ShadanForums</title>
@@ -33,303 +33,497 @@
       </div>
     </header>
 
-    <main class="container">
-      <h1>Data Structures</h1>
-      <h3>About The Subject : </h3><br>
-  <h3>Overview :</h3>
-    <p><br>
-    Data Structures form the foundation of computer science and programming. They define the way data is organized, stored, and accessed efficiently in memory. A well-chosen data structure improves algorithm performance and overall program efficiency, making it a critical part of software development.</p>
-
-    <p><strong>Key Concepts of Data Structures:</strong></p>
-    <ul>
-      <li><strong>Arrays:</strong> A collection of elements stored in contiguous memory locations. Useful for storing fixed-size sequential data.</li>
-      <li><strong>Linked Lists:</strong> A dynamic data structure made up of nodes where each node contains data and a pointer to the next node. It allows efficient insertion and deletion.</li>
-      <li><strong>Stacks:</strong> A linear data structure that follows the <em>LIFO (Last In, First Out)</em> principle. Commonly used in function calls, expression evaluation, and backtracking.</li>
-      <li><strong>Queues:</strong> A linear structure that follows the <em>FIFO (First In, First Out)</em> principle. Used in scheduling, buffering, and process management.</li>
-      <li><strong>Trees:</strong> A hierarchical data structure consisting of nodes. The most common type is the <em>binary tree</em>, used in searching and sorting algorithms.</li>
-      <li><strong>Graphs:</strong> A collection of nodes (vertices) connected by edges. Used to represent networks like social media, maps, or communication systems.</li>
-      <li><strong>Hashing:</strong> A technique to store and retrieve data quickly using a hash function and hash table.</li>
-    </ul>
-
-    <p><strong>Applications of Data Structures:</strong><br>
-    Data Structures are used in file systems, operating systems, databases, artificial intelligence, compilers, and almost every area of computing. Choosing the right structure helps optimize performance and manage resources effectively.</p>
-
-    <p><strong>Conclusion:</strong><br>
-    Data Structures are the backbone of efficient programming. Understanding them helps in designing faster algorithms, managing memory better, and solving complex problems systematically — making them a crucial subject for every computer science student.</p>
-     
-    <h3> Faculty </h3>
-  <p> Name Of The  Professor : Dr. K. M. SUBRAMANIAN   <br>
-      Contact Details : +91 9865712526
-      <p>
-        <img src="images/dssyallabus1.png" alt="ss" style width="600px" height="auto">
-      </p><br>
-      <h3> Notes PDF Download : </h3>
-      <embed src="notespdf/dsnotes.pdf" type="application/pdf" width="300px" height="300px" /><br>
-<!-- Download link -->
-  <a href="notespdf/dsnotes.pdf" download>Download Notes PDF</a>
-</p><br>
- <h3> LAB DETAILS & SYLLABUS :</h3><br>
-<p><b>Lab Incharge : Dr. K. M. SUBRAMANIAN </b></p><br>
-<p> <b>Lab Schedule : FRIDAY - 2:00 PM TO 4:30 PM</b> </p><br>
-<p><img src="images/dslab1.png" alt="ss" style width="600px" height="auto"></p>
-  <br>
-      <h2>Important Questions & Answers</h2>
-      <style> h1 ,h2 {
-  text-align: center;
-}</style>
-      
-      <div class="qa-container">
-        <!-- Question 1 -->
-        <div class="qa-item">
-          <button class="qa-question">
-            <span class="question-text">Q1: Explain the operations of a Singly linked list with suitable examples</span>
-            <span class="toggle-icon">+</span>
-          </button>
-          <div class="qa-answer">
-            <div class="answer-content">
-              <p><b>Answer:</b></p>
-              
-              <p><b>SINGLE LINKED LIST:</b></p>
-              <p>Single linked list is a sequence of elements in which every element has a link to its next element in the sequence.</p>
-              
-              <p><b>OPERATIONS OF SINGLE LINKED LIST:</b></p>
-              
-              <p><b>1. Insertion:</b> Insertion is used to add new node to the list. You can add at any specific position.</p>
-              <p><b>Example:</b> Before Inserting 10</p>
-              <p>26 → 18 → 255 → NULL</p>
-              <p>After Insertion:</p>
-              <p>5 → 10 → 26 → 18 → 55 → NULL</p>
-              
-              <p><b>2. Deletion:</b> Deletion is used to remove the existing node from the list.</p>
-              <p><b>Example:</b> Delete 26</p>
-              <p>5 → 10 → 18 → 55 → NULL</p>
-              
-              <p><b>3. Traversal:</b> Traversal means visiting each node to display or process its data.</p>
-              <p><b>Example:</b> Output: 5..10..18..55</p>
-              
-              <p><b>4. Searching:</b> Searching is used to find a specific element in the list.</p>
-              <p><b>Example:</b> Search for 18 → Found</p>
+    <main class="subject-container">
+      <!-- Hero Section -->
+      <section class="subject-hero">
+        <div class="hero-content">
+          <h1>Data Structures</h1>
+          <p class="hero-subtitle">Master the art of organizing and managing data efficiently</p>
+          <div class="hero-stats">
+            <div class="stat">
+              <span class="stat-number">8</span>
+              <span class="stat-label">Core Structures</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">25+</span>
+              <span class="stat-label">Algorithms</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">60+</span>
+              <span class="stat-label">Programs</span>
             </div>
           </div>
         </div>
+      </section>
 
-        <!-- Question 2 -->
-        <div class="qa-item">
-          <button class="qa-question">
-            <span class="question-text">Q2: List different hash functions used in hashing and explain any two of them with examples</span>
-            <span class="toggle-icon">+</span>
-          </button>
-          <div class="qa-answer">
-            <div class="answer-content">
-              <p><b>Answer:</b></p>
-              
-              <p><b>HASH FUNCTION:</b></p>
-              <ul>
-                <li>Hashing is the process of mapping large amounts of data item to a smaller table with the help of hashing function</li>
-                <li>The value generated by hash function is called "Hash Value" which is used as an index to store values in the Hash Table</li>
-              </ul>
-              
-              <p><b>DEFINITION:</b></p>
-              <p>Hash function is a function which maps key values to array indices OR Hash Function is a function which when applied to the key produces an integer which can be used as an address in a hash table.</p>
-              
-              <p><b>EXAMPLE:</b></p>
-              <p>Consider that we want to place some employee records in the hash table. The record of an employee is placed with the help of key: employee ID. The employee ID is a 7 digit number for placing the record in the Hash Table. To place the record, 7 digit number is converted into 3 digits by taking only last three digits of the key. If the key is 496700 it can be stored at 0th position. The second key 8421002, the record of those key is placed at 2nd position in the array.</p>
-              <p>Hence the hash function will be H(key) = key % 1000 where key % 1000 is a hash function and key obtained by hash function is called hash key.</p>
-              
-              <p><b>TYPES OF HASH FUNCTION:</b></p>
-              <p>There are various types of hash function which are used to place the data in the hash tables:</p>
-              
-              <p><b>1. Division Method:</b></p>
-              <p>In this method, the hash function is dependent upon the remainder of a division.</p>
-              <p><b>Example:</b> Table size is 5, keys are 10, 18, 24, 26 then:</p>
-              <ul>
-                <li>H(10) = 10 % 5 = 0 → this value is used as an index to store the value in the hash table</li>
-                <li>H(18) = 18 % 5 = 3</li>
-                <li>H(24) = 24 % 5 = 4</li>
-                <li>H(26) = 26 % 5 = 1</li>
-              </ul>
-              
-              <p><b>2. Mid Square Method:</b></p>
-              <p>In this method, firstly key is squared and then mid part of the result is taken as the index.</p>
-              <p><b>Example:</b> Consider that if we want to place a record of 3101 and the size of table is 1000. So 3101 × 3101 = 9616201 i.e. h(3101) = 162 (middle 3 digit)</p>
-              
-              <p><b>3. Digit Folding Method:</b></p>
-              <p>In this method the key is divided into separate parts and by using some simple operations these parts are combined to produce a hash key.</p>
-              <p><b>Example:</b> Consider a record of 12465512 then it will be divided into parts i.e. 124, 655, 12. After dividing the parts combine these parts by adding it:</p>
-              <p>H(key) = 124 + 655 + 12 = 791</p>
-              
-              <p><b>4. Multiplication Method:</b></p>
-              <p>The given record is multiplied by some constant value. The formula for computing the hash key is:</p>
-              <p>H(key) = floor(table_size × (key × A) % table_size) where p is integer constant, and A is constant real number</p>
-              <p><b>Donald Knuth suggested to use constant A = 0.61803398987</b></p>
-              <p><b>Example:</b> If key = 23 and table_size = 10 then:</p>
-              <p>H(key) = floor(10 × (23 × 0.61803398987) % 10)</p>
-              <p>= floor(142.14 % 10)</p>
-              <p>= 142</p>
-              <p>At 142 locations in the hash table the record 23 will be placed</p>
+      <!-- Subject Overview -->
+      <section class="subject-overview">
+        <div class="section-header">
+          <div class="section-icon">📊</div>
+          <h2>About The Subject</h2>
+          <p class="section-subtitle">Learn the fundamentals of data organization and algorithms</p>
+        </div>
+
+        <div class="overview-content">
+          <div class="overview-card">
+            <h3>Overview</h3>
+            <p>Data Structures form the foundation of computer science and programming. They define the way data is organized, stored, and accessed efficiently in memory. A well-chosen data structure improves algorithm performance and overall program efficiency, making it a critical part of software development.</p>
+          </div>
+
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon">🔢</div>
+              <h4>Arrays</h4>
+              <p>A collection of elements stored in contiguous memory locations. Useful for storing fixed-size sequential data with constant-time access.</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">🔗</div>
+              <h4>Linked Lists</h4>
+              <p>A dynamic data structure made up of nodes where each node contains data and a pointer to the next node. Allows efficient insertion and deletion.</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">📚</div>
+              <h4>Stacks</h4>
+              <p>A linear data structure that follows the <em>LIFO (Last In, First Out)</em> principle. Used in function calls, expression evaluation, and backtracking.</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">🎫</div>
+              <h4>Queues</h4>
+              <p>A linear structure that follows the <em>FIFO (First In, First Out)</em> principle. Used in scheduling, buffering, and process management.</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">🌳</div>
+              <h4>Trees</h4>
+              <p>A hierarchical data structure consisting of nodes. Common types include binary trees, BST, AVL trees used in searching and sorting.</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">🕸️</div>
+              <h4>Graphs</h4>
+              <p>A collection of nodes (vertices) connected by edges. Used to represent networks like social media, maps, or communication systems.</p>
             </div>
           </div>
         </div>
+      </section>
 
-        <!-- Question 3 -->
-        <div class="qa-item">
-          <button class="qa-question">
-            <span class="question-text">Q3: Define a Queue. Write algorithms for enqueue() and dequeue() operations and illustrate them with examples</span>
-            <span class="toggle-icon">+</span>
-          </button>
-          <div class="qa-answer">
-            <div class="answer-content">
-              <p><b>Answer:</b></p>
-              
-              <p><b>QUEUES:</b></p>
-              <ul>
-                <li>Queue is a linear data structure where the first element is inserted from one end called REAR and deleted from the other end called FRONT</li>
-                <li>Front points to the beginning of the queue and Rear points to the end of the queue</li>
-                <li>Queue follows the FIFO (First In First Out) structure</li>
-                <li>According to its FIFO structure, element inserted first will also be removed first</li>
-                <li>In a queue, one end is always used to insert data (enqueue) and the other is used to delete data (dequeue), because queue is open at both its ends</li>
-                <li>The enqueue() and dequeue() are two important functions used in a queue</li>
-              </ul>
-              
-              <img src="images/queue.png" alt="Queue structure" style="width: 500px; height: auto;">
-              
-              <p><b>enQueue(value) - Inserting an element into the Queue:</b></p>
-              <p>We can use the following steps to insert a new node into the queue:</p>
-              <ul>
-                <li><b>STEP 1:</b> Create a newNode with given value and set "newNode→next" to NULL</li>
-                <li><b>STEP 2:</b> Check whether queue is Empty (rear = NULL)</li>
-                <li><b>STEP 3:</b> If it is Empty then, set front = newNode and rear = newNode</li>
-                <li><b>STEP 4:</b> If it is Not Empty then set rear→next = newNode and rear = newNode</li>
-              </ul>
-              
-              <p><b>deQueue() - Deleting an Element from Queue:</b></p>
-              <p>We can use the following steps to delete a node from the queue:</p>
-              <ul>
-                <li><b>STEP 1:</b> Check whether queue is Empty (front == NULL)</li>
-                <li><b>STEP 2:</b> If it is Empty, then display "Queue is Empty!! Deletion is not possible!!!" and terminate from the function</li>
-                <li><b>STEP 3:</b> If it is Not Empty then, define a Node pointer 'temp' and set it to 'front'</li>
-                <li><b>STEP 4:</b> Then set front = front→next and delete 'temp' (free(temp))</li>
-              </ul>
-              
-              <p><b>display() - Displaying the elements of Queue:</b></p>
-              <p>We can use the following steps to display the elements (nodes) of a Queue:</p>
-              <ul>
-                <li><b>STEP 1:</b> Check whether queue is Empty (front == NULL)</li>
-                <li><b>STEP 2:</b> If it is Empty then, display 'Queue is Empty!!' and terminate the function</li>
-                <li><b>STEP 3:</b> If it is Not Empty then, define a Node pointer 'temp' and initialize with front</li>
-                <li><b>STEP 4:</b> Display temp→data and move it to the next node. Repeat the same until 'temp' reaches to 'rear' (temp→next != NULL)</li>
-                <li><b>STEP 5:</b> Finally! Display 'temp→data→NULL</li>
-              </ul>
-              
-              <img src="images/enqueue.png" alt="Enqueue operation" style="width: 500px; height: auto;">
-              <img src="images/dequeue.png" alt="Dequeue operation" style="width: 500px; height: auto;">
+      <!-- Faculty Information -->
+      <section class="faculty-section">
+        <div class="section-header">
+          <div class="section-icon">👨‍🏫</div>
+          <h2>Faculty Information</h2>
+          <p class="section-subtitle">Meet your course instructor</p>
+        </div>
+
+        <div class="faculty-cards">
+          <div class="faculty-card">
+            <div class="faculty-avatar">KS</div>
+            <div class="faculty-info">
+              <h3>Dr. K. M. SUBRAMANIAN</h3>
+              <p class="faculty-designation">Professor</p>
+              <div class="contact-details">
+                <div class="contact-item">
+                  <span class="contact-icon">📞</span>
+                  <span class="contact-text">+91 9865712526</span>
+                </div>
+                <div class="contact-item">
+                  <span class="contact-icon">📧</span>
+                  <span class="contact-text">subramanian@shadan.ac.in</span>
+                </div>
+                <div class="contact-item">
+                  <span class="contact-icon">🏢</span>
+                  <span class="contact-text">Computer Science Department</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        <!-- Question 4 -->
-        <div class="qa-item">
-          <button class="qa-question">
-            <span class="question-text">Q4: What are the three possible cases to consider while deleting a node from a Binary Search Tree (BST)</span>
-            <span class="toggle-icon">+</span>
-          </button>
-          <div class="qa-answer">
-            <div class="answer-content">
-              <p><b>Answer:</b></p>
-              
-              <p><b>BINARY SEARCH TREE DELETION:</b></p>
-              <ol>
-                <li>Delete function is used to delete the specified node from a binary search tree</li>
-                <li>First we have to compare the deleted node with root node. If it is less than root node then we have to check left side of the tree. If node to be deleted is greater than parent node we have to check right side of the tree</li>
-                <li>There are three situations of deleting a node from a binary search tree</li>
-              </ol>
-              
-              <p><b>1. Node to be deleted is leaf node:</b></p>
-              <p>It is the simplest case. In this case, replace the leaf node with NULL and simply free the allocated space.</p>
-              <p>In the image we are deleting the node 85. Since the node is a leaf node therefore the node will be replaced with NULL and allocated space will be freed.</p>
-              <img src="images/node85.png" alt="Leaf node deletion" style="width: 500px; height: auto;">
-              
-              <p><b>2. The node to be deleted has only one child:</b></p>
-              <p>In this case replace the node with its child and delete the child node which now contains the value which is to be deleted. Simply replace it with NULL and free the allocated space.</p>
-              <p>In the following image the node 12 is to be deleted. It has only one child. The node will be replaced with its child node and the replaced node 12 (which is now leaf node) will simply be deleted.</p>
-              <img src="images/node12.png" alt="Single child node deletion" style="width: 500px; height: auto;">
-              
-              <p><b>3. Node to be deleted has two children:</b></p>
-              <p>Node which has to be deleted has two children then we can replace that node with:</p>
-              <ul>
-                <li>a. In order predecessor</li>
-                <li>b. In order successor</li>
-              </ul>
-              <img src="images/node50.png" alt="Two children node deletion" style="width: 500px; height: auto;">
-              <p>In the following image the node 50 is to be deleted which is the root node of the tree.</p>
-              <p>The in order traversal of the given tree: 6, 25, 30, 50, 52, 60, 70, 75</p>
-              <p>Replace 50 with its in order successor 52. Now 50 will be moved to the leaf of the tree which will be simply deleted.</p>
+      <!-- Syllabus Section -->
+      <section class="syllabus-section">
+        <div class="section-header">
+          <div class="section-icon">📋</div>
+          <h2>Syllabus</h2>
+          <p class="section-subtitle">Complete course curriculum and topics</p>
+        </div>
+
+        <div class="syllabus-content">
+          <div class="syllabus-images">
+            <div class="image-container">
+              <img src="images/dssyallabus1.png" alt="Data Structures Syllabus" class="syllabus-image">
             </div>
           </div>
         </div>
+      </section>
 
-        <!-- Question 5 -->
-        <div class="qa-item">
-          <button class="qa-question">
-            <span class="question-text">Q5: What is a skip list? Explain the insertion operation in a skip list with an example</span>
-            <span class="toggle-icon">+</span>
-          </button>
-          <div class="qa-answer">
-            <div class="answer-content">
-              <p><b>Answer:</b></p>
-              
-              <p><b>SKIP LIST IN DATA STRUCTURE:</b></p>
-              <ol>
-                <li>A skip list is a probabilistic data structure. The skip list is used to store a sorted list of elements or data with a linked list. It allows the process of the elements or data to view efficiently. In one single step, it skips several elements of the entire list, which is why it is known as a skip list.</li>
-                <li>The skip list is an extended version of the linked list. It allows the user to search, remove, and insert the element very quickly. It consists of a base list that includes a set of elements which maintains the link hierarchy of the subsequent elements.</li>
-              </ol>
-              
-              <p><b>SKIP LIST STRUCTURE:</b></p>
-              <p>It is built in two layers: The lowest layer and Top layer.</p>
-              <p>The lowest layer of the skip list is a common sorted linked list, and the top layers of the skip list are like an "express line" where the elements are skipped.</p>
-              <img src="images/normaline.png" alt="Skip list structure" style="width: 500px; height: auto;">
-              
-              <p><b>SKIP LIST BASIC OPERATIONS:</b></p>
-              <p>There are the following types of operations in the skip list:</p>
-              <ol>
-                <li><b>Insertion operation:</b> It is used to add a new node to a particular location in a specific situation</li>
-                <li><b>Deletion operation:</b> It is used to delete a node in a specific situation</li>
-                <li><b>Search Operation:</b> The search operation is used to search a particular node in a skip list</li>
-              </ol>
-              
-              <p><b>EXAMPLE:</b> Create a skip list, we want to insert these following keys in the empty skip list:</p>
-              <ol>
-                <li>6 with level 1</li>
-                <li>29 with level 1</li>
-                <li>22 with level 4</li>
-                <li>9 with level 3</li>
-                <li>17 with level 1</li>
-                <li>4 with level 2</li>
-              </ol>
-              
-              <img src="images/6with1.png" alt="Skip list insertion step 1" style="width: 500px; height: auto;">
-              <img src="images/7with1.png" alt="Skip list insertion step 2" style="width: 500px; height: auto;">
-              <img src="images/8with1.png" alt="Skip list insertion step 3" style="width: 500px; height: auto;">
+      <!-- Notes Section -->
+      <section class="notes-section">
+        <div class="section-header">
+          <div class="section-icon">📖</div>
+          <h2>Study Materials</h2>
+          <p class="section-subtitle">Download notes and reference materials</p>
+        </div>
+
+        <div class="notes-content">
+          <div class="notes-card">
+            <div class="notes-preview">
+              <div class="pdf-placeholder">
+                <div class="pdf-icon">📄</div>
+                <h3>Data Structures Complete Notes</h3>
+                <p>Comprehensive notes covering all data structures from arrays to graphs with algorithms and implementations</p>
+                <div class="file-info">
+                  <span class="file-size">~4.1 MB</span>
+                  <span class="file-pages">68 Pages</span>
+                </div>
+              </div>
+            </div>
+            <div class="download-section">
+              <a href="notespdf/dsnotes.pdf" download="Data_Structures_Complete_Notes.pdf" class="download-btn">
+                <span class="btn-icon">📥</span>
+                <span class="btn-text">Download Notes PDF</span>
+              </a>
+              <p class="download-note">Click to download the complete Data Structures notes (PDF, ~4.1MB)</p>
             </div>
           </div>
         </div>
+      </section>
 
-        <!-- Question 6 -->
-        <div class="qa-item">
-          <button class="qa-question">
-            <span class="question-text">Q6: Construct a Binary Search Tree (BST) by inserting the keys: 50,40,60,10,45,5,30,15,55,65,25 and 70. Then perform deletion of keys 65,40 and 70 from BST</span>
-            <span class="toggle-icon">+</span>
-          </button>
-          <div class="qa-answer">
-            <div class="answer-content">
-              <p><b>Answer:</b></p>
-              <img src="images/1tree.png" alt="BST construction step 1" style="width: 500px; height: auto;">
-              <img src="images/2tree.png" alt="BST construction step 2" style="width: 500px; height: auto;">
-              <img src="images/3tree.png" alt="BST deletion process" style="width: 500px; height: auto;">
+      <!-- Lab Information -->
+      <section class="lab-section">
+        <div class="section-header">
+          <div class="section-icon">💻</div>
+          <h2>Lab Details</h2>
+          <p class="section-subtitle">Practical sessions and schedule</p>
+        </div>
+
+        <div class="lab-content">
+          <div class="lab-info">
+            <div class="lab-details">
+              <div class="detail-item">
+                <span class="detail-icon">👨‍💼</span>
+                <div class="detail-content">
+                  <h4>Lab Incharge</h4>
+                  <p>Dr. K. M. SUBRAMANIAN</p>
+                </div>
+              </div>
+              <div class="detail-item">
+                <span class="detail-icon">📅</span>
+                <div class="detail-content">
+                  <h4>Lab Schedule</h4>
+                  <p>FRIDAY - 2:00 PM TO 4:30 PM</p>
+                </div>
+              </div>
+              <div class="detail-item">
+                <span class="detail-icon">📍</span>
+                <div class="detail-content">
+                  <h4>Lab Location</h4>
+                  <p>Data Structures Lab - Block B, 3rd Floor</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lab-syllabus">
+            <div class="syllabus-images">
+              <div class="image-container">
+                <img src="images/dslab1.png" alt="Data Structures Lab Syllabus" class="lab-image">
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      <!-- Important Questions -->
+      <section class="questions-section">
+        <div class="section-header">
+          <div class="section-icon">❓</div>
+          <h2>Important Questions & Answers</h2>
+          <p class="section-subtitle">Previous year questions with detailed solutions</p>
+        </div>
+
+        <div class="qa-container">
+          <!-- Question 1 -->
+          <div class="qa-item">
+            <button class="qa-question">
+              <span class="question-text">Q1: Explain the operations of a Singly linked list with suitable examples</span>
+              <span class="toggle-icon">+</span>
+            </button>
+            <div class="qa-answer">
+              <div class="answer-content">
+                <p><b>Answer:</b></p>
+                
+                <p><b>SINGLE LINKED LIST:</b></p>
+                <p>Single linked list is a sequence of elements in which every element has a link to its next element in the sequence.</p>
+                
+                <p><b>OPERATIONS OF SINGLE LINKED LIST:</b></p>
+                
+                <p><b>1. Insertion:</b> Insertion is used to add new node to the list. You can add at any specific position.</p>
+                <p><b>Example:</b> Before Inserting 10</p>
+                <p>26 → 18 → 255 → NULL</p>
+                <p>After Insertion:</p>
+                <p>5 → 10 → 26 → 18 → 55 → NULL</p>
+                
+                <p><b>2. Deletion:</b> Deletion is used to remove the existing node from the list.</p>
+                <p><b>Example:</b> Delete 26</p>
+                <p>5 → 10 → 18 → 55 → NULL</p>
+                
+                <p><b>3. Traversal:</b> Traversal means visiting each node to display or process its data.</p>
+                <p><b>Example:</b> Output: 5..10..18..55</p>
+                
+                <p><b>4. Searching:</b> Searching is used to find a specific element in the list.</p>
+                <p><b>Example:</b> Search for 18 → Found</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Question 2 -->
+          <div class="qa-item">
+            <button class="qa-question">
+              <span class="question-text">Q2: List different hash functions used in hashing and explain any two of them with examples</span>
+              <span class="toggle-icon">+</span>
+            </button>
+            <div class="qa-answer">
+              <div class="answer-content">
+                <p><b>Answer:</b></p>
+                
+                <p><b>HASH FUNCTION:</b></p>
+                <ul>
+                  <li>Hashing is the process of mapping large amounts of data item to a smaller table with the help of hashing function</li>
+                  <li>The value generated by hash function is called "Hash Value" which is used as an index to store values in the Hash Table</li>
+                </ul>
+                
+                <p><b>DEFINITION:</b></p>
+                <p>Hash function is a function which maps key values to array indices OR Hash Function is a function which when applied to the key produces an integer which can be used as an address in a hash table.</p>
+                
+                <p><b>EXAMPLE:</b></p>
+                <p>Consider that we want to place some employee records in the hash table. The record of an employee is placed with the help of key: employee ID. The employee ID is a 7 digit number for placing the record in the Hash Table. To place the record, 7 digit number is converted into 3 digits by taking only last three digits of the key. If the key is 496700 it can be stored at 0th position. The second key 8421002, the record of those key is placed at 2nd position in the array.</p>
+                <p>Hence the hash function will be H(key) = key % 1000 where key % 1000 is a hash function and key obtained by hash function is called hash key.</p>
+                
+                <p><b>TYPES OF HASH FUNCTION:</b></p>
+                <p>There are various types of hash function which are used to place the data in the hash tables:</p>
+                
+                <p><b>1. Division Method:</b></p>
+                <p>In this method, the hash function is dependent upon the remainder of a division.</p>
+                <p><b>Example:</b> Table size is 5, keys are 10, 18, 24, 26 then:</p>
+                <ul>
+                  <li>H(10) = 10 % 5 = 0 → this value is used as an index to store the value in the hash table</li>
+                  <li>H(18) = 18 % 5 = 3</li>
+                  <li>H(24) = 24 % 5 = 4</li>
+                  <li>H(26) = 26 % 5 = 1</li>
+                </ul>
+                
+                <p><b>2. Mid Square Method:</b></p>
+                <p>In this method, firstly key is squared and then mid part of the result is taken as the index.</p>
+                <p><b>Example:</b> Consider that if we want to place a record of 3101 and the size of table is 1000. So 3101 × 3101 = 9616201 i.e. h(3101) = 162 (middle 3 digit)</p>
+                
+                <p><b>3. Digit Folding Method:</b></p>
+                <p>In this method the key is divided into separate parts and by using some simple operations these parts are combined to produce a hash key.</p>
+                <p><b>Example:</b> Consider a record of 12465512 then it will be divided into parts i.e. 124, 655, 12. After dividing the parts combine these parts by adding it:</p>
+                <p>H(key) = 124 + 655 + 12 = 791</p>
+                
+                <p><b>4. Multiplication Method:</b></p>
+                <p>The given record is multiplied by some constant value. The formula for computing the hash key is:</p>
+                <p>H(key) = floor(table_size × (key × A) % table_size) where p is integer constant, and A is constant real number</p>
+                <p><b>Donald Knuth suggested to use constant A = 0.61803398987</b></p>
+                <p><b>Example:</b> If key = 23 and table_size = 10 then:</p>
+                <p>H(key) = floor(10 × (23 × 0.61803398987) % 10)</p>
+                <p>= floor(142.14 % 10)</p>
+                <p>= 142</p>
+                <p>At 142 locations in the hash table the record 23 will be placed</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Question 3 -->
+          <div class="qa-item">
+            <button class="qa-question">
+              <span class="question-text">Q3: Define a Queue. Write algorithms for enqueue() and dequeue() operations and illustrate them with examples</span>
+              <span class="toggle-icon">+</span>
+            </button>
+            <div class="qa-answer">
+              <div class="answer-content">
+                <p><b>Answer:</b></p>
+                
+                <p><b>QUEUES:</b></p>
+                <ul>
+                  <li>Queue is a linear data structure where the first element is inserted from one end called REAR and deleted from the other end called FRONT</li>
+                  <li>Front points to the beginning of the queue and Rear points to the end of the queue</li>
+                  <li>Queue follows the FIFO (First In First Out) structure</li>
+                  <li>According to its FIFO structure, element inserted first will also be removed first</li>
+                  <li>In a queue, one end is always used to insert data (enqueue) and the other is used to delete data (dequeue), because queue is open at both its ends</li>
+                  <li>The enqueue() and dequeue() are two important functions used in a queue</li>
+                </ul>
+                
+                <div class="image-container">
+                  <img src="images/queue.png" alt="Queue structure" class="responsive-image">
+                </div>
+                
+                <p><b>enQueue(value) - Inserting an element into the Queue:</b></p>
+                <p>We can use the following steps to insert a new node into the queue:</p>
+                <ul>
+                  <li><b>STEP 1:</b> Create a newNode with given value and set "newNode→next" to NULL</li>
+                  <li><b>STEP 2:</b> Check whether queue is Empty (rear = NULL)</li>
+                  <li><b>STEP 3:</b> If it is Empty then, set front = newNode and rear = newNode</li>
+                  <li><b>STEP 4:</b> If it is Not Empty then set rear→next = newNode and rear = newNode</li>
+                </ul>
+                
+                <p><b>deQueue() - Deleting an Element from Queue:</b></p>
+                <p>We can use the following steps to delete a node from the queue:</p>
+                <ul>
+                  <li><b>STEP 1:</b> Check whether queue is Empty (front == NULL)</li>
+                  <li><b>STEP 2:</b> If it is Empty, then display "Queue is Empty!! Deletion is not possible!!!" and terminate from the function</li>
+                  <li><b>STEP 3:</b> If it is Not Empty then, define a Node pointer 'temp' and set it to 'front'</li>
+                  <li><b>STEP 4:</b> Then set front = front→next and delete 'temp' (free(temp))</li>
+                </ul>
+                
+                <p><b>display() - Displaying the elements of Queue:</b></p>
+                <p>We can use the following steps to display the elements (nodes) of a Queue:</p>
+                <ul>
+                  <li><b>STEP 1:</b> Check whether queue is Empty (front == NULL)</li>
+                  <li><b>STEP 2:</b> If it is Empty then, display 'Queue is Empty!!' and terminate the function</li>
+                  <li><b>STEP 3:</b> If it is Not Empty then, define a Node pointer 'temp' and initialize with front</li>
+                  <li><b>STEP 4:</b> Display temp→data and move it to the next node. Repeat the same until 'temp' reaches to 'rear' (temp→next != NULL)</li>
+                  <li><b>STEP 5:</b> Finally! Display 'temp→data→NULL</li>
+                </ul>
+                
+                <div class="image-container">
+                  <img src="images/enqueue.png" alt="Enqueue operation" class="responsive-image">
+                </div>
+                <div class="image-container">
+                  <img src="images/dequeue.png" alt="Dequeue operation" class="responsive-image">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Question 4 -->
+          <div class="qa-item">
+            <button class="qa-question">
+              <span class="question-text">Q4: What are the three possible cases to consider while deleting a node from a Binary Search Tree (BST)</span>
+              <span class="toggle-icon">+</span>
+            </button>
+            <div class="qa-answer">
+              <div class="answer-content">
+                <p><b>Answer:</b></p>
+                
+                <p><b>BINARY SEARCH TREE DELETION:</b></p>
+                <ol>
+                  <li>Delete function is used to delete the specified node from a binary search tree</li>
+                  <li>First we have to compare the deleted node with root node. If it is less than root node then we have to check left side of the tree. If node to be deleted is greater than parent node we have to check right side of the tree</li>
+                  <li>There are three situations of deleting a node from a binary search tree</li>
+                </ol>
+                
+                <p><b>1. Node to be deleted is leaf node:</b></p>
+                <p>It is the simplest case. In this case, replace the leaf node with NULL and simply free the allocated space.</p>
+                <p>In the image we are deleting the node 85. Since the node is a leaf node therefore the node will be replaced with NULL and allocated space will be freed.</p>
+                <div class="image-container">
+                  <img src="images/node85.png" alt="Leaf node deletion" class="responsive-image">
+                </div>
+                
+                <p><b>2. The node to be deleted has only one child:</b></p>
+                <p>In this case replace the node with its child and delete the child node which now contains the value which is to be deleted. Simply replace it with NULL and free the allocated space.</p>
+                <p>In the following image the node 12 is to be deleted. It has only one child. The node will be replaced with its child node and the replaced node 12 (which is now leaf node) will simply be deleted.</p>
+                <div class="image-container">
+                  <img src="images/node12.png" alt="Single child node deletion" class="responsive-image">
+                </div>
+                
+                <p><b>3. Node to be deleted has two children:</b></p>
+                <p>Node which has to be deleted has two children then we can replace that node with:</p>
+                <ul>
+                  <li>a. In order predecessor</li>
+                  <li>b. In order successor</li>
+                </ul>
+                <div class="image-container">
+                  <img src="images/node50.png" alt="Two children node deletion" class="responsive-image">
+                </div>
+                <p>In the following image the node 50 is to be deleted which is the root node of the tree.</p>
+                <p>The in order traversal of the given tree: 6, 25, 30, 50, 52, 60, 70, 75</p>
+                <p>Replace 50 with its in order successor 52. Now 50 will be moved to the leaf of the tree which will be simply deleted.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Question 5 -->
+          <div class="qa-item">
+            <button class="qa-question">
+              <span class="question-text">Q5: What is a skip list? Explain the insertion operation in a skip list with an example</span>
+              <span class="toggle-icon">+</span>
+            </button>
+            <div class="qa-answer">
+              <div class="answer-content">
+                <p><b>Answer:</b></p>
+                
+                <p><b>SKIP LIST IN DATA STRUCTURE:</b></p>
+                <ol>
+                  <li>A skip list is a probabilistic data structure. The skip list is used to store a sorted list of elements or data with a linked list. It allows the process of the elements or data to view efficiently. In one single step, it skips several elements of the entire list, which is why it is known as a skip list.</li>
+                  <li>The skip list is an extended version of the linked list. It allows the user to search, remove, and insert the element very quickly. It consists of a base list that includes a set of elements which maintains the link hierarchy of the subsequent elements.</li>
+                </ol>
+                
+                <p><b>SKIP LIST STRUCTURE:</b></p>
+                <p>It is built in two layers: The lowest layer and Top layer.</p>
+                <p>The lowest layer of the skip list is a common sorted linked list, and the top layers of the skip list are like an "express line" where the elements are skipped.</p>
+                <div class="image-container">
+                  <img src="images/normaline.png" alt="Skip list structure" class="responsive-image">
+                </div>
+                
+                <p><b>SKIP LIST BASIC OPERATIONS:</b></p>
+                <p>There are the following types of operations in the skip list:</p>
+                <ol>
+                  <li><b>Insertion operation:</b> It is used to add a new node to a particular location in a specific situation</li>
+                  <li><b>Deletion operation:</b> It is used to delete a node in a specific situation</li>
+                  <li><b>Search Operation:</b> The search operation is used to search a particular node in a skip list</li>
+                </ol>
+                
+                <p><b>EXAMPLE:</b> Create a skip list, we want to insert these following keys in the empty skip list:</p>
+                <ol>
+                  <li>6 with level 1</li>
+                  <li>29 with level 1</li>
+                  <li>22 with level 4</li>
+                  <li>9 with level 3</li>
+                  <li>17 with level 1</li>
+                  <li>4 with level 2</li>
+                </ol>
+                
+                <div class="image-container">
+                  <img src="images/6with1.png" alt="Skip list insertion step 1" class="responsive-image">
+                </div>
+                <div class="image-container">
+                  <img src="images/7with1.png" alt="Skip list insertion step 2" class="responsive-image">
+                </div>
+                <div class="image-container">
+                  <img src="images/8with1.png" alt="Skip list insertion step 3" class="responsive-image">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Question 6 -->
+          <div class="qa-item">
+            <button class="qa-question">
+              <span class="question-text">Q6: Construct a Binary Search Tree (BST) by inserting the keys: 50,40,60,10,45,5,30,15,55,65,25 and 70. Then perform deletion of keys 65,40 and 70 from BST</span>
+              <span class="toggle-icon">+</span>
+            </button>
+            <div class="qa-answer">
+              <div class="answer-content">
+                <p><b>Answer:</b></p>
+                <div class="image-container">
+                  <img src="images/1tree.png" alt="BST construction step 1" class="responsive-image">
+                </div>
+                <div class="image-container">
+                  <img src="images/2tree.png" alt="BST construction step 2" class="responsive-image">
+                </div>
+                <div class="image-container">
+                  <img src="images/3tree.png" alt="BST deletion process" class="responsive-image">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer class="footer">

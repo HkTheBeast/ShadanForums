@@ -843,3 +843,623 @@ function showNoResultsMessage(show) {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { initFacultyPage };
 }
+
+
+
+
+
+
+
+
+
+
+// Subject Page JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+  initSubjectPage();
+});
+
+function initSubjectPage() {
+ // Q&A Collapsible Functionality - COMPLETELY FIXED
+function initQAFunctionality() {
+  const qaItems = document.querySelectorAll('.qa-item');
+  
+  qaItems.forEach(item => {
+    const question = item.querySelector('.qa-question');
+    const answer = item.querySelector('.qa-answer');
+    const toggleIcon = question.querySelector('.toggle-icon');
+    
+    question.addEventListener('click', function() {
+      // Close all other answers
+      qaItems.forEach(otherItem => {
+        if (otherItem !== item) {
+          const otherQuestion = otherItem.querySelector('.qa-question');
+          const otherAnswer = otherItem.querySelector('.qa-answer');
+          const otherToggle = otherQuestion.querySelector('.toggle-icon');
+          
+          otherQuestion.classList.remove('active');
+          otherAnswer.classList.remove('active');
+          otherToggle.textContent = '+';
+        }
+      });
+      
+      // Toggle current item
+      const isActive = question.classList.contains('active');
+      
+      if (isActive) {
+        // Close current answer
+        question.classList.remove('active');
+        answer.classList.remove('active');
+        toggleIcon.textContent = '+';
+      } else {
+        // Open current answer
+        question.classList.add('active');
+        answer.classList.add('active');
+        toggleIcon.textContent = '−';
+      }
+    });
+  });
+  
+  console.log('Q&A functionality initialized');
+}
+
+// Subject Page JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+  initSubjectPage();
+});
+
+function initSubjectPage() {
+  // Initialize Q&A functionality
+  initQAFunctionality();
+
+  // Image zoom functionality
+  const subjectImages = document.querySelectorAll('.syllabus-image, .lab-image');
+  
+  subjectImages.forEach(img => {
+    img.addEventListener('click', function() {
+      this.classList.toggle('zoomed');
+      
+      if (this.classList.contains('zoomed')) {
+        this.style.transform = 'scale(1.8)';
+        this.style.zIndex = '1000';
+        this.style.position = 'relative';
+        this.style.cursor = 'zoom-out';
+      } else {
+        this.style.transform = 'scale(1)';
+        this.style.zIndex = '1';
+        this.style.cursor = 'zoom-in';
+      }
+    });
+    
+    // Close zoom when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!img.contains(e.target) && img.classList.contains('zoomed')) {
+        img.classList.remove('zoomed');
+        img.style.transform = 'scale(1)';
+        img.style.zIndex = '1';
+        img.style.cursor = 'zoom-in';
+      }
+    });
+  });
+
+  // Download button functionality - FIXED
+  const downloadBtn = document.querySelector('.download-btn');
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', function(e) {
+      // Prevent default only if we're handling the download manually
+      e.preventDefault();
+      
+      // Get the download URL from href attribute
+      const downloadUrl = this.getAttribute('href');
+      const fileName = this.getAttribute('download') || 'OOPS_Notes.pdf';
+      
+      // Add loading state
+      const originalText = this.innerHTML;
+      this.innerHTML = '<span class="loading-spinner"></span> Downloading...';
+      this.style.pointerEvents = 'none';
+      this.style.opacity = '0.8';
+      
+      // Create a temporary anchor for download
+      setTimeout(() => {
+        try {
+          const link = document.createElement('a');
+          link.href = downloadUrl;
+          link.download = fileName;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          // Track download
+          trackDownload(fileName);
+          
+          // Show success message
+          this.innerHTML = '<span class="success-icon">✓</span> Downloaded!';
+        } catch (error) {
+          // Show error message
+          this.innerHTML = '<span class="error-icon">✗</span> Failed!';
+          console.error('Download failed:', error);
+        }
+        
+        // Reset button after 2 seconds
+        setTimeout(() => {
+          this.innerHTML = originalText;
+          this.style.pointerEvents = 'auto';
+          this.style.opacity = '1';
+        }, 2000);
+      }, 1000);
+    });
+  }
+
+  // Add scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        entry.target.style.transition = 'all 0.8s ease';
+      }
+    });
+  }, observerOptions);
+
+  // Observe all cards and sections
+  const animatedElements = document.querySelectorAll('.feature-card, .faculty-card, .notes-card, .overview-card');
+  animatedElements.forEach(element => {
+    element.style.opacity = '0';
+    element.style.transform = 'translateY(30px)';
+    observer.observe(element);
+  });
+
+  console.log('Subject page enhanced successfully!');
+}
+
+// Utility function for download tracking
+function trackDownload(fileName) {
+  console.log(`Downloaded: ${fileName}`);
+  
+  // You can add analytics tracking here
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'download', {
+      'event_category': 'Subject Materials',
+      'event_label': fileName
+    });
+  }
+}
+
+// Add CSS for animations and states
+const style = document.createElement('style');
+style.textContent = `
+  .loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+  }
+  
+  .success-icon {
+    display: inline-block;
+    margin-right: 8px;
+    font-weight: bold;
+    animation: bounce 0.5s ease;
+  }
+  
+  .error-icon {
+    display: inline-block;
+    margin-right: 8px;
+    font-weight: bold;
+    color: var(--crimson);
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  @keyframes bounce {
+    0%, 20%, 60%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-5px); }
+    80% { transform: translateY(-2px); }
+  }
+`;
+document.head.appendChild(style);
+
+// Mobile Dropdown Fix
+(function(){
+  const dropdowns = document.querySelectorAll('.dropdown');
+  
+  dropdowns.forEach(dropdown => {
+    dropdown.addEventListener('click', function(e) {
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        this.classList.toggle('active');
+        
+        dropdowns.forEach(otherDropdown => {
+          if (otherDropdown !== this) {
+            otherDropdown.classList.remove('active');
+          }
+        });
+      }
+    });
+  });
+  
+  document.addEventListener('click', function(e) {
+    if (window.innerWidth <= 768) {
+      if (!e.target.closest('.dropdown')) {
+        dropdowns.forEach(dropdown => {
+          dropdown.classList.remove('active');
+        });
+      }
+    }
+  });
+
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+      dropdowns.forEach(dropdown => {
+        dropdown.classList.remove('active');
+      });
+    }
+  });
+})();
+  // Image zoom functionality
+  const subjectImages = document.querySelectorAll('.syllabus-image, .lab-image');
+  
+  subjectImages.forEach(img => {
+    img.addEventListener('click', function() {
+      this.classList.toggle('zoomed');
+      
+      if (this.classList.contains('zoomed')) {
+        this.style.transform = 'scale(1.8)';
+        this.style.zIndex = '1000';
+        this.style.position = 'relative';
+        this.style.cursor = 'zoom-out';
+      } else {
+        this.style.transform = 'scale(1)';
+        this.style.zIndex = '1';
+        this.style.cursor = 'zoom-in';
+      }
+    });
+    
+    // Close zoom when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!img.contains(e.target) && img.classList.contains('zoomed')) {
+        img.classList.remove('zoomed');
+        img.style.transform = 'scale(1)';
+        img.style.zIndex = '1';
+        img.style.cursor = 'zoom-in';
+      }
+    });
+  });
+
+  // Download button functionality - FIXED
+  const downloadBtn = document.querySelector('.download-btn');
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', function(e) {
+      // Prevent default only if we're handling the download manually
+      e.preventDefault();
+      
+      // Get the download URL from href attribute
+      const downloadUrl = this.getAttribute('href');
+      const fileName = this.getAttribute('download') || 'OOPS_Notes.pdf';
+      
+      // Add loading state
+      const originalText = this.innerHTML;
+      this.innerHTML = '<span class="loading-spinner"></span> Downloading...';
+      this.style.pointerEvents = 'none';
+      this.style.opacity = '0.8';
+      
+      // Create a temporary anchor for download
+      setTimeout(() => {
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Track download
+        trackDownload(fileName);
+        
+        // Show success message
+        this.innerHTML = '<span class="success-icon">✓</span> Downloaded!';
+        
+        // Reset button after 2 seconds
+        setTimeout(() => {
+          this.innerHTML = originalText;
+          this.style.pointerEvents = 'auto';
+          this.style.opacity = '1';
+        }, 2000);
+      }, 1000);
+    });
+  }
+
+  // Add scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        entry.target.style.transition = 'all 0.8s ease';
+      }
+    });
+  }, observerOptions);
+
+  // Observe all cards and sections
+  const animatedElements = document.querySelectorAll('.feature-card, .faculty-card, .notes-card, .overview-card');
+  animatedElements.forEach(element => {
+    element.style.opacity = '0';
+    element.style.transform = 'translateY(30px)';
+    observer.observe(element);
+  });
+
+  console.log('Subject page enhanced successfully!');
+}
+
+// Utility function for download tracking
+function trackDownload(fileName) {
+  console.log(`Downloaded: ${fileName}`);
+  
+  // You can add analytics tracking here
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'download', {
+      'event_category': 'Subject Materials',
+      'event_label': fileName
+    });
+  }
+}
+
+// Mobile Dropdown Fix
+(function(){
+  const dropdowns = document.querySelectorAll('.dropdown');
+  
+  dropdowns.forEach(dropdown => {
+    dropdown.addEventListener('click', function(e) {
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        this.classList.toggle('active');
+        
+        dropdowns.forEach(otherDropdown => {
+          if (otherDropdown !== this) {
+            otherDropdown.classList.remove('active');
+          }
+        });
+      }
+    });
+  });
+  
+  document.addEventListener('click', function(e) {
+    if (window.innerWidth <= 768) {
+      if (!e.target.closest('.dropdown')) {
+        dropdowns.forEach(dropdown => {
+          dropdown.classList.remove('active');
+        });
+      }
+    }
+  });
+
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+      dropdowns.forEach(dropdown => {
+        dropdown.classList.remove('active');
+      });
+    }
+  });
+})();
+// PDF Viewer Enhancement with Scroll Fix
+function initPDFViewer() {
+  const pdfPreview = document.querySelector('.pdf-preview');
+  
+  if (pdfPreview) {
+    // Add loading state for PDF
+    pdfPreview.addEventListener('load', function() {
+      console.log('PDF loaded successfully');
+      // Ensure PDF is scrollable
+      this.style.height = '450px';
+      this.style.overflow = 'auto';
+    });
+    
+    pdfPreview.addEventListener('error', function() {
+      console.error('Failed to load PDF');
+      const container = this.parentElement;
+      container.innerHTML = `
+        <div class="pdf-placeholder">
+          <div class="pdf-icon">📄</div>
+          <h3>PDF Preview Not Available</h3>
+          <p>The notes PDF could not be loaded in the preview. Please download the file to view it.</p>
+          <div class="file-info">
+            <span class="file-size">~2.5 MB</span>
+            <span class="file-pages">45 Pages</span>
+          </div>
+        </div>
+      `;
+    });
+    
+    // Force PDF to be scrollable
+    setTimeout(() => {
+      if (pdfPreview.contentDocument) {
+        pdfPreview.style.overflow = 'auto';
+      }
+    }, 1000);
+  }
+}
+
+// Enhanced Image Zoom with Smaller Default Sizes
+function initImageZoom() {
+  const subjectImages = document.querySelectorAll('.syllabus-image, .lab-image, .answer-content img');
+  
+  subjectImages.forEach(img => {
+    // Set smaller default sizes
+    if (img.classList.contains('syllabus-image')) {
+      img.style.maxWidth = '600px';
+    } else if (img.classList.contains('lab-image')) {
+      img.style.maxWidth = '500px';
+    } else {
+      img.style.maxWidth = '400px';
+    }
+    
+    img.addEventListener('click', function() {
+      const isZoomed = this.classList.contains('zoomed');
+      
+      // Remove zoom from all other images
+      subjectImages.forEach(otherImg => {
+        if (otherImg !== this && otherImg.classList.contains('zoomed')) {
+          otherImg.classList.remove('zoomed');
+          otherImg.style.transform = 'scale(1)';
+          otherImg.style.maxWidth = '';
+          otherImg.style.zIndex = '1';
+          otherImg.style.position = 'relative';
+          otherImg.style.cursor = 'zoom-in';
+        }
+      });
+      
+      if (!isZoomed) {
+        // Zoom in
+        this.classList.add('zoomed');
+        this.style.transform = 'scale(1.5)';
+        this.style.maxWidth = '90vw';
+        this.style.zIndex = '1000';
+        this.style.position = 'fixed';
+        this.style.top = '50%';
+        this.style.left = '50%';
+        this.style.transform = 'translate(-50%, -50%) scale(1.2)';
+        this.style.cursor = 'zoom-out';
+        this.style.boxShadow = '0 20px 60px rgba(0, 0, 0, 0.5)';
+      } else {
+        // Zoom out
+        this.classList.remove('zoomed');
+        this.style.transform = 'scale(1)';
+        this.style.maxWidth = '';
+        this.style.zIndex = '1';
+        this.style.position = 'relative';
+        this.style.top = 'auto';
+        this.style.left = 'auto';
+        this.style.transform = 'none';
+        this.style.cursor = 'zoom-in';
+        this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.2)';
+      }
+    });
+    
+    // Close zoom when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!img.contains(e.target) && img.classList.contains('zoomed')) {
+        img.classList.remove('zoomed');
+        img.style.transform = 'scale(1)';
+        img.style.maxWidth = '';
+        img.style.zIndex = '1';
+        img.style.position = 'relative';
+        img.style.top = 'auto';
+        img.style.left = 'auto';
+        img.style.transform = 'none';
+        img.style.cursor = 'zoom-in';
+        img.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.2)';
+      }
+    });
+    
+    // Close zoom with Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && img.classList.contains('zoomed')) {
+        img.classList.remove('zoomed');
+        img.style.transform = 'scale(1)';
+        img.style.maxWidth = '';
+        img.style.zIndex = '1';
+        img.style.position = 'relative';
+        img.style.top = 'auto';
+        img.style.left = 'auto';
+        img.style.transform = 'none';
+        img.style.cursor = 'zoom-in';
+        img.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.2)';
+      }
+    });
+  });
+}
+
+// Updated Subject Page Initialization
+function initSubjectPage() {
+  // Initialize Q&A functionality
+  initQAFunctionality();
+
+  // Initialize PDF viewer
+  initPDFViewer();
+
+  // Initialize image zoom with smaller sizes
+  initImageZoom();
+
+  // Download button functionality
+  const downloadBtn = document.querySelector('.download-btn');
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      const downloadUrl = this.getAttribute('href');
+      const fileName = this.getAttribute('download') || 'OOPS_Notes.pdf';
+      
+      const originalText = this.innerHTML;
+      this.innerHTML = '<span class="loading-spinner"></span> Downloading...';
+      this.style.pointerEvents = 'none';
+      this.style.opacity = '0.8';
+      
+      setTimeout(() => {
+        try {
+          const link = document.createElement('a');
+          link.href = downloadUrl;
+          link.download = fileName;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          trackDownload(fileName);
+          this.innerHTML = '<span class="success-icon">✓</span> Downloaded!';
+        } catch (error) {
+          this.innerHTML = '<span class="error-icon">✗</span> Failed!';
+          console.error('Download failed:', error);
+        }
+        
+        setTimeout(() => {
+          this.innerHTML = originalText;
+          this.style.pointerEvents = 'auto';
+          this.style.opacity = '1';
+        }, 2000);
+      }, 1000);
+    });
+  }
+
+  // Add scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        entry.target.style.transition = 'all 0.8s ease';
+      }
+    });
+  }, observerOptions);
+
+  const animatedElements = document.querySelectorAll('.feature-card, .faculty-card, .notes-card, .overview-card');
+  animatedElements.forEach(element => {
+    element.style.opacity = '0';
+    element.style.transform = 'translateY(30px)';
+    observer.observe(element);
+  });
+
+  console.log('Subject page enhanced successfully!');
+}
