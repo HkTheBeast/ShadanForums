@@ -1,89 +1,1513 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Forums</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" type="image/png" href="images/shadanlogo.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Forums - ShadanForums</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Dark Theme Colors */
+            --bg: #0b0f14;
+            --text: #e6eef8;
+            --card-bg: #0f1720;
+            --muted: #9aa6b2;
+            --accent: #58a6ff;
+            --dark-bg: #0f1720;
+            
+            /* Color Palette */
+            --olive: #9ACD32;
+            --crimson: #FF6B6B;
+            --sea-green: #2E8B57;
+            --emerald: #50C878;
+            --dark-olive: #6B8E23;
+            --light-olive: #B8B854;
+            --dark-crimson: #FF4757;
+            --light-crimson: #FF6B6B;
+            --dark-sea-green: #1E6B4E;
+            --light-sea-green: #7FC7A0;
+            --dark-emerald: #28A745;
+            --light-emerald: #90EE90;
+            --light-bg: #1a2432;
+            --text-light: #FFFFFF;
+            --gray: #94a3b8;
+            
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, var(--sea-green), var(--emerald));
+            --gradient-secondary: linear-gradient(135deg, var(--olive), var(--dark-olive));
+            --gradient-accent: linear-gradient(135deg, var(--crimson), var(--dark-crimson));
+        }
+
+        /* Import Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            margin: 0;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: transparent;
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            background-color: var(--bg);
+            overflow-x: hidden;
+        }
+
+        .app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%230b0f14"/><path d="M0 0L100 100" stroke="%232E8B57" stroke-width="1" opacity="0.1"/><path d="M100 0L0 100" stroke="%2350C878" stroke-width="1" opacity="0.1"/></svg>');
+            background-size: cover;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== NAVBAR STYLES ===== */
+        .topbar {
+            background: var(--card-bg);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border-bottom: 3px solid var(--emerald);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            max-width: 100vw;
+            overflow: visible;
+        }
+
+        .brand a {
+            font-size: clamp(1.8rem, 4vw, 2.2rem);
+            font-weight: 800;
+            text-decoration: none;
+            background: linear-gradient(135deg, var(--sea-green), var(--emerald), var(--crimson));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: -0.5px;
+            display: block;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            white-space: nowrap;
+        }
+
+        .brand a:hover {
+            transform: scale(1.05);
+        }
+
+        .topbar nav {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            justify-content: center;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .topbar nav a {
+            text-decoration: none;
+            font-weight: 600;
+            padding: clamp(0.6rem, 2vw, 0.8rem) clamp(1.2rem, 3vw, 1.8rem);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: transparent;
+            border: 2px solid transparent;
+            color: var(--text) !important;
+            font-size: clamp(0.9rem, 1.2vw, 1rem);
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+        }
+
+        .topbar nav a:hover {
+            background: var(--sea-green);
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 139, 87, 0.4);
+            border-color: var(--sea-green);
+        }
+
+        .topbar nav a.active {
+            background: var(--sea-green);
+            color: white !important;
+        }
+
+        /* DROPDOWN STYLES */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            z-index: 1002;
+        }
+
+        .dropdown-toggle {
+            position: relative;
+            padding-right: clamp(2rem, 4vw, 2.5rem) !important;
+        }
+
+        .dropdown-toggle::after {
+            content: '▼';
+            position: absolute;
+            right: clamp(0.8rem, 2vw, 1rem);
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.7rem;
+            color: inherit;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: var(--card-bg);
+            min-width: 220px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            z-index: 1003;
+            top: 100%;
+            left: 0;
+            margin-top: 8px;
+            overflow: visible;
+            border: 2px solid var(--emerald);
+        }
+
+        .dropdown-content a {
+            color: var(--text) !important;
+            padding: 1rem 1.5rem !important;
+            text-decoration: none !important;
+            display: block !important;
+            border: none !important;
+            border-radius: 0 !important;
+            margin: 0 !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+            font-family: 'Inter', sans-serif;
+            border-bottom: 1px solid rgba(46, 139, 87, 0.2);
+            position: relative;
+            z-index: 1004;
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--sea-green);
+            color: white !important;
+            transform: translateX(5px);
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            animation: smoothDropdown 0.3s ease;
+        }
+
+        @keyframes smoothDropdown {
+            from { 
+                opacity: 0; 
+                transform: translateY(-5px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        /* Colorful Subject Dropdown Items */
+        .dropdown-content a[href="oops.html"] { border-left: 4px solid #FF6B35 !important; }
+        .dropdown-content a[href="coa.html"] { border-left: 4px solid #4ECDC4 !important; }
+        .dropdown-content a[href="datastructures.html"] { border-left: 4px solid #FFD166 !important; }
+        .dropdown-content a[href="sdc.html"] { border-left: 4px solid #FF6B8B !important; }
+        .dropdown-content a[href="maths.html"] { border-left: 4px solid #A78BFA !important; }
+        .dropdown-content a[href="digitalelectronics.html"] { border-left: 4px solid #2DD4BF !important; }
+
+        /* NAVBAR ACTIONS - NEW STYLES */
+        .nav-actions {
+            display: flex !important;
+            gap: 1rem;
+            align-items: center;
+            z-index: 1001;
+        }
+
+        .nav-login-btn {
+            padding: clamp(0.6rem, 2vw, 0.8rem) clamp(1.2rem, 3vw, 1.8rem);
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.9rem, 1.2vw, 1rem);
+            background: var(--gradient-primary);
+            color: white !important;
+            box-shadow: 0 4px 15px rgba(46, 139, 87, 0.3);
+            text-decoration: none;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .nav-login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 139, 87, 0.4);
+        }
+
+        .nav-logout-btn {
+            background: var(--crimson);
+        }
+
+        .nav-logout-btn:hover {
+            background: var(--dark-crimson);
+        }
+
+        .nav-user-info {
+            display: none;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-user-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--light-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid var(--emerald);
+        }
+
+        .nav-user-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--emerald);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* ===== FORUMS CONTENT ===== */
+        .forums-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            flex: 1;
+        }
+
+        .forums-hero {
+            text-align: center;
+            padding: clamp(2rem, 4vw, 3rem) 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .forums-hero h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 1rem;
+            font-weight: 800;
+            font-family: 'Poppins', sans-serif;
+            padding: clamp(1rem, 3vw, 1.5rem) clamp(1.5rem, 4vw, 2.5rem);
+            border-radius: 25px;
+            display: inline-block;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid var(--emerald);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            color: var(--emerald);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            max-width: min(90%, 800px);
+        }
+
+        .forums-hero p {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: var(--text);
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            border: 1px solid var(--emerald);
+        }
+
+        /* Auth Forms */
+        .auth-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 2px solid var(--emerald);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--emerald);
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .auth-tab.active {
+            background: var(--emerald);
+            color: white;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid var(--emerald);
+            border-radius: 10px;
+            background: var(--light-bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.3);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .file-upload {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .file-upload-label {
+            padding: 0.5rem 1rem;
+            background: var(--emerald);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-label:hover {
+            background: var(--sea-green);
+        }
+
+        .file-name {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background: var(--emerald);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--sea-green);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(46, 139, 87, 0.4);
+        }
+
+        .btn-danger {
+            background: var(--crimson);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: var(--dark-crimson);
+            transform: translateY(-2px);
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        /* Forums Content */
+        .forums-content {
+            display: none;
+        }
+
+        .forums-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .user-info-panel {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--card-bg);
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
+            border: 1px solid var(--emerald);
+        }
+
+        .user-avatar-large {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--emerald);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .create-thread-btn {
+            background: var(--emerald);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .create-thread-btn:hover {
+            background: var(--sea-green);
+            transform: translateY(-2px);
+        }
+
+        /* Threads List */
+        .threads-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .thread-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 2px solid var(--emerald);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .thread-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(46, 139, 87, 0.3);
+        }
+
+        .thread-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .thread-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--emerald);
+            margin-bottom: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .thread-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .thread-author {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .thread-content {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .thread-attachments {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .attachment {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0.8rem;
+            background: var(--light-bg);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: var(--text);
+        }
+
+        .attachment img {
+            width: 20px;
+            height: 20px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .thread-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .comment-btn {
+            background: transparent;
+            color: var(--emerald);
+            border: 1px solid var(--emerald);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .comment-btn:hover {
+            background: var(--emerald);
+            color: white;
+        }
+
+        /* Comments Section */
+        .comments-section {
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .comments-list {
+            margin-bottom: 1.5rem;
+        }
+
+        .comment-card {
+            background: var(--light-bg);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(46, 139, 87, 0.3);
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: var(--emerald);
+        }
+
+        .comment-date {
+            color: var(--muted);
+        }
+
+        .comment-content {
+            line-height: 1.5;
+        }
+
+        .add-comment-form {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--emerald);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 2px solid var(--emerald);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--emerald);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--crimson);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: var(--card-bg);
+            border-radius: 15px;
+            border: 2px dashed var(--emerald);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--emerald);
+        }
+
+        .empty-state h3 {
+            color: var(--emerald);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            color: var(--text);
+            margin-bottom: 1.5rem;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--dark-bg);
+            color: var(--text-light);
+            padding: clamp(2rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem);
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-logo {
+            margin-bottom: 2rem;
+        }
+
+        .footer-logo h3 {
+            font-size: clamp(1.8rem, 4vw, 2.2rem);
+            background: linear-gradient(135deg, var(--sea-green), var(--emerald));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+        }
+
+        .footer-logo p {
+            font-size: clamp(1rem, 1.5vw, 1.1rem);
+            opacity: 0.9;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .footer-info {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 1.5rem;
+        }
+
+        .footer-info p {
+            margin: 0.5rem 0;
+            font-size: clamp(0.9rem, 1.2vw, 1rem);
+            font-family: 'Inter', sans-serif;
+            opacity: 0.9;
+            word-wrap: break-word;
+        }
+
+        /* MOBILE STYLES */
+        @media (max-width: 768px) {
+            .topbar {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .topbar nav {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+                order: 2;
+                width: 100%;
+            }
+            
+            .brand {
+                order: 1;
+            }
+            
+            .nav-actions {
+                order: 3;
+                margin-top: 1rem;
+            }
+            
+            .topbar nav a {
+                font-size: 0.9rem;
+                padding: 0.7rem 1.2rem;
+            }
+            
+            /* MOBILE DROPDOWN FIX */
+            .dropdown {
+                position: static;
+            }
+            
+            .dropdown-content {
+                position: static;
+                width: 100%;
+                margin-top: 0.5rem;
+                display: none;
+                box-shadow: none;
+                border: 2px solid var(--emerald);
+                border-radius: 12px;
+            }
+            
+            .dropdown:hover .dropdown-content {
+                display: block;
+            }
+            
+            .dropdown.active .dropdown-content {
+                display: block;
+            }
+            
+            .forums-container {
+                padding: 1rem 0.5rem;
+            }
+            
+            .forums-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .user-info-panel {
+                justify-content: center;
+            }
+            
+            .thread-header {
+                flex-direction: column;
+            }
+            
+            .thread-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .auth-container {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .brand a {
+                font-size: 1.8rem;
+            }
+            
+            .topbar nav a {
+                font-size: 0.8rem;
+                padding: 0.6rem 1rem;
+            }
+            
+            .nav-login-btn {
+                font-size: 0.8rem;
+                padding: 0.6rem 1rem;
+            }
+            
+            .dropdown-content {
+                position: static;
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="app">
-   <header class="topbar">
-  <div class="brand"><a href="index.html">ShadanForums</a></div>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="forum.html">Forums</a>
-    <a href="announcements.html">Announcements</a>
-    
-    <!-- OLD DROPDOWN (hidden on mobile) -->
-    <div class="dropdown">
-      <a href="" class="dropdown-toggle">Subjects</a>
-      <div class="dropdown-content">
-        <a href="oops.html">OOPS</a>
-        <a href="coa.html">COA</a>
-        <a href="datastructures.html">Data Structures</a>
-        <a href="sdc.html">SDC</a>
-        <a href="maths.html">Maths</a>
-        <a href="digitalelectronics.html">Digital Electronics</a>
-      </div>
+    <div class="app">
+        <!-- Header - FIXED NAVBAR -->
+        <header class="topbar">
+            <div class="brand"><a href="index.html">ShadanForums</a></div>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="forum.html" class="active">Forums</a>
+                <a href="announcements.html">Announcements</a>
+                
+                <!-- DROPDOWN -->
+                <div class="dropdown">
+                    <a href="#" class="dropdown-toggle">Subjects</a>
+                    <div class="dropdown-content">
+                        <a href="oops.html">OOPS</a>
+                        <a href="coa.html">COA</a>
+                        <a href="datastructures.html">Data Structures</a>
+                        <a href="sdc.html">SDC</a>
+                        <a href="maths.html">Maths</a>
+                        <a href="digitalelectronics.html">Digital Electronics</a>
+                    </div>
+                </div>
+                
+                <a href="about.html">About Us</a>
+            </nav>
+            <div class="nav-actions">
+                <button id="nav-login-btn" class="nav-login-btn">Login</button>
+                <div id="nav-user-info" class="nav-user-info">
+                    <div class="nav-user-badge">
+                        <div class="nav-user-avatar" id="nav-user-avatar">U</div>
+                        <span id="nav-username-display">User</span>
+                        <button id="nav-logout-btn" class="nav-login-btn nav-logout-btn">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="forums-container">
+            <div class="forums-hero">
+                <h1>Student Forums</h1>
+                <p>Discuss, share ideas, and collaborate with fellow students</p>
+            </div>
+
+            <!-- Authentication Forms -->
+            <div id="auth-container" class="auth-container">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">Login</button>
+                    <button class="auth-tab" data-tab="register">Register</button>
+                </div>
+
+                <form id="login-form" class="auth-form active">
+                    <div class="form-group">
+                        <label for="login-username">Username</label>
+                        <input type="text" id="login-username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                </form>
+
+                <form id="register-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="register-username">Username</label>
+                        <input type="text" id="register-username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm-password">Confirm Password</label>
+                        <input type="password" id="register-confirm-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Register</button>
+                </form>
+            </div>
+
+            <!-- Forums Content (Visible when logged in) -->
+            <div id="forums-content" class="forums-content">
+                <div class="forums-header">
+                    <div class="user-info-panel">
+                        <div class="user-avatar-large" id="user-avatar-large">U</div>
+                        <span id="welcome-message">Welcome, User!</span>
+                    </div>
+                    <button id="create-thread-btn" class="create-thread-btn">Create New Thread</button>
+                </div>
+
+                <div id="threads-list" class="threads-list">
+                    <!-- Threads will be dynamically added here -->
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <div class="empty-state-icon">💬</div>
+                <h3>No Threads Yet</h3>
+                <p>Be the first to start a discussion!</p>
+                <button id="empty-create-btn" class="btn btn-primary">Create Thread</button>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>ShadanForums</h3>
+                    <p>Your gateway to academic success</p>
+                </div>
+                <div class="footer-info">
+                    <p>© 2023 ShadanForums. All rights reserved.</p>
+                    <p>Designed with ❤️ for students</p>
+                </div>
+            </div>
+        </footer>
     </div>
-    
-    <!-- NEW MOBILE DROPDOWN (hidden on desktop) -->
-    <div class="mobile-dropdown">
-      <button class="mobile-dropdown-btn">
-        <span>Subjects</span>
-        <span class="mobile-dropdown-arrow">▼</span>
-      </button>
-      <div class="mobile-dropdown-menu">
-        <a href="oops.html" class="mobile-dropdown-link">OOPS</a>
-        <a href="coa.html" class="mobile-dropdown-link">COA</a>
-        <a href="datastructures.html" class="mobile-dropdown-link">Data Structures</a>
-        <a href="sdc.html" class="mobile-dropdown-link">SDC</a>
-        <a href="maths.html" class="mobile-dropdown-link">Maths</a>
-        <a href="digitalelectronics.html" class="mobile-dropdown-link">Digital Electronics</a>
-      </div>
+
+    <!-- Create Thread Modal -->
+    <div id="create-thread-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Create New Thread</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="create-thread-form">
+                <div class="form-group">
+                    <label for="thread-title">Title</label>
+                    <input type="text" id="thread-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="thread-content">Content</label>
+                    <textarea id="thread-content" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Attachments</label>
+                    <div class="file-upload">
+                        <label for="thread-attachments" class="file-upload-label">Choose Files</label>
+                        <input type="file" id="thread-attachments" multiple style="display: none;">
+                        <span id="file-names" class="file-name">No files selected</span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Thread</button>
+            </form>
+        </div>
     </div>
-    
-    <a href="about.html">About Us</a>
-  </nav>
-  <div class="actions" id="actions-area">
-    <a href="register.html" class="login-button">Login</a>
-  </div>
-</header>
-    <main class="container">
-      <h1>Forum</h1>
-      <div id="post-area" class="card">
-        <h3>Create Post</h3>
-        <div id="auth-warning" class="hint">You must <a href="#" id="open-auth">register or login</a> before posting.</div>
-        <input id="post-title" placeholder="Title (optional)" />
-        <div id="editor"></div>
-        <div class="post-actions">
-          <button id="submit-post">Post</button>
-        </div>
-        <p class="hint">Use the editor to format text, add links, images (by URL) and embed videos.</p>
-      </div>
 
-      <section id="posts" class="posts-list"></section>
-    </main>
+    <script>
+        // Forums Application
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements - NEW CLASS NAMES
+            const authContainer = document.getElementById('auth-container');
+            const forumsContent = document.getElementById('forums-content');
+            const emptyState = document.getElementById('empty-state');
+            const threadsList = document.getElementById('threads-list');
+            const navLoginBtn = document.getElementById('nav-login-btn');
+            const navLogoutBtn = document.getElementById('nav-logout-btn');
+            const navUserInfo = document.getElementById('nav-user-info');
+            const navUsernameDisplay = document.getElementById('nav-username-display');
+            const navUserAvatar = document.getElementById('nav-user-avatar');
+            const userAvatarLarge = document.getElementById('user-avatar-large');
+            const welcomeMessage = document.getElementById('welcome-message');
+            const createThreadBtn = document.getElementById('create-thread-btn');
+            const emptyCreateBtn = document.getElementById('empty-create-btn');
+            const createThreadModal = document.getElementById('create-thread-modal');
+            const closeModalBtn = document.querySelector('.close-modal');
+            const createThreadForm = document.getElementById('create-thread-form');
+            const threadAttachments = document.getElementById('thread-attachments');
+            const fileNames = document.getElementById('file-names');
+            const authTabs = document.querySelectorAll('.auth-tab');
+            const authForms = document.querySelectorAll('.auth-form');
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const dropdowns = document.querySelectorAll('.dropdown');
 
+            // Application State
+            let currentUser = null;
+            let threads = [];
 
+            // Initialize
+            checkAuthStatus();
+            setupEventListeners();
 
-     <footer class="footer">
-      <div class="footer-content">
-        <div class="footer-logo">
-          <h3>ShadanForums</h3>
-          <p>Empowering Engineers, Building Futures</p>
-        </div>
-        <div class="footer-info">
-          <p>&copy; 2024 Shadan Forums. All rights reserved.</p>
-          <p>Shadan College of Engineering and Technology - Where Innovation Meets Excellence</p>
-          <p>📍 Himayat Sagar Road, Peerancheru, Hyderabad</p>
-        </div>
-      </div>
-    </footer>
-  </div>
+            // Functions
+            function setupEventListeners() {
+                // Auth tabs
+                authTabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const tabName = tab.getAttribute('data-tab');
+                        switchAuthTab(tabName);
+                    });
+                });
 
-  <script src="js/main.js"></script>
+                // Auth forms
+                loginForm.addEventListener('submit', handleLogin);
+                registerForm.addEventListener('submit', handleRegister);
+
+                // Navbar login button
+                navLoginBtn.addEventListener('click', function() {
+                    authContainer.scrollIntoView({ behavior: 'smooth' });
+                });
+
+                // Thread creation
+                createThreadBtn.addEventListener('click', openCreateThreadModal);
+                emptyCreateBtn.addEventListener('click', openCreateThreadModal);
+                closeModalBtn.addEventListener('click', closeCreateThreadModal);
+                createThreadForm.addEventListener('submit', handleCreateThread);
+
+                // File upload
+                threadAttachments.addEventListener('change', updateFileNames);
+
+                // Logout
+                navLogoutBtn.addEventListener('click', handleLogout);
+
+                // Modal backdrop click
+                createThreadModal.addEventListener('click', function(e) {
+                    if (e.target === createThreadModal) {
+                        closeCreateThreadModal();
+                    }
+                });
+
+                // Mobile dropdown functionality
+                dropdowns.forEach(dropdown => {
+                    dropdown.addEventListener('click', function(e) {
+                        if (window.innerWidth <= 768) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            this.classList.toggle('active');
+                            
+                            dropdowns.forEach(otherDropdown => {
+                                if (otherDropdown !== this) {
+                                    otherDropdown.classList.remove('active');
+                                }
+                            });
+                        }
+                    });
+                });
+                
+                // Close dropdowns when clicking outside (mobile only)
+                document.addEventListener('click', function(e) {
+                    if (window.innerWidth <= 768) {
+                        if (!e.target.closest('.dropdown')) {
+                            dropdowns.forEach(dropdown => {
+                                dropdown.classList.remove('active');
+                            });
+                        }
+                    }
+                });
+
+                // Close dropdowns when window is resized to desktop size
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768) {
+                        dropdowns.forEach(dropdown => {
+                            dropdown.classList.remove('active');
+                        });
+                    }
+                });
+            }
+
+            function switchAuthTab(tabName) {
+                authTabs.forEach(tab => {
+                    if (tab.getAttribute('data-tab') === tabName) {
+                        tab.classList.add('active');
+                    } else {
+                        tab.classList.remove('active');
+                    }
+                });
+
+                authForms.forEach(form => {
+                    if (form.id === `${tabName}-form`) {
+                        form.classList.add('active');
+                    } else {
+                        form.classList.remove('active');
+                    }
+                });
+            }
+
+            function checkAuthStatus() {
+                const savedUser = localStorage.getItem('currentUser');
+                if (savedUser) {
+                    currentUser = JSON.parse(savedUser);
+                    showForumsContent();
+                } else {
+                    showAuthForms();
+                }
+            }
+
+            function showAuthForms() {
+                authContainer.style.display = 'block';
+                forumsContent.style.display = 'none';
+                emptyState.style.display = 'none';
+                navLoginBtn.style.display = 'block';
+                navUserInfo.style.display = 'none';
+            }
+
+            function showForumsContent() {
+                authContainer.style.display = 'none';
+                forumsContent.style.display = 'block';
+                navLoginBtn.style.display = 'none';
+                navUserInfo.style.display = 'flex';
+                
+                // Update user info
+                navUsernameDisplay.textContent = currentUser.username;
+                navUserAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
+                userAvatarLarge.textContent = currentUser.username.charAt(0).toUpperCase();
+                welcomeMessage.textContent = `Welcome, ${currentUser.username}!`;
+                
+                // Load threads
+                loadThreads();
+            }
+
+            function handleLogin(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('login-username').value;
+                const password = document.getElementById('login-password').value;
+                
+                if (!username || !password) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                const user = users.find(u => u.username === username && u.password === password);
+                
+                if (user) {
+                    currentUser = user;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    showForumsContent();
+                } else {
+                    alert('Invalid username or password');
+                }
+            }
+
+            function handleRegister(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('register-username').value;
+                const password = document.getElementById('register-password').value;
+                const confirmPassword = document.getElementById('register-confirm-password').value;
+                
+                if (!username || !password || !confirmPassword) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match');
+                    return;
+                }
+                
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                if (users.find(u => u.username === username)) {
+                    alert('Username already exists');
+                    return;
+                }
+                
+                const newUser = {
+                    id: Date.now().toString(),
+                    username,
+                    password,
+                    createdAt: new Date().toISOString()
+                };
+                
+                users.push(newUser);
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                currentUser = newUser;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                showForumsContent();
+                
+                switchAuthTab('login');
+            }
+
+            function handleLogout() {
+                currentUser = null;
+                localStorage.removeItem('currentUser');
+                showAuthForms();
+                
+                loginForm.reset();
+                registerForm.reset();
+            }
+
+            function loadThreads() {
+                threads = JSON.parse(localStorage.getItem('threads') || '[]');
+                
+                if (threads.length === 0) {
+                    forumsContent.style.display = 'none';
+                    emptyState.style.display = 'block';
+                } else {
+                    forumsContent.style.display = 'block';
+                    emptyState.style.display = 'none';
+                    renderThreads();
+                }
+            }
+
+            function renderThreads() {
+                threadsList.innerHTML = '';
+                
+                threads.forEach(thread => {
+                    const threadCard = document.createElement('div');
+                    threadCard.className = 'thread-card';
+                    
+                    const date = new Date(thread.createdAt).toLocaleDateString();
+                    const isAuthor = currentUser && thread.authorId === currentUser.id;
+                    
+                    threadCard.innerHTML = `
+                        <div class="thread-header">
+                            <div>
+                                <h3 class="thread-title">${thread.title}</h3>
+                                <div class="thread-meta">
+                                    <span class="thread-author">By ${thread.author}</span>
+                                    <span class="thread-date">${date}</span>
+                                </div>
+                            </div>
+                            ${isAuthor ? `<button class="btn btn-danger btn-small delete-thread" data-id="${thread.id}">Delete</button>` : ''}
+                        </div>
+                        <div class="thread-content">${thread.content}</div>
+                        ${thread.attachments && thread.attachments.length > 0 ? `
+                            <div class="thread-attachments">
+                                ${thread.attachments.map(attachment => `
+                                    <div class="attachment">
+                                        ${attachment.type === 'image' ? 
+                                            `<img src="${attachment.url}" alt="${attachment.name}">` : 
+                                            '📎'
+                                        }
+                                        <span>${attachment.name}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        <div class="thread-actions">
+                            <button class="comment-btn" data-id="${thread.id}">
+                                ${thread.comments ? thread.comments.length : 0} Comments
+                            </button>
+                        </div>
+                        <div class="comments-section" id="comments-${thread.id}">
+                            <div class="comments-list" id="comments-list-${thread.id}">
+                                ${thread.comments ? thread.comments.map(comment => `
+                                    <div class="comment-card">
+                                        <div class="comment-header">
+                                            <span class="comment-author">${comment.author}</span>
+                                            <span class="comment-date">${new Date(comment.createdAt).toLocaleDateString()}</span>
+                                        </div>
+                                        <div class="comment-content">${comment.content}</div>
+                                    </div>
+                                `).join('') : ''}
+                            </div>
+                            <div class="add-comment-form">
+                                <div class="form-group">
+                                    <textarea placeholder="Add a comment..." id="comment-${thread.id}"></textarea>
+                                </div>
+                                <button class="btn btn-primary add-comment" data-id="${thread.id}">Post Comment</button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    threadsList.appendChild(threadCard);
+                    
+                    const commentBtn = threadCard.querySelector('.comment-btn');
+                    const commentsSection = threadCard.querySelector('.comments-section');
+                    const addCommentBtn = threadCard.querySelector('.add-comment');
+                    const deleteBtn = threadCard.querySelector('.delete-thread');
+                    
+                    commentBtn.addEventListener('click', () => {
+                        commentsSection.style.display = commentsSection.style.display === 'block' ? 'none' : 'block';
+                    });
+                    
+                    addCommentBtn.addEventListener('click', () => {
+                        const commentText = document.getElementById(`comment-${thread.id}`).value;
+                        if (commentText.trim()) {
+                            addComment(thread.id, commentText);
+                            document.getElementById(`comment-${thread.id}`).value = '';
+                        }
+                    });
+                    
+                    if (deleteBtn) {
+                        deleteBtn.addEventListener('click', () => {
+                            if (confirm('Are you sure you want to delete this thread?')) {
+                                deleteThread(thread.id);
+                            }
+                        });
+                    }
+                });
+            }
+
+            function openCreateThreadModal() {
+                if (!currentUser) {
+                    alert('Please log in to create a thread');
+                    return;
+                }
+                
+                createThreadModal.style.display = 'flex';
+            }
+
+            function closeCreateThreadModal() {
+                createThreadModal.style.display = 'none';
+                createThreadForm.reset();
+                fileNames.textContent = 'No files selected';
+            }
+
+            function handleCreateThread(e) {
+                e.preventDefault();
+                
+                const title = document.getElementById('thread-title').value;
+                const content = document.getElementById('thread-content').value;
+                
+                if (!title || !content) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+                
+                const attachments = [];
+                const files = threadAttachments.files;
+                
+                if (files.length > 0) {
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+                        const fileType = file.type.startsWith('image/') ? 'image' : 'file';
+                        const fileUrl = URL.createObjectURL(file);
+                        
+                        attachments.push({
+                            name: file.name,
+                            type: fileType,
+                            url: fileUrl
+                        });
+                    }
+                }
+                
+                const newThread = {
+                    id: Date.now().toString(),
+                    title,
+                    content,
+                    author: currentUser.username,
+                    authorId: currentUser.id,
+                    attachments,
+                    comments: [],
+                    createdAt: new Date().toISOString()
+                };
+                
+                threads.unshift(newThread);
+                localStorage.setItem('threads', JSON.stringify(threads));
+                
+                closeCreateThreadModal();
+                loadThreads();
+            }
+
+            function updateFileNames() {
+                const files = threadAttachments.files;
+                if (files.length === 0) {
+                    fileNames.textContent = 'No files selected';
+                } else if (files.length === 1) {
+                    fileNames.textContent = files[0].name;
+                } else {
+                    fileNames.textContent = `${files.length} files selected`;
+                }
+            }
+
+            function addComment(threadId, content) {
+                const thread = threads.find(t => t.id === threadId);
+                if (!thread) return;
+                
+                const newComment = {
+                    id: Date.now().toString(),
+                    content,
+                    author: currentUser.username,
+                    authorId: currentUser.id,
+                    createdAt: new Date().toISOString()
+                };
+                
+                if (!thread.comments) {
+                    thread.comments = [];
+                }
+                
+                thread.comments.push(newComment);
+                localStorage.setItem('threads', JSON.stringify(threads));
+                
+                const commentsList = document.getElementById(`comments-list-${threadId}`);
+                const commentCard = document.createElement('div');
+                commentCard.className = 'comment-card';
+                commentCard.innerHTML = `
+                    <div class="comment-header">
+                        <span class="comment-author">${newComment.author}</span>
+                        <span class="comment-date">${new Date(newComment.createdAt).toLocaleDateString()}</span>
+                    </div>
+                    <div class="comment-content">${newComment.content}</div>
+                `;
+                
+                commentsList.appendChild(commentCard);
+                
+                const commentBtn = document.querySelector(`.comment-btn[data-id="${threadId}"]`);
+                commentBtn.textContent = `${thread.comments.length} Comments`;
+            }
+
+            function deleteThread(threadId) {
+                threads = threads.filter(t => t.id !== threadId);
+                localStorage.setItem('threads', JSON.stringify(threads));
+                loadThreads();
+            }
+        });
+    </script>
 </body>
 </html>
