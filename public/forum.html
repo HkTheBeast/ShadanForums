@@ -1034,465 +1034,465 @@
     </div>
 
     <script>
-        // Forums Application with SQLite Backend
-        document.addEventListener('DOMContentLoaded', function() {
-            // DOM Elements
-            const authContainer = document.getElementById('auth-container');
-            const forumsContent = document.getElementById('forums-content');
-            const emptyState = document.getElementById('empty-state');
-            const threadsList = document.getElementById('threads-list');
-            const navLoginBtn = document.getElementById('nav-login-btn');
-            const navLogoutBtn = document.getElementById('nav-logout-btn');
-            const navUserInfo = document.getElementById('nav-user-info');
-            const navUsernameDisplay = document.getElementById('nav-username-display');
-            const navUserAvatar = document.getElementById('nav-user-avatar');
-            const userAvatarLarge = document.getElementById('user-avatar-large');
-            const welcomeMessage = document.getElementById('welcome-message');
-            const createThreadBtn = document.getElementById('create-thread-btn');
-            const emptyCreateBtn = document.getElementById('empty-create-btn');
-            const createThreadModal = document.getElementById('create-thread-modal');
-            const closeModalBtn = document.querySelector('.close-modal');
-            const createThreadForm = document.getElementById('create-thread-form');
-            const threadAttachments = document.getElementById('thread-attachments');
-            const fileNames = document.getElementById('file-names');
-            const authTabs = document.querySelectorAll('.auth-tab');
-            const authForms = document.querySelectorAll('.auth-form');
-            const loginForm = document.getElementById('login-form');
-            const registerForm = document.getElementById('register-form');
-            const loginError = document.getElementById('login-error');
-            const registerError = document.getElementById('register-error');
-            const dropdowns = document.querySelectorAll('.dropdown');
+    // Forums Application with SQLite Backend
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM Elements
+        const authContainer = document.getElementById('auth-container');
+        const forumsContent = document.getElementById('forums-content');
+        const emptyState = document.getElementById('empty-state');
+        const threadsList = document.getElementById('threads-list');
+        const navLoginBtn = document.getElementById('nav-login-btn');
+        const navLogoutBtn = document.getElementById('nav-logout-btn');
+        const navUserInfo = document.getElementById('nav-user-info');
+        const navUsernameDisplay = document.getElementById('nav-username-display');
+        const navUserAvatar = document.getElementById('nav-user-avatar');
+        const userAvatarLarge = document.getElementById('user-avatar-large');
+        const welcomeMessage = document.getElementById('welcome-message');
+        const createThreadBtn = document.getElementById('create-thread-btn');
+        const emptyCreateBtn = document.getElementById('empty-create-btn');
+        const createThreadModal = document.getElementById('create-thread-modal');
+        const closeModalBtn = document.querySelector('.close-modal');
+        const createThreadForm = document.getElementById('create-thread-form');
+        const threadAttachments = document.getElementById('thread-attachments');
+        const fileNames = document.getElementById('file-names');
+        const authTabs = document.querySelectorAll('.auth-tab');
+        const authForms = document.querySelectorAll('.auth-form');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const loginError = document.getElementById('login-error');
+        const registerError = document.getElementById('register-error');
+        const dropdowns = document.querySelectorAll('.dropdown');
 
-            // Application State
-            let currentUser = null;
-            let posts = [];
+        // Application State
+        let currentUser = null;
+        let posts = [];
 
-            // API Base URL
-            const API_BASE = '/api';
+        // API Base URL
+        const API_BASE = '/api';
 
-            // Initialize
-            checkAuthStatus();
-            setupEventListeners();
+        // Initialize
+        checkAuthStatus();
+        setupEventListeners();
 
-            // Functions
-            function setupEventListeners() {
-                // Auth tabs
-                authTabs.forEach(tab => {
-                    tab.addEventListener('click', () => {
-                        const tabName = tab.getAttribute('data-tab');
-                        switchAuthTab(tabName);
-                    });
+        // Functions
+        function setupEventListeners() {
+            // Auth tabs
+            authTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.getAttribute('data-tab');
+                    switchAuthTab(tabName);
                 });
+            });
 
-                // Auth forms
-                loginForm.addEventListener('submit', handleLogin);
-                registerForm.addEventListener('submit', handleRegister);
+            // Auth forms
+            loginForm.addEventListener('submit', handleLogin);
+            registerForm.addEventListener('submit', handleRegister);
 
-                // Navbar login button
-                navLoginBtn.addEventListener('click', function() {
-                    authContainer.scrollIntoView({ behavior: 'smooth' });
-                });
+            // Navbar login button
+            navLoginBtn.addEventListener('click', function() {
+                authContainer.scrollIntoView({ behavior: 'smooth' });
+            });
 
-                // Thread creation
-                createThreadBtn.addEventListener('click', openCreateThreadModal);
-                emptyCreateBtn.addEventListener('click', openCreateThreadModal);
-                closeModalBtn.addEventListener('click', closeCreateThreadModal);
-                createThreadForm.addEventListener('submit', handleCreateThread);
+            // Thread creation
+            createThreadBtn.addEventListener('click', openCreateThreadModal);
+            emptyCreateBtn.addEventListener('click', openCreateThreadModal);
+            closeModalBtn.addEventListener('click', closeCreateThreadModal);
+            createThreadForm.addEventListener('submit', handleCreateThread);
 
-                // File attachment handling
-                threadAttachments.addEventListener('change', function() {
-                    const files = this.files;
-                    if (files.length > 0) {
-                        const names = Array.from(files).map(f => f.name).join(', ');
-                        fileNames.textContent = names;
-                    } else {
-                        fileNames.textContent = 'No files selected';
-                    }
-                });
+            // File attachment handling
+            threadAttachments.addEventListener('change', function() {
+                const files = this.files;
+                if (files.length > 0) {
+                    const names = Array.from(files).map(f => f.name).join(', ');
+                    fileNames.textContent = names;
+                } else {
+                    fileNames.textContent = 'No files selected';
+                }
+            });
 
-                // Logout
-                navLogoutBtn.addEventListener('click', handleLogout);
+            // Logout
+            navLogoutBtn.addEventListener('click', handleLogout);
 
-                // Modal backdrop click
-                createThreadModal.addEventListener('click', function(e) {
-                    if (e.target === createThreadModal) {
-                        closeCreateThreadModal();
-                    }
-                });
+            // Modal backdrop click
+            createThreadModal.addEventListener('click', function(e) {
+                if (e.target === createThreadModal) {
+                    closeCreateThreadModal();
+                }
+            });
 
-                // Mobile dropdown functionality
-                dropdowns.forEach(dropdown => {
-                    dropdown.addEventListener('click', function(e) {
-                        if (window.innerWidth <= 768) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            
-                            this.classList.toggle('active');
-                            
-                            dropdowns.forEach(otherDropdown => {
-                                if (otherDropdown !== this) {
-                                    otherDropdown.classList.remove('active');
-                                }
-                            });
-                        }
-                    });
-                });
-                
-                // Close dropdowns when clicking outside (mobile only)
-                document.addEventListener('click', function(e) {
+            // Mobile dropdown functionality
+            dropdowns.forEach(dropdown => {
+                dropdown.addEventListener('click', function(e) {
                     if (window.innerWidth <= 768) {
-                        if (!e.target.closest('.dropdown')) {
-                            dropdowns.forEach(dropdown => {
-                                dropdown.classList.remove('active');
-                            });
-                        }
-                    }
-                });
-
-                // Close dropdowns when window is resized to desktop size
-                window.addEventListener('resize', function() {
-                    if (window.innerWidth > 768) {
-                        dropdowns.forEach(dropdown => {
-                            dropdown.classList.remove('active');
-                        });
-                    }
-                });
-            }
-
-            function switchAuthTab(tabName) {
-                authTabs.forEach(tab => {
-                    if (tab.getAttribute('data-tab') === tabName) {
-                        tab.classList.add('active');
-                    } else {
-                        tab.classList.remove('active');
-                    }
-                });
-
-                authForms.forEach(form => {
-                    if (form.id === `${tabName}-form`) {
-                        form.classList.add('active');
-                    } else {
-                        form.classList.remove('active');
-                    }
-                });
-            }
-
-            async function checkAuthStatus() {
-                try {
-                    const response = await fetch(`${API_BASE}/me`, {
-                        credentials: 'include'
-                    });
-                    const data = await response.json();
-                    
-                    if (data.ok && data.user) {
-                        currentUser = data.user;
-                        showForumsContent();
-                    } else {
-                        showAuthForms();
-                    }
-                } catch (error) {
-                    console.error('Auth check failed:', error);
-                    showAuthForms();
-                }
-            }
-
-            function showAuthForms() {
-                authContainer.style.display = 'block';
-                forumsContent.style.display = 'none';
-                emptyState.style.display = 'none';
-                navLoginBtn.style.display = 'block';
-                navUserInfo.style.display = 'none';
-            }
-
-            function showForumsContent() {
-                authContainer.style.display = 'none';
-                forumsContent.style.display = 'block';
-                navLoginBtn.style.display = 'none';
-                navUserInfo.style.display = 'flex';
-                
-                // Update user info
-                navUsernameDisplay.textContent = currentUser.username;
-                navUserAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
-                userAvatarLarge.textContent = currentUser.username.charAt(0).toUpperCase();
-                welcomeMessage.textContent = `Welcome, ${currentUser.username}!`;
-                
-                // Load posts
-                loadPosts();
-            }
-
-            async function handleLogin(e) {
-                e.preventDefault();
-                
-                const username = document.getElementById('login-username').value;
-                const password = document.getElementById('login-password').value;
-                
-                if (!username || !password) {
-                    showError(loginError, 'Please fill in all fields');
-                    return;
-                }
-                
-                try {
-                    const response = await fetch(`${API_BASE}/login`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify({ username, password })
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.ok) {
-                        currentUser = data.user;
-                        showForumsContent();
-                        loginForm.reset();
-                        hideError(loginError);
-                    } else {
-                        showError(loginError, data.error || 'Login failed');
-                    }
-                } catch (error) {
-                    console.error('Login error:', error);
-                    showError(loginError, 'Network error. Please try again.');
-                }
-            }
-
-            async function handleRegister(e) {
-                e.preventDefault();
-                
-                const username = document.getElementById('register-username').value;
-                const password = document.getElementById('register-password').value;
-                const confirmPassword = document.getElementById('register-confirm-password').value;
-                
-                if (!username || !password || !confirmPassword) {
-                    showError(registerError, 'Please fill in all fields');
-                    return;
-                }
-                
-                if (password !== confirmPassword) {
-                    showError(registerError, 'Passwords do not match');
-                    return;
-                }
-                
-                try {
-                    const response = await fetch(`${API_BASE}/register`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify({ username, password })
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.ok) {
-                        currentUser = data.user;
-                        showForumsContent();
-                        registerForm.reset();
-                        hideError(registerError);
-                    } else {
-                        showError(registerError, data.error || 'Registration failed');
-                    }
-                } catch (error) {
-                    console.error('Registration error:', error);
-                    showError(registerError, 'Network error. Please try again.');
-                }
-            }
-
-            async function handleLogout() {
-                try {
-                    await fetch(`${API_BASE}/logout`, {
-                        method: 'POST',
-                        credentials: 'include'
-                    });
-                    
-                    currentUser = null;
-                    showAuthForms();
-                    
-                    loginForm.reset();
-                    registerForm.reset();
-                } catch (error) {
-                    console.error('Logout error:', error);
-                }
-            }
-
-            async function loadPosts() {
-                try {
-                    threadsList.innerHTML = '<div class="loading">Loading threads...</div>';
-                    
-                    const response = await fetch(`${API_BASE}/posts`, {
-                        credentials: 'include'
-                    });
-                    const data = await response.json();
-                    
-                    if (data.ok) {
-                        posts = data.posts || [];
-                        renderPosts();
-                    } else {
-                        throw new Error(data.error || 'Failed to load posts');
-                    }
-                } catch (error) {
-                    console.error('Load posts error:', error);
-                    threadsList.innerHTML = '<div class="error-message">Failed to load threads. Please try again.</div>';
-                }
-            }
-
-            function renderPosts() {
-                if (posts.length === 0) {
-                    forumsContent.style.display = 'none';
-                    emptyState.style.display = 'block';
-                    return;
-                }
-                
-                forumsContent.style.display = 'block';
-                emptyState.style.display = 'none';
-                
-                threadsList.innerHTML = '';
-                
-                posts.forEach(post => {
-                    const threadCard = document.createElement('div');
-                    threadCard.className = 'thread-card';
-                    
-                    const date = new Date(post.created_at).toLocaleDateString();
-                    const isAuthor = currentUser && post.author === currentUser.username;
-                    
-                    // FIXED: Only one delete button in thread-actions
-                    threadCard.innerHTML = `
-                        <div class="thread-header">
-                            <div>
-                                <h3 class="thread-title">${escapeHtml(post.title || 'Untitled')}</h3>
-                                <div class="thread-meta">
-                                    <span class="thread-author">By ${escapeHtml(post.author)}</span>
-                                    <span class="thread-date">${date}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="thread-content">${escapeHtml(post.content)}</div>
-                        ${post.attachments && post.attachments.length > 0 ? `
-                            <div class="thread-attachments">
-                                ${post.attachments.map(attachment => `
-                                    <a href="/uploads/${attachment.filename}" class="attachment" target="_blank">
-                                        📎 ${attachment.originalname}
-                                    </a>
-                                `).join('')}
-                            </div>
-                        ` : ''}
-                        <div class="thread-actions">
-                            ${isAuthor ? `<button class="delete-thread" data-id="${post.id}">Delete</button>` : ''}
-                        </div>
-                    `;
-                    
-                    threadsList.appendChild(threadCard);
-                    
-                    // Add delete event listener only if the button exists
-                    const deleteBtn = threadCard.querySelector('.delete-thread');
-                    if (deleteBtn) {
-                        deleteBtn.addEventListener('click', () => {
-                            if (confirm('Are you sure you want to delete this thread?')) {
-                                deletePost(post.id);
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        this.classList.toggle('active');
+                        
+                        dropdowns.forEach(otherDropdown => {
+                            if (otherDropdown !== this) {
+                                otherDropdown.classList.remove('active');
                             }
                         });
                     }
                 });
-            }
-
-            function openCreateThreadModal() {
-                if (!currentUser) {
-                    alert('Please log in to create a thread');
-                    return;
-                }
-                
-                createThreadModal.style.display = 'flex';
-            }
-
-            function closeCreateThreadModal() {
-                createThreadModal.style.display = 'none';
-                createThreadForm.reset();
-                threadAttachments.value = '';
-                fileNames.textContent = 'No files selected';
-            }
-
-            async function handleCreateThread(e) {
-                e.preventDefault();
-                
-                const title = document.getElementById('thread-title').value;
-                const content = document.getElementById('thread-content').value;
-                const files = threadAttachments.files;
-                
-                if (!content) {
-                    alert('Please fill in the content field');
-                    return;
-                }
-                
-                try {
-                    const formData = new FormData();
-                    formData.append('title', title);
-                    formData.append('content', content);
-                    
-                    // Add files to formData
-                    for (let i = 0; i < files.length; i++) {
-                        formData.append('attachments', files[i]);
+            });
+            
+            // Close dropdowns when clicking outside (mobile only)
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768) {
+                    if (!e.target.closest('.dropdown')) {
+                        dropdowns.forEach(dropdown => {
+                            dropdown.classList.remove('active');
+                        });
                     }
-                    
-                    const response = await fetch(`${API_BASE}/posts`, {
-                        method: 'POST',
-                        credentials: 'include',
-                        body: formData
+                }
+            });
+
+            // Close dropdowns when window is resized to desktop size
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    dropdowns.forEach(dropdown => {
+                        dropdown.classList.remove('active');
                     });
-                    
-                    const data = await response.json();
-                    
-                    if (data.ok) {
-                        closeCreateThreadModal();
-                        loadPosts(); // Reload to get the new post
-                    } else {
-                        alert(data.error || 'Failed to create thread');
-                    }
-                } catch (error) {
-                    console.error('Create thread error:', error);
-                    alert('Network error. Please try again.');
                 }
-            }
+            });
+        }
 
-            async function deletePost(postId) {
-                try {
-                    const response = await fetch(`${API_BASE}/posts/${postId}`, {
-                        method: 'DELETE',
-                        credentials: 'include'
+        function switchAuthTab(tabName) {
+            authTabs.forEach(tab => {
+                if (tab.getAttribute('data-tab') === tabName) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+
+            authForms.forEach(form => {
+                if (form.id === `${tabName}-form`) {
+                    form.classList.add('active');
+                } else {
+                    form.classList.remove('active');
+                }
+            });
+        }
+
+        async function checkAuthStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/me`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                
+                if (data.ok && data.user) {
+                    currentUser = data.user;
+                    showForumsContent();
+                } else {
+                    showAuthForms();
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                showAuthForms();
+            }
+        }
+
+        function showAuthForms() {
+            authContainer.style.display = 'block';
+            forumsContent.style.display = 'none';
+            emptyState.style.display = 'none';
+            navLoginBtn.style.display = 'block';
+            navUserInfo.style.display = 'none';
+        }
+
+        function showForumsContent() {
+            authContainer.style.display = 'none';
+            forumsContent.style.display = 'block';
+            navLoginBtn.style.display = 'none';
+            navUserInfo.style.display = 'flex';
+            
+            // Update user info
+            navUsernameDisplay.textContent = currentUser.username;
+            navUserAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
+            userAvatarLarge.textContent = currentUser.username.charAt(0).toUpperCase();
+            welcomeMessage.textContent = `Welcome, ${currentUser.username}!`;
+            
+            // Load posts
+            loadPosts();
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!username || !password) {
+                showError(loginError, 'Please fill in all fields');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.ok) {
+                    currentUser = data.user;
+                    showForumsContent();
+                    loginForm.reset();
+                    hideError(loginError);
+                } else {
+                    showError(loginError, data.error || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showError(loginError, 'Network error. Please try again.');
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            
+            if (!username || !password || !confirmPassword) {
+                showError(registerError, 'Please fill in all fields');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showError(registerError, 'Passwords do not match');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.ok) {
+                    currentUser = data.user;
+                    showForumsContent();
+                    registerForm.reset();
+                    hideError(registerError);
+                } else {
+                    showError(registerError, data.error || 'Registration failed');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showError(registerError, 'Network error. Please try again.');
+            }
+        }
+
+        async function handleLogout() {
+            try {
+                await fetch(`${API_BASE}/logout`, {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                
+                currentUser = null;
+                showAuthForms();
+                
+                loginForm.reset();
+                registerForm.reset();
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+
+        async function loadPosts() {
+            try {
+                threadsList.innerHTML = '<div class="loading">Loading threads...</div>';
+                
+                const response = await fetch(`${API_BASE}/posts`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                
+                if (data.ok) {
+                    posts = data.posts || [];
+                    renderPosts();
+                } else {
+                    throw new Error(data.error || 'Failed to load posts');
+                }
+            } catch (error) {
+                console.error('Load posts error:', error);
+                threadsList.innerHTML = '<div class="error-message">Failed to load threads. Please try again.</div>';
+            }
+        }
+
+        function renderPosts() {
+            if (posts.length === 0) {
+                forumsContent.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            forumsContent.style.display = 'block';
+            emptyState.style.display = 'none';
+            
+            threadsList.innerHTML = '';
+            
+            posts.forEach(post => {
+                const threadCard = document.createElement('div');
+                threadCard.className = 'thread-card';
+                
+                const date = new Date(post.created_at).toLocaleDateString();
+                const isAuthor = currentUser && post.author === currentUser.username;
+                
+                // FIXED: Only one delete button in thread-actions
+                threadCard.innerHTML = `
+                    <div class="thread-header">
+                        <div>
+                            <h3 class="thread-title">${escapeHtml(post.title || 'Untitled')}</h3>
+                            <div class="thread-meta">
+                                <span class="thread-author">By ${escapeHtml(post.author)}</span>
+                                <span class="thread-date">${date}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="thread-content">${escapeHtml(post.content)}</div>
+                    ${post.attachments && post.attachments.length > 0 ? `
+                        <div class="thread-attachments">
+                            ${post.attachments.map(attachment => `
+                                <a href="/uploads/${attachment.filename}" class="attachment" target="_blank">
+                                    📎 ${attachment.originalname}
+                                </a>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="thread-actions">
+                        ${isAuthor ? `<button class="delete-thread" data-id="${post.id}">Delete</button>` : ''}
+                    </div>
+                `;
+                
+                threadsList.appendChild(threadCard);
+                
+                // Add delete event listener only if the button exists
+                const deleteBtn = threadCard.querySelector('.delete-thread');
+                if (deleteBtn) {
+                    deleteBtn.addEventListener('click', () => {
+                        if (confirm('Are you sure you want to delete this thread?')) {
+                            deletePost(post.id);
+                        }
                     });
-                    
-                    const data = await response.json();
-                    
-                    if (data.ok) {
-                        loadPosts(); // Reload to reflect deletion
-                    } else {
-                        alert(data.error || 'Failed to delete thread');
-                    }
-                } catch (error) {
-                    console.error('Delete post error:', error);
-                    alert('Network error. Please try again.');
                 }
-            }
+            });
+        }
 
-            function showError(element, message) {
-                element.textContent = message;
-                element.style.display = 'block';
+        function openCreateThreadModal() {
+            if (!currentUser) {
+                alert('Please log in to create a thread');
+                return;
             }
+            
+            createThreadModal.style.display = 'flex';
+        }
 
-            function hideError(element) {
-                element.style.display = 'none';
-            }
+        function closeCreateThreadModal() {
+            createThreadModal.style.display = 'none';
+            createThreadForm.reset();
+            threadAttachments.value = '';
+            fileNames.textContent = 'No files selected';
+        }
 
-            function escapeHtml(unsafe) {
-                return unsafe
-                    .replace(/&/g, "&amp;")
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;")
-                    .replace(/"/g, "&quot;")
-                    .replace(/'/g, "&#039;");
+        async function handleCreateThread(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('thread-title').value;
+            const content = document.getElementById('thread-content').value;
+            const files = threadAttachments.files;
+            
+            if (!content) {
+                alert('Please fill in the content field');
+                return;
             }
-        });
-    </script>
+            
+            try {
+                const formData = new FormData();
+                formData.append('title', title);
+                formData.append('content', content);
+                
+                // Add files to formData
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('attachments', files[i]);
+                }
+                
+                const response = await fetch(`${API_BASE}/posts`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.ok) {
+                    closeCreateThreadModal();
+                    loadPosts(); // Reload to get the new post
+                } else {
+                    alert(data.error || 'Failed to create thread');
+                }
+            } catch (error) {
+                console.error('Create thread error:', error);
+                alert('Network error. Please try again.');
+            }
+        }
+
+        async function deletePost(postId) {
+            try {
+                const response = await fetch(`${API_BASE}/posts/${postId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (data.ok) {
+                    loadPosts(); // Reload to reflect deletion
+                } else {
+                    alert(data.error || 'Failed to delete thread');
+                }
+            } catch (error) {
+                console.error('Delete post error:', error);
+                alert('Network error. Please try again.');
+            }
+        }
+
+        function showError(element, message) {
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+
+        function hideError(element) {
+            element.style.display = 'none';
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    });
+</script>
 </body>
 </html>
