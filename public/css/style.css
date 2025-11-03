@@ -6381,3 +6381,125 @@ body .timetable-container .info-card {
     font-size: 1.8rem;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===== NUCLEAR RESPONSIVE DROPDOWN FIX ===== */
+
+/* MOBILE FIRST APPROACH - Force mobile behavior */
+@media (max-width: 768px) {
+  .dropdown {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+  }
+  
+  .dropdown-toggle {
+    display: block !important;
+    width: 100% !important;
+    text-align: center !important;
+    cursor: pointer !important;
+    position: relative !important;
+  }
+  
+  .dropdown-toggle::after {
+    content: '▼' !important;
+    position: absolute !important;
+    right: 15px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    font-size: 12px !important;
+  }
+  
+  .dropdown.active .dropdown-toggle::after {
+    transform: translateY(-50%) rotate(180deg) !important;
+  }
+  
+  .dropdown-content {
+    display: none !important;
+    position: static !important;
+    width: 100% !important;
+    margin-top: 5px !important;
+    box-shadow: none !important;
+    border: 2px solid var(--emerald) !important;
+    border-radius: 10px !important;
+  }
+  
+  .dropdown.active .dropdown-content {
+    display: block !important;
+  }
+  
+  /* NUCLEAR: KILL ALL HOVER EFFECTS ON MOBILE */
+  .dropdown:hover .dropdown-content {
+    display: none !important;
+  }
+  
+  .dropdown-toggle:hover {
+    background: transparent !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* DESKTOP: Only apply hover on large screens */
+@media (min-width: 769px) {
+  .dropdown:hover .dropdown-content {
+    display: block !important;
+  }
+  
+  .dropdown-content {
+    display: none !important;
+  }
+}
