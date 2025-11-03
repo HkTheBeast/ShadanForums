@@ -1,0 +1,433 @@
+/* ===== FACULTY PAGE STYLES ===== */
+.faculty-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 3rem);
+}
+
+.faculty-hero {
+  text-align: center;
+  padding: clamp(3rem, 8vw, 6rem) clamp(1rem, 4vw, 2rem);
+  margin-bottom: 3rem;
+  background: transparent;
+}
+
+.faculty-hero h1 {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  margin-bottom: 1.5rem;
+  font-weight: 800;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: -1px;
+  padding: clamp(1.5rem, 4vw, 2rem) clamp(2rem, 5vw, 3rem);
+  border-radius: 30px;
+  display: inline-block;
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 3px solid var(--emerald);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  color: var(--emerald);
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  max-width: min(95%, 900px);
+}
+
+.hero-subtitle {
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  color: var(--emerald);
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  background: var(--card-bg);
+  padding: clamp(1rem, 2.5vw, 1.5rem) clamp(2rem, 4vw, 3rem);
+  border-radius: 25px;
+  display: inline-block;
+  border: 2px solid var(--emerald);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  margin-bottom: 2rem;
+}
+
+.hero-description {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-description p {
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  line-height: 1.7;
+  color: var(--text);
+  background: var(--card-bg);
+  padding: clamp(1.5rem, 3vw, 2rem);
+  border-radius: 20px;
+  border: 2px solid var(--emerald);
+  backdrop-filter: blur(10px);
+}
+
+/* Department Navigation */
+.department-nav {
+  margin-bottom: 3rem;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.dept-btn {
+  padding: clamp(1rem, 2vw, 1.2rem) clamp(2rem, 3vw, 2.5rem);
+  background: var(--light-bg);
+  border: 2px solid var(--emerald);
+  border-radius: 50px;
+  color: var(--text);
+  font-size: clamp(1rem, 1.5vw, 1.1rem);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.dept-btn:hover {
+  background: var(--emerald);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 139, 87, 0.4);
+}
+
+.dept-btn.active {
+  background: var(--emerald);
+  color: white;
+  box-shadow: 0 4px 15px rgba(46, 139, 87, 0.3);
+}
+
+/* Department Sections */
+.department-section {
+  display: none;
+  margin-bottom: 4rem;
+}
+
+.department-section.active {
+  display: block;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.department-header {
+  text-align: center;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+  padding: clamp(2rem, 4vw, 3rem);
+  background: var(--card-bg);
+  border-radius: 25px;
+  border: 2px solid var(--emerald);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.dept-icon {
+  font-size: clamp(3rem, 6vw, 4rem);
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  padding: 1rem;
+  background: var(--light-bg);
+  border-radius: 20px;
+  border: 2px solid var(--emerald);
+}
+
+.department-header h2 {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  color: var(--emerald);
+  margin-bottom: 1rem;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+}
+
+.dept-subtitle {
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* Faculty Cards Grid */
+.faculty-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(350px, 100%), 1fr));
+  gap: clamp(1.5rem, 3vw, 2rem);
+}
+
+.faculty-card {
+  background: var(--card-bg);
+  padding: clamp(1.5rem, 3vw, 2rem);
+  border-radius: 20px;
+  border: 2px solid var(--emerald);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  text-align: center;
+}
+
+.faculty-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(46, 139, 87, 0.3);
+}
+
+.faculty-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--light-bg);
+  color: var(--emerald);
+  padding: 0.4rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid var(--emerald);
+}
+
+.faculty-icon {
+  font-size: clamp(2.5rem, 4vw, 3rem);
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.faculty-info h3 {
+  font-size: clamp(1.2rem, 2vw, 1.4rem);
+  color: var(--emerald);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+}
+
+.faculty-designation {
+  font-size: clamp(1rem, 1.5vw, 1.1rem);
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.faculty-department {
+  font-size: 0.9rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* Special Card Styles */
+.director-card, .principal-card {
+  border-color: #FFD166;
+  background: linear-gradient(135deg, var(--card-bg), rgba(255, 209, 102, 0.1));
+}
+
+.director-card .faculty-badge, .principal-card .faculty-badge {
+  background: #FFD166;
+  color: var(--dark-bg);
+  border-color: #FFD166;
+}
+
+.professor-card {
+  border-color: #4ECDC4;
+  background: linear-gradient(135deg, var(--card-bg), rgba(78, 205, 196, 0.1));
+}
+
+.professor-card .faculty-badge {
+  background: #4ECDC4;
+  color: white;
+  border-color: #4ECDC4;
+}
+
+.associate-card {
+  border-color: #A78BFA;
+  background: linear-gradient(135deg, var(--card-bg), rgba(167, 139, 250, 0.1));
+}
+
+.associate-card .faculty-badge {
+  background: #A78BFA;
+  color: white;
+  border-color: #A78BFA;
+}
+
+.assistant-card {
+  border-color: var(--emerald);
+  background: linear-gradient(135deg, var(--card-bg), rgba(46, 139, 87, 0.1));
+}
+
+.assistant-card .faculty-badge {
+  background: var(--emerald);
+  color: white;
+  border-color: var(--emerald);
+}
+
+/* Acknowledgment Section */
+.acknowledgment-section {
+  margin: 4rem 0;
+}
+
+.acknowledgment-card {
+  background: var(--card-bg);
+  border-radius: 25px;
+  padding: clamp(2rem, 4vw, 3rem);
+  border: 2px solid var(--emerald);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.ack-header {
+  text-align: center;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.ack-icon {
+  font-size: clamp(3rem, 6vw, 4rem);
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  padding: 1rem;
+  background: var(--light-bg);
+  border-radius: 20px;
+  border: 2px solid var(--emerald);
+}
+
+.ack-header h2 {
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  color: var(--emerald);
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+}
+
+.ack-content p {
+  font-size: clamp(1.1rem, 1.8vw, 1.3rem);
+  line-height: 1.7;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+  text-align: justify;
+}
+
+.special-thanks {
+  margin: 2.5rem 0;
+  padding: clamp(1.5rem, 3vw, 2rem);
+  background: var(--light-bg);
+  border-radius: 20px;
+  border: 2px solid var(--emerald);
+}
+
+.special-thanks h3 {
+  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+  color: var(--emerald);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.thanks-card {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: var(--card-bg);
+  padding: clamp(1.5rem, 3vw, 2rem);
+  border-radius: 15px;
+  border: 2px solid var(--emerald);
+}
+
+.thanks-icon {
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+
+.thanks-content h4 {
+  font-size: clamp(1.2rem, 2vw, 1.4rem);
+  color: var(--emerald);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.thanks-content p {
+  margin-bottom: 0.5rem;
+  color: var(--text);
+}
+
+.thanks-message {
+  font-style: italic;
+  color: var(--muted);
+  margin-bottom: 0 !important;
+}
+
+.closing-message {
+  font-weight: 600;
+  color: var(--emerald) !important;
+  text-align: center !important;
+  font-size: clamp(1.2rem, 2vw, 1.4rem) !important;
+}
+
+.signature {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid rgba(46, 139, 87, 0.3);
+}
+
+.signature p {
+  font-style: italic;
+  color: var(--muted);
+  font-weight: 500;
+  margin-bottom: 0 !important;
+  font-size: 1.2rem !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .faculty-hero {
+    padding: 2rem 1rem;
+  }
+  
+  .faculty-hero h1 {
+    font-size: 2.2rem;
+    padding: 1.5rem 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.2rem;
+    padding: 1rem 1.5rem;
+  }
+  
+  .nav-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .dept-btn {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .faculty-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .thanks-card {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .faculty-hero h1 {
+    font-size: 1.8rem;
+    padding: 1.2rem 1.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+    padding: 0.8rem 1.2rem;
+  }
+  
+  .department-header h2 {
+    font-size: 1.8rem;
+  }
+  
+  .ack-header h2 {
+    font-size: 1.8rem;
+  }
+}
