@@ -6546,7 +6546,50 @@ body .timetable-container .info-card {
   gap: 10px !important;
 }
 
+/* Fix navbar width on Android */
+@media (max-width: 768px) {
+  .topbar {
+    padding: 1rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  .topbar nav {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  
+  .topbar nav > * {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Ensure all nav items are full width */
+  .topbar nav a:not(.mobile-dropdown-btn) {
+    display: block !important;
+    width: 100% !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Make sure mobile dropdown takes full width */
+  .mobile-dropdown {
+    width: 100% !important;
+  }
+}
 
+/* Force full viewport width */
+.app {
+  width: 100vw !important;
+  overflow-x: hidden !important;
+}
+
+body {
+  width: 100% !important;
+  overflow-x: hidden !important;
+}
 
 
 
