@@ -1264,3 +1264,161 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// About Page JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+  initAboutPage();
+});
+
+function initAboutPage() {
+  // Initialize animations and interactions
+  addScrollAnimations();
+  addImageZoom();
+  addInteractiveElements();
+  console.log('About page enhanced successfully!');
+}
+
+function addScrollAnimations() {
+  // Add intersection observer for scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        entry.target.style.transition = 'all 0.8s ease';
+      }
+    });
+  }, observerOptions);
+
+  // Observe all about sections
+  const aboutSections = document.querySelectorAll('.about-section');
+  aboutSections.forEach(section => {
+    section.style.opacity = '0';
+    section.style.transform = 'translateY(30px)';
+    observer.observe(section);
+  });
+
+  // Observe hero content
+  const heroContent = document.querySelector('.hero-content');
+  if (heroContent) {
+    heroContent.style.opacity = '0';
+    heroContent.style.transform = 'translateY(20px)';
+    heroContent.style.transition = 'all 1s ease';
+    setTimeout(() => {
+      heroContent.style.opacity = '1';
+      heroContent.style.transform = 'translateY(0)';
+    }, 300);
+  }
+}
+
+function addImageZoom() {
+  // Add image zoom functionality
+  const images = document.querySelectorAll('.responsive-image');
+  
+  images.forEach(img => {
+    img.addEventListener('click', function() {
+      this.classList.toggle('zoomed');
+      
+      if (this.classList.contains('zoomed')) {
+        this.style.transform = 'scale(1.5)';
+        this.style.zIndex = '1000';
+        this.style.position = 'relative';
+        this.style.cursor = 'zoom-out';
+      } else {
+        this.style.transform = 'scale(1)';
+        this.style.zIndex = '1';
+        this.style.cursor = 'zoom-in';
+      }
+    });
+    
+    // Close zoom when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!img.contains(e.target) && img.classList.contains('zoomed')) {
+        img.classList.remove('zoomed');
+        img.style.transform = 'scale(1)';
+        img.style.zIndex = '1';
+        img.style.cursor = 'zoom-in';
+      }
+    });
+  });
+}
+
+function addInteractiveElements() {
+  // Add hover effects for interactive elements
+  const interactiveElements = document.querySelectorAll('.feature-item, .vision-card');
+  
+  interactiveElements.forEach(element => {
+    element.addEventListener('mouseenter', function() {
+      this.style.zIndex = '10';
+    });
+    
+    element.addEventListener('mouseleave', function() {
+      this.style.zIndex = '1';
+    });
+  });
+
+  // Enhanced CTA button interactions
+  const ctaButtons = document.querySelectorAll('.cta-button');
+  
+  ctaButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      if (this.href && !this.href.includes('#')) {
+        const originalText = this.innerHTML;
+        this.innerHTML = '<span class="loading-spinner"></span>Loading...';
+        this.style.pointerEvents = 'none';
+        this.style.opacity = '0.8';
+        
+        // Simulate loading for demo purposes
+        setTimeout(() => {
+          this.innerHTML = originalText;
+          this.style.pointerEvents = 'auto';
+          this.style.opacity = '1';
+        }, 1500);
+      }
+    });
+  });
+
+  // Add CSS for animations
+  const style = document.createElement('style');
+  style.textContent = `
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid transparent;
+      border-top: 2px solid currentColor;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// Export for module use
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { initAboutPage };
+}
