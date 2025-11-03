@@ -1205,3 +1205,62 @@ function initSubjectPage() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ===== NEW MOBILE DROPDOWN JS =====
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('🚀 NEW MOBILE DROPDOWN SYSTEM');
+  
+  const mobileDropdowns = document.querySelectorAll('.mobile-dropdown');
+  
+  mobileDropdowns.forEach(dropdown => {
+    const button = dropdown.querySelector('.mobile-dropdown-btn');
+    const menu = dropdown.querySelector('.mobile-dropdown-menu');
+    
+    if (button && menu) {
+      button.addEventListener('click', function(e) {
+        e.stopPropagation();
+        
+        // Close all other dropdowns
+        mobileDropdowns.forEach(other => {
+          if (other !== dropdown) {
+            other.classList.remove('open');
+          }
+        });
+        
+        // Toggle this dropdown
+        dropdown.classList.toggle('open');
+        console.log('📱 Dropdown toggled:', dropdown.classList.contains('open'));
+      });
+      
+      // Close when clicking links
+      const links = menu.querySelectorAll('.mobile-dropdown-link');
+      links.forEach(link => {
+        link.addEventListener('click', function() {
+          dropdown.classList.remove('open');
+        });
+      });
+    }
+  });
+  
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', function() {
+    mobileDropdowns.forEach(dropdown => {
+      dropdown.classList.remove('open');
+    });
+  });
+});

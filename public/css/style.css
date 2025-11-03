@@ -6432,6 +6432,120 @@ body .timetable-container .info-card {
 
 
 
+/* ===== NEW MOBILE DROPDOWN STYLES ===== */
+.mobile-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.mobile-dropdown-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 12px 20px;
+  background: var(--card-bg);
+  border: 2px solid var(--emerald);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 5px 0;
+  transition: all 0.3s ease;
+}
+
+.mobile-dropdown-btn:hover {
+  background: var(--sea-green);
+  color: white;
+}
+
+.mobile-dropdown-arrow {
+  font-size: 12px;
+  transition: transform 0.3s ease;
+}
+
+.mobile-dropdown.open .mobile-dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.mobile-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: var(--card-bg);
+  border: 2px solid var(--emerald);
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  z-index: 10000;
+  margin-top: 5px;
+}
+
+.mobile-dropdown.open .mobile-dropdown-menu {
+  display: block;
+}
+
+.mobile-dropdown-link {
+  display: block;
+  padding: 15px 20px;
+  color: var(--text);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(46, 139, 87, 0.2);
+  text-align: center;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.mobile-dropdown-link:hover {
+  background: var(--sea-green);
+  color: white;
+}
+
+.mobile-dropdown-link:last-child {
+  border-bottom: none;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .mobile-dropdown {
+    width: 100%;
+  }
+  
+  .mobile-dropdown-menu {
+    position: static;
+    margin-top: 10px;
+  }
+}
+
+/* Hide old dropdown on mobile */
+@media (max-width: 768px) {
+  .dropdown {
+    display: none !important;
+  }
+}
+
+/* Show old dropdown on desktop */
+@media (min-width: 769px) {
+  .mobile-dropdown {
+    display: none !important;
+  }
+}
+/* Remove green border from mobile dropdown button */
+.mobile-dropdown-btn {
+  border: 2px solid transparent !important;
+}
+
+.mobile-dropdown-btn:hover {
+  border: 2px solid transparent !important;
+}
+/* Center Subjects text in button */
+.mobile-dropdown-btn {
+  justify-content: center !important;
+  gap: 10px !important;
+}
+
 
 
 
