@@ -163,30 +163,42 @@
         </div>
       </section>
 
-     <!-- Notes Section -->
-<section class="notes-section">
-  <div class="section-header">
-    <div class="section-icon">📖</div>
-    <h2>Study Materials</h2>
-    <p class="section-subtitle">Download notes and reference materials</p>
-  </div>
+      <!-- Notes Section - FIXED SCROLL BARS -->
+      <section class="notes-section">
+        <div class="section-header">
+          <div class="section-icon">📖</div>
+          <h2>Study Materials</h2>
+          <p class="section-subtitle">Download notes and reference materials</p>
+        </div>
 
-  <div class="notes-content">
-    <div class="notes-card">
-      <div class="notes-preview">
-        <!-- PDF Viewer with proper scrolling -->
-        <embed src="notespdf/oopsnotes.pdf" type="application/pdf" class="pdf-preview">
-      </div>
-      <div class="download-section">
-        <a href="notespdf/oopsnotes.pdf" download="OOPS_Complete_Notes.pdf" class="download-btn">
-          <span class="btn-icon">📥</span>
-          <span class="btn-text">Download Notes PDF</span>
-        </a>
-        <p class="download-note">Click to download the complete OOPS notes (PDF, ~2.5MB)</p>
-      </div>
-    </div>
-  </div>
-</section>
+        <div class="notes-content">
+          <div class="notes-card">
+            <div class="notes-preview">
+              <!-- PDF Preview with Fixed Scroll -->
+              <div class="pdf-preview-container">
+                <iframe src="notespdf/oopsnotes.pdf" class="pdf-preview" type="application/pdf">
+                  <div class="pdf-placeholder">
+                    <div class="pdf-icon">📄</div>
+                    <h3>OOPS Complete Notes</h3>
+                    <p>Comprehensive notes covering object-oriented programming concepts with C++ examples</p>
+                    <div class="file-info">
+                      <span class="file-size">~3.0 MB</span>
+                      <span class="file-pages">48 Pages</span>
+                    </div>
+                  </div>
+                </iframe>
+              </div>
+            </div>
+            <div class="download-section">
+              <a href="notespdf/oopsnotes.pdf" download="OOPS_Complete_Notes.pdf" class="download-btn">
+                <span class="btn-icon">📥</span>
+                <span class="btn-text">Download Notes PDF</span>
+              </a>
+              <p class="download-note">Click to download the complete OOPS notes (PDF, ~3.0MB)</p>
+            </div>
+          </div>
+        </div>
+      </section>
       <!-- Lab Information -->
       <section class="lab-section">
         <div class="section-header">

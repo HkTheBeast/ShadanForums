@@ -163,7 +163,7 @@
         </div>
       </section>
 
-      <!-- Notes Section -->
+      <!-- Notes Section - FIXED SCROLL BARS -->
       <section class="notes-section">
         <div class="section-header">
           <div class="section-icon">📖</div>
@@ -174,14 +174,19 @@
         <div class="notes-content">
           <div class="notes-card">
             <div class="notes-preview">
-              <div class="pdf-placeholder">
-                <div class="pdf-icon">📄</div>
-                <h3>COSM Complete Notes</h3>
-                <p>Comprehensive notes covering probability, statistics, and computational methods with solved examples</p>
-                <div class="file-info">
-                  <span class="file-size">~3.5 MB</span>
-                  <span class="file-pages">55 Pages</span>
-                </div>
+              <!-- PDF Preview with Fixed Scroll -->
+              <div class="pdf-preview-container">
+                <iframe src="notespdf/cosmnotes.pdf" class="pdf-preview" type="application/pdf">
+                  <div class="pdf-placeholder">
+                    <div class="pdf-icon">📄</div>
+                    <h3>COSM Complete Notes</h3>
+                    <p>Comprehensive notes covering probability, statistics, and computational methods with solved examples</p>
+                    <div class="file-info">
+                      <span class="file-size">~3.5 MB</span>
+                      <span class="file-pages">55 Pages</span>
+                    </div>
+                  </div>
+                </iframe>
               </div>
             </div>
             <div class="download-section">

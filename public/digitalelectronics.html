@@ -160,7 +160,7 @@
         </div>
       </section>
 
-      <!-- Notes Section -->
+      <!-- Notes Section - FIXED SCROLL BARS -->
       <section class="notes-section">
         <div class="section-header">
           <div class="section-icon">📖</div>
@@ -171,14 +171,19 @@
         <div class="notes-content">
           <div class="notes-card">
             <div class="notes-preview">
-              <div class="pdf-placeholder">
-                <div class="pdf-icon">📄</div>
-                <h3>Digital Electronics Complete Notes</h3>
-                <p>Comprehensive notes covering all topics from number systems to sequential circuits with detailed diagrams</p>
-                <div class="file-info">
-                  <span class="file-size">~2.8 MB</span>
-                  <span class="file-pages">48 Pages</span>
-                </div>
+              <!-- PDF Preview with Fixed Scroll -->
+              <div class="pdf-preview-container">
+                <iframe src="notespdf/denotes.pdf" class="pdf-preview" type="application/pdf">
+                  <div class="pdf-placeholder">
+                    <div class="pdf-icon">📄</div>
+                    <h3>Digital Electronics Complete Notes</h3>
+                    <p>Comprehensive notes covering all digital electronics topics from logic gates to sequential circuits</p>
+                    <div class="file-info">
+                      <span class="file-size">~3.8 MB</span>
+                      <span class="file-pages">60 Pages</span>
+                    </div>
+                  </div>
+                </iframe>
               </div>
             </div>
             <div class="download-section">
@@ -186,7 +191,7 @@
                 <span class="btn-icon">📥</span>
                 <span class="btn-text">Download Notes PDF</span>
               </a>
-              <p class="download-note">Click to download the complete Digital Electronics notes (PDF, ~2.8MB)</p>
+              <p class="download-note">Click to download the complete Digital Electronics notes (PDF, ~3.8MB)</p>
             </div>
           </div>
         </div>
