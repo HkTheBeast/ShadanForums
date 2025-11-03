@@ -5558,3 +5558,198 @@ pre {
     font-size: 3rem;
   }
 }
+
+
+
+
+
+
+
+
+/* ===== TIMETABLE SPECIFIC FIXES - COMPLETE SOLUTION ===== */
+
+/* Force ALL academic info items to have green borders */
+.academic-info .info-item {
+  border: 2px solid var(--emerald) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.8rem !important;
+  background: var(--card-bg) !important;
+  padding: clamp(1rem, 2vw, 1.2rem) clamp(1.5rem, 3vw, 2rem) !important;
+  border-radius: 20px !important;
+  backdrop-filter: blur(10px) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Force hover state for academic info items */
+.academic-info .info-item:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 12px 30px rgba(46, 139, 87, 0.4) !important;
+  background: var(--light-bg) !important;
+  border: 2px solid var(--emerald) !important;
+}
+
+/* Force ALL direct divs in academic-info to have borders */
+.academic-info > div:not(.hero-content) {
+  border: 2px solid var(--emerald) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.8rem !important;
+  background: var(--card-bg) !important;
+  padding: clamp(1rem, 2vw, 1.2rem) clamp(1.5rem, 3vw, 2rem) !important;
+  border-radius: 20px !important;
+  backdrop-filter: blur(10px) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.academic-info > div:not(.hero-content):hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 12px 30px rgba(46, 139, 87, 0.4) !important;
+  background: var(--light-bg) !important;
+  border: 2px solid var(--emerald) !important;
+}
+
+/* Fix timetable cards to maintain borders */
+.timetable-card {
+  background: var(--card-bg) !important;
+  border-radius: 25px !important;
+  padding: clamp(2rem, 4vw, 3rem) !important;
+  border: 2px solid var(--emerald) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.4s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.timetable-card:hover {
+  transform: translateY(-8px) !important;
+  box-shadow: 0 20px 50px rgba(46, 139, 87, 0.4) !important;
+  border: 2px solid var(--emerald) !important;
+}
+
+/* Ensure colored top borders stay on cards */
+.timetable-card::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 6px !important;
+  border-radius: 25px 25px 0 0 !important;
+  z-index: 2 !important;
+}
+
+.calendar-card::before {
+  background: linear-gradient(135deg, #FFD166, #FFB347) !important;
+}
+
+.routine-card::before {
+  background: linear-gradient(135deg, #4ECDC4, #2DD4BF) !important;
+}
+
+.midterm-card::before {
+  background: linear-gradient(135deg, #FF6B6B, #FF4757) !important;
+}
+
+/* Fix info cards */
+.info-card {
+  background: var(--card-bg) !important;
+  padding: clamp(1.5rem, 3vw, 2rem) !important;
+  border-radius: 20px !important;
+  border: 2px solid var(--emerald) !important;
+  text-align: center !important;
+  transition: all 0.3s ease !important;
+  backdrop-filter: blur(10px) !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.info-card:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 10px 30px rgba(46, 139, 87, 0.3) !important;
+  border: 2px solid var(--emerald) !important;
+}
+
+/* Fix download section */
+.download-section {
+  background: linear-gradient(135deg, var(--sea-green) 0%, var(--emerald) 100%) !important;
+  padding: clamp(3rem, 6vw, 5rem) clamp(2rem, 4vw, 3rem) !important;
+  border-radius: 30px !important;
+  margin-top: 3rem !important;
+  border: 3px solid var(--emerald) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4) !important;
+  text-align: center !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* Fix download buttons */
+.download-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.8rem !important;
+  padding: clamp(1rem, 2.5vw, 1.2rem) clamp(2rem, 4vw, 2.5rem) !important;
+  background: white !important;
+  color: var(--sea-green) !important;
+  text-decoration: none !important;
+  font-size: clamp(1.1rem, 2vw, 1.3rem) !important;
+  font-weight: 700 !important;
+  border-radius: 50px !important;
+  transition: all 0.4s ease !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+  font-family: 'Inter', sans-serif !important;
+  white-space: nowrap !important;
+  border: 2px solid transparent !important;
+}
+
+.download-btn:hover {
+  transform: translateY(-5px) scale(1.05) !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4) !important;
+  background: var(--light-bg) !important;
+  color: var(--emerald) !important;
+  border: 2px solid var(--emerald) !important;
+}
+
+/* Fix all containers */
+.image-container,
+.card-features, 
+.schedule-highlights, 
+.exam-info {
+  border: 2px solid var(--emerald) !important;
+}
+
+.image-container {
+  text-align: center !important;
+  background: var(--light-bg) !important;
+  padding: 1.5rem !important;
+  border-radius: 15px !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.card-features, 
+.schedule-highlights, 
+.exam-info {
+  background: var(--light-bg) !important;
+  padding: clamp(1.5rem, 3vw, 2rem) !important;
+  border-radius: 15px !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Override any conflicting styles */
+.timetable-container * {
+  box-sizing: border-box !important;
+}
+
+/* Nuclear option - if still not working */
+body .timetable-container .academic-info div,
+body .timetable-container .timetable-card,
+body .timetable-container .info-card {
+  border: 2px solid var(--emerald) !important;
+}
