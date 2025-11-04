@@ -1,3 +1,6 @@
+const express = require('express');
+const session = require('express-session');
+// ... not in the middle of app.put()
 app.put('/api/posts/:id', ensureAuth, (req, res) => {
   const id = req.params.id;
   const { title, content } = req.body;
