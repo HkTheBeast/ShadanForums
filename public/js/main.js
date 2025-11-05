@@ -1422,3 +1422,139 @@ function addInteractiveElements() {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { initAboutPage };
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// More Page JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+  initMorePage();
+});
+
+function initMorePage() {
+  // Initialize animations
+  addScrollAnimations();
+  addCardInteractions();
+  addResourceTracking();
+  console.log('More page enhanced successfully!');
+}
+
+function addScrollAnimations() {
+  // Add intersection observer for scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        entry.target.style.transition = 'all 0.8s ease';
+      }
+    });
+  }, observerOptions);
+
+  // Observe all resource cards
+  const resourceCards = document.querySelectorAll('.resource-card');
+  resourceCards.forEach((card, index) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(30px)';
+    card.style.transitionDelay = `${index * 0.1}s`;
+    observer.observe(card);
+  });
+
+  // Observe stats cards
+  const statCards = document.querySelectorAll('.stat-card');
+  statCards.forEach((card, index) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    card.style.transitionDelay = `${index * 0.15}s`;
+    observer.observe(card);
+  });
+}
+
+function addCardInteractions() {
+  // Add enhanced hover effects for resource cards
+  const resourceCards = document.querySelectorAll('.resource-card');
+  
+  resourceCards.forEach(card => {
+    card.addEventListener('mouseenter', function() {
+      this.style.zIndex = '10';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+      this.style.zIndex = '1';
+    });
+    
+    // Add click tracking
+    const link = this.querySelector('.resource-link');
+    if (link) {
+      link.addEventListener('click', function(e) {
+        const resourceName = this.closest('.resource-card').querySelector('h3').textContent;
+        trackResourceClick(resourceName);
+      });
+    }
+  });
+}
+
+function addResourceTracking() {
+  // Track resource clicks for analytics
+  const resourceLinks = document.querySelectorAll('.resource-link');
+  
+  resourceLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      const resourceName = this.closest('.resource-card').querySelector('h3').textContent;
+      trackResourceClick(resourceName);
+    });
+  });
+}
+
+function trackResourceClick(resourceName) {
+  console.log(`Resource accessed: ${resourceName}`);
+  
+  // You can add analytics tracking here
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'resource_click', {
+      'event_category': 'More Page',
+      'event_label': resourceName
+    });
+  }
+}
+
+// Enhanced loading animation for hero section
+function initHeroAnimation() {
+  const heroContent = document.querySelector('.hero-content');
+  if (heroContent) {
+    heroContent.style.opacity = '0';
+    heroContent.style.transform = 'translateY(20px)';
+    heroContent.style.transition = 'all 1s ease';
+    
+    setTimeout(() => {
+      heroContent.style.opacity = '1';
+      heroContent.style.transform = 'translateY(0)';
+    }, 300);
+  }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  initMorePage();
+  initHeroAnimation();
+});
+
+// Export for module use
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { initMorePage, trackResourceClick };
+}
