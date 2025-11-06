@@ -1871,3 +1871,83 @@ document.addEventListener('DOMContentLoaded', function() {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { initCampusPage, trackFacilityView };
 }
+
+
+
+
+
+
+
+
+
+
+
+// FAQ Page JavaScript - SIMPLE & ISOLATED
+document.addEventListener('DOMContentLoaded', function() {
+    initFAQPage();
+});
+
+function initFAQPage() {
+    console.log('Initializing FAQ page...');
+    
+    const questionBlocks = document.querySelectorAll('.faq-question-block');
+    
+    questionBlocks.forEach(block => {
+        const questionBtn = block.querySelector('.faq-question-btn');
+        const answerPanel = block.querySelector('.faq-answer-panel');
+        const indicator = block.querySelector('.faq-indicator');
+        
+        questionBtn.addEventListener('click', function() {
+            console.log('Question clicked');
+            
+            const isActive = questionBtn.classList.contains('active');
+            
+            // Close all other questions
+            questionBlocks.forEach(otherBlock => {
+                if (otherBlock !== block) {
+                    const otherBtn = otherBlock.querySelector('.faq-question-btn');
+                    const otherPanel = otherBlock.querySelector('.faq-answer-panel');
+                    const otherIndicator = otherBlock.querySelector('.faq-indicator');
+                    
+                    otherBtn.classList.remove('active');
+                    otherPanel.classList.remove('active');
+                    otherIndicator.textContent = '+';
+                }
+            });
+            
+            // Toggle current question
+            if (isActive) {
+                // Close
+                questionBtn.classList.remove('active');
+                answerPanel.classList.remove('active');
+                indicator.textContent = '+';
+            } else {
+                // Open
+                questionBtn.classList.add('active');
+                answerPanel.classList.add('active');
+                indicator.textContent = '−';
+            }
+        });
+    });
+    
+    console.log('FAQ page initialized with', questionBlocks.length, 'questions');
+}
+
+// Test function
+function testFAQ() {
+    const blocks = document.querySelectorAll('.faq-question-block');
+    console.log('Testing FAQ - Found', blocks.length, 'question blocks');
+    
+    blocks.forEach((block, index) => {
+        const btn = block.querySelector('.faq-question-btn');
+        const panel = block.querySelector('.faq-answer-panel');
+        console.log(`Block ${index + 1}:`, {
+            hasButton: !!btn,
+            hasPanel: !!panel,
+            isActive: btn.classList.contains('active')
+        });
+    });
+}
+
+// Run test after initialization
+setTimeout(testFAQ, 500);
