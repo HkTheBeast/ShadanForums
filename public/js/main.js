@@ -1558,3 +1558,170 @@ document.addEventListener('DOMContentLoaded', function() {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { initMorePage, trackResourceClick };
 }
+
+
+
+
+
+
+
+
+
+
+// Achievements Page JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+  initAchievementsPage();
+});
+
+function initAchievementsPage() {
+  // Initialize animations
+  addScrollAnimations();
+  addAchievementInteractions();
+  addCounterAnimations();
+  console.log('Achievements page enhanced successfully!');
+}
+
+function addScrollAnimations() {
+  // Add intersection observer for scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        entry.target.style.transition = 'all 0.8s ease';
+        
+        // Animate numbers if it's a stat element
+        if (entry.target.classList.contains('legacy-stat')) {
+          animateCounter(entry.target);
+        }
+      }
+    });
+  }, observerOptions);
+
+  // Observe all achievement categories
+  const achievementCategories = document.querySelectorAll('.achievement-category');
+  achievementCategories.forEach((category, index) => {
+    category.style.opacity = '0';
+    category.style.transform = 'translateY(30px)';
+    category.style.transitionDelay = `${index * 0.1}s`;
+    observer.observe(category);
+  });
+
+  // Observe legacy stats
+  const legacyStats = document.querySelectorAll('.legacy-stat');
+  legacyStats.forEach(stat => {
+    stat.style.opacity = '0';
+    stat.style.transform = 'translateY(20px)';
+    observer.observe(stat);
+  });
+}
+
+function addAchievementInteractions() {
+  // Add enhanced hover effects for achievement items
+  const achievementItems = document.querySelectorAll('.achievement-item');
+  
+  achievementItems.forEach(item => {
+    item.addEventListener('mouseenter', function() {
+      this.style.zIndex = '5';
+    });
+    
+    item.addEventListener('mouseleave', function() {
+      this.style.zIndex = '1';
+    });
+  });
+
+  // Add click effects for company tags
+  const companyTags = document.querySelectorAll('.company-tag');
+  
+  companyTags.forEach(tag => {
+    tag.addEventListener('click', function() {
+      this.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        this.style.transform = '';
+      }, 150);
+    });
+  });
+}
+
+function addCounterAnimations() {
+  // Animate the legacy stats numbers
+  const legacyStats = document.querySelectorAll('.legacy-stat');
+  
+  legacyStats.forEach(stat => {
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    
+    observer.observe(stat);
+  });
+}
+
+function animateCounter(statElement) {
+  const numberElement = statElement.querySelector('.legacy-number');
+  const originalText = numberElement.textContent;
+  
+  // Check if it's a number or year
+  if (originalText.includes('+') || originalText.includes('-') || !isNaN(originalText.replace('%', ''))) {
+    const number = parseInt(originalText.replace(/[^0-9]/g, ''));
+    const isPercentage = originalText.includes('%');
+    const isRange = originalText.includes('-');
+    
+    if (!isNaN(number)) {
+      let current = 0;
+      const increment = number / 30; // Animate over 30 steps
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= number) {
+          current = number;
+          clearInterval(timer);
+        }
+        
+        if (isRange && isPercentage) {
+          numberElement.textContent = `70-${Math.floor(current)}%`;
+        } else if (isPercentage) {
+          numberElement.textContent = `${Math.floor(current)}%`;
+        } else if (isRange) {
+          numberElement.textContent = `70-${Math.floor(current)}`;
+        } else {
+          numberElement.textContent = Math.floor(current);
+        }
+      }, 50);
+    }
+  }
+}
+
+// Enhanced loading animation for hero section
+function initHeroAnimation() {
+  const heroContent = document.querySelector('.hero-content');
+  if (heroContent) {
+    heroContent.style.opacity = '0';
+    heroContent.style.transform = 'translateY(20px)';
+    heroContent.style.transition = 'all 1s ease';
+    
+    setTimeout(() => {
+      heroContent.style.opacity = '1';
+      heroContent.style.transform = 'translateY(0)';
+    }, 300);
+  }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  initAchievementsPage();
+  initHeroAnimation();
+});
+
+// Export for module use
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { initAchievementsPage, animateCounter };
+}
