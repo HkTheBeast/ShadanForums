@@ -2681,3 +2681,133 @@ if (typeof module !== 'undefined' && module.exports) {
     }
   });
 })();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Rules Page JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+  initRulesPage();
+});
+
+function initRulesPage() {
+  console.log('📜 Initializing Rules Page...');
+  
+  // Initialize animations
+  initRulesAnimations();
+  
+  // Initialize interactive elements
+  initRulesInteractions();
+  
+  console.log('✅ Rules page initialized successfully!');
+}
+
+function initRulesAnimations() {
+  // Add intersection observer for scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        entry.target.style.transition = 'all 0.8s ease';
+      }
+    });
+  }, observerOptions);
+
+  // Observe all rules categories
+  const rulesCategories = document.querySelectorAll('.rules-category');
+  rulesCategories.forEach((category, index) => {
+    category.style.opacity = '0';
+    category.style.transform = 'translateY(30px)';
+    category.style.transitionDelay = `${index * 0.1}s`;
+    observer.observe(category);
+  });
+
+  // Observe forum rules
+  const forumRules = document.querySelectorAll('.forum-rule');
+  forumRules.forEach((rule, index) => {
+    rule.style.opacity = '0';
+    rule.style.transform = 'translateY(20px)';
+    rule.style.transitionDelay = `${index * 0.05}s`;
+    observer.observe(rule);
+  });
+}
+
+function initRulesInteractions() {
+  // Add click tracking for rule items
+  const ruleItems = document.querySelectorAll('.rule-item');
+  
+  ruleItems.forEach(item => {
+    item.addEventListener('click', function() {
+      const ruleTitle = this.querySelector('h4')?.textContent || 'General Rule';
+      trackRuleView(ruleTitle);
+    });
+  });
+
+  // Add hover effects for all interactive elements
+  const interactiveElements = document.querySelectorAll('.rule-item, .forum-rule');
+  
+  interactiveElements.forEach(element => {
+    element.addEventListener('mouseenter', function() {
+      this.style.zIndex = '5';
+    });
+    
+    element.addEventListener('mouseleave', function() {
+      this.style.zIndex = '1';
+    });
+  });
+}
+
+function trackRuleView(ruleTitle) {
+  console.log(`Rule viewed: ${ruleTitle}`);
+  
+  // You can add analytics tracking here
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'rule_view', {
+      'event_category': 'Rules Page',
+      'event_label': ruleTitle
+    });
+  }
+}
+
+// Enhanced loading animation for hero section
+function initHeroAnimation() {
+  const heroContent = document.querySelector('.rules-hero .hero-content');
+  if (heroContent) {
+    heroContent.style.opacity = '0';
+    heroContent.style.transform = 'translateY(20px)';
+    heroContent.style.transition = 'all 1s ease';
+    
+    setTimeout(() => {
+      heroContent.style.opacity = '1';
+      heroContent.style.transform = 'translateY(0)';
+    }, 300);
+  }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  initRulesPage();
+  initHeroAnimation();
+});
+
+// Export for module use
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { initRulesPage, trackRuleView };
+}
