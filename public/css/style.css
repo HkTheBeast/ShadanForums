@@ -9436,3 +9436,694 @@ body .timetable-container .info-card {
 
 
 
+
+
+
+
+
+
+
+
+
+
+/* ===== HOSTELS PAGE SPECIFIC STYLES ===== */
+.hostels-page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 3rem);
+}
+
+/* Hero Section */
+.hostels-hero-section {
+  text-align: center;
+  padding: clamp(3rem, 8vw, 6rem) clamp(1rem, 4vw, 2rem);
+  margin-bottom: 3rem;
+  background: transparent;
+}
+
+.hostels-hero-content h1 {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  margin-bottom: 1.5rem;
+  font-weight: 800;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: -1px;
+  padding: clamp(1.5rem, 4vw, 2rem) clamp(2rem, 5vw, 3rem);
+  border-radius: 30px;
+  display: inline-block;
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 3px solid var(--emerald);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  color: var(--emerald);
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  max-width: min(95%, 900px);
+}
+
+.hostels-hero-subtitle {
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  color: var(--emerald);
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  background: var(--card-bg);
+  padding: clamp(1rem, 2.5vw, 1.5rem) clamp(2rem, 4vw, 3rem);
+  border-radius: 25px;
+  display: inline-block;
+  border: 2px solid var(--emerald);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  margin-bottom: 2rem;
+}
+
+.campus-info {
+  background: var(--card-bg);
+  padding: clamp(1.5rem, 3vw, 2rem);
+  border-radius: 20px;
+  border: 2px solid var(--emerald);
+  max-width: 800px;
+  margin: 0 auto;
+  backdrop-filter: blur(10px);
+}
+
+.campus-info p {
+  margin: 0.8rem 0;
+  font-size: clamp(1rem, 1.5vw, 1.1rem);
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* Main Content Sections */
+.hostels-content-section {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 4rem;
+}
+
+.hostels-section-card {
+  background: var(--card-bg);
+  border-radius: 25px;
+  padding: clamp(2rem, 4vw, 3rem);
+  border: 2px solid var(--emerald);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.hostels-section-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 50px rgba(46, 139, 87, 0.4);
+}
+
+.hostels-section-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: var(--gradient-primary);
+  border-radius: 25px 25px 0 0;
+}
+
+/* Section Headers */
+.section-header {
+  text-align: center;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+  position: relative;
+}
+
+.section-icon {
+  font-size: clamp(3rem, 6vw, 4rem);
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  padding: 1rem;
+  background: var(--light-bg);
+  border-radius: 20px;
+  border: 2px solid var(--emerald);
+  backdrop-filter: blur(5px);
+}
+
+.section-header h2 {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  color: var(--emerald);
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
+  padding: 0 2rem;
+}
+
+.section-header h2::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: var(--gradient-primary);
+  border-radius: 2px;
+}
+
+.section-subtitle {
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  color: var(--muted);
+  font-weight: 500;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Section Content */
+.section-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.info-card {
+  background: var(--light-bg);
+  padding: clamp(1.5rem, 3vw, 2rem);
+  border-radius: 15px;
+  border: 1px solid rgba(46, 139, 87, 0.3);
+}
+
+.info-card h3 {
+  color: var(--emerald);
+  margin-bottom: 1rem;
+  font-size: clamp(1.2rem, 2vw, 1.4rem);
+  font-weight: 600;
+}
+
+.info-card p {
+  color: var(--text);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Features Grid */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: 1.5rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  background: var(--light-bg);
+  padding: clamp(1.5rem, 3vw, 2rem);
+  border-radius: 15px;
+  border: 1px solid rgba(46, 139, 87, 0.3);
+  transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+  transform: translateX(5px);
+  background: rgba(46, 139, 87, 0.1);
+}
+
+.feature-icon {
+  font-size: clamp(2rem, 3vw, 2.5rem);
+  flex-shrink: 0;
+  padding: 0.5rem;
+  background: var(--card-bg);
+  border-radius: 12px;
+  border: 2px solid var(--emerald);
+}
+
+.feature-content h4 {
+  color: var(--emerald);
+  margin-bottom: 0.8rem;
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  font-weight: 600;
+}
+
+.feature-content p {
+  color: var(--text);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Pricing Sections */
+.pricing-section, .mess-info, .transport-pricing {
+  margin-top: 2rem;
+}
+
+.pricing-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.price-card, .mess-option, .transport-option {
+  background: var(--light-bg);
+  padding: clamp(1.5rem, 3vw, 2rem);
+  border-radius: 15px;
+  border: 2px solid var(--emerald);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.price-card:hover, .mess-option:hover, .transport-option:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(46, 139, 87, 0.3);
+}
+
+.price-icon {
+  font-size: clamp(2.5rem, 4vw, 3rem);
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.price-card h4, .mess-option h4, .transport-option h4 {
+  color: var(--emerald);
+  margin-bottom: 1rem;
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  font-weight: 600;
+}
+
+.price-range, .price {
+  font-size: clamp(1.3rem, 2.5vw, 1.6rem);
+  font-weight: 800;
+  color: var(--crimson);
+  margin-bottom: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.price-yearly {
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
+  color: var(--muted);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.price-note {
+  background: rgba(255, 209, 102, 0.1);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border-left: 5px solid #FFD166;
+  margin-top: 1.5rem;
+}
+
+.price-note p {
+  margin: 0;
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* Image Container */
+.image-container {
+  text-align: center;
+  background: var(--light-bg);
+  padding: 1.5rem;
+  border-radius: 15px;
+  border: 2px solid var(--emerald);
+}
+
+.responsive-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border: 2px solid var(--emerald);
+  transition: transform 0.3s ease;
+}
+
+.responsive-image:hover {
+  transform: scale(1.02);
+}
+
+/* Hostel Cards */
+.hostel-card {
+  background: var(--light-bg);
+  padding: clamp(1.5rem, 3vw, 2rem);
+  border-radius: 20px;
+  border: 2px solid var(--emerald);
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+}
+
+.hostel-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(46, 139, 87, 0.3);
+}
+
+.hostel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.hostel-header h3 {
+  color: var(--emerald);
+  font-size: clamp(1.3rem, 2.5vw, 1.6rem);
+  margin: 0;
+  font-weight: 600;
+}
+
+.hostel-rating {
+  background: var(--emerald);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.hostel-details {
+  margin-bottom: 1.5rem;
+}
+
+.hostel-address, .hostel-contact {
+  margin-bottom: 1rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.hostel-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.hostel-image {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border: 2px solid var(--emerald);
+  transition: transform 0.3s ease;
+}
+
+.hostel-image:hover {
+  transform: scale(1.05);
+}
+
+/* Checklist */
+.checklist-card {
+  background: var(--light-bg);
+  padding: clamp(1.5rem, 3vw, 2rem);
+  border-radius: 20px;
+  border: 2px solid var(--emerald);
+  margin-top: 2rem;
+}
+
+.checklist-card h3 {
+  color: var(--emerald);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: clamp(1.3rem, 2.5vw, 1.6rem);
+}
+
+.checklist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+  gap: 1rem;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--card-bg);
+  border-radius: 10px;
+  border: 1px solid rgba(46, 139, 87, 0.3);
+  transition: all 0.3s ease;
+}
+
+.checklist-item:hover {
+  background: rgba(46, 139, 87, 0.1);
+  transform: translateX(5px);
+}
+
+.check-icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.checklist-item span {
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* Meal Plans */
+.meal-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: 1.5rem;
+}
+
+.meal-card {
+  background: var(--light-bg);
+  padding: clamp(1.5rem, 3vw, 2rem);
+  border-radius: 20px;
+  border: 2px solid var(--emerald);
+  transition: all 0.3s ease;
+}
+
+.meal-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(46, 139, 87, 0.3);
+}
+
+.meal-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(46, 139, 87, 0.3);
+}
+
+.meal-icon {
+  font-size: 2rem;
+  padding: 0.5rem;
+  background: var(--card-bg);
+  border-radius: 12px;
+  border: 2px solid var(--emerald);
+}
+
+.meal-header h3 {
+  color: var(--emerald);
+  margin: 0;
+  font-size: clamp(1.2rem, 2vw, 1.4rem);
+  font-weight: 600;
+}
+
+.meal-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.meal-items li {
+  padding: 0.8rem 0;
+  color: var(--text);
+  border-bottom: 1px solid rgba(46, 139, 87, 0.1);
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.meal-items li:last-child {
+  border-bottom: none;
+}
+
+.meal-items li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--emerald);
+  font-weight: 700;
+}
+
+.meal-items li strong {
+  color: var(--crimson);
+  font-weight: 600;
+}
+
+/* Transportation Routes */
+.routes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.route-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--light-bg);
+  padding: 1.5rem;
+  border-radius: 15px;
+  border: 2px solid var(--emerald);
+  transition: all 0.3s ease;
+}
+
+.route-card:hover {
+  background: rgba(46, 139, 87, 0.1);
+  transform: translateX(5px);
+}
+
+.route-number {
+  background: var(--emerald);
+  color: white;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.route-details {
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* Transport Tips */
+.transport-tips {
+  margin-top: 2rem;
+}
+
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.tip-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--light-bg);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(46, 139, 87, 0.3);
+}
+
+.tip-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.tip-item p {
+  margin: 0;
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hostels-hero-section {
+    padding: 2rem 1rem;
+  }
+  
+  .hostels-hero-content h1 {
+    font-size: 2.2rem;
+    padding: 1.5rem 2rem;
+  }
+  
+  .hostels-hero-subtitle {
+    font-size: 1.2rem;
+    padding: 1rem 1.5rem;
+  }
+  
+  .hostel-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .pricing-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .meal-plan-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .routes-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tips-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .checklist-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .hostels-hero-content h1 {
+    font-size: 1.8rem;
+    padding: 1.2rem 1.5rem;
+  }
+  
+  .hostels-hero-subtitle {
+    font-size: 1rem;
+    padding: 0.8rem 1.2rem;
+  }
+  
+  .section-header h2 {
+    font-size: 1.8rem;
+  }
+  
+  .feature-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .meal-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.8rem;
+  }
+  
+  .route-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+}
+
+/* Ultra-wide screen support */
+@media (min-width: 1921px) {
+  .hostels-page-container {
+    max-width: 1600px;
+  }
+  
+  .hostels-hero-content h1,
+  .hostels-hero-subtitle {
+    max-width: 70%;
+  }
+}
+
+
+
+
+
+
+

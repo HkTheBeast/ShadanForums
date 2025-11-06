@@ -2192,3 +2192,245 @@ if (typeof module !== 'undefined' && module.exports) {
     }
   });
 })();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Hostels Page JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+  initHostelsPage();
+});
+
+function initHostelsPage() {
+  console.log('🏠 Initializing Hostels Page...');
+  
+  // Initialize image zoom functionality
+  initImageZoom();
+  
+  // Initialize animations
+  initHostelsAnimations();
+  
+  // Initialize interactive elements
+  initInteractiveElements();
+  
+  console.log('✅ Hostels page initialized successfully!');
+}
+
+function initImageZoom() {
+  const images = document.querySelectorAll('.responsive-image, .hostel-image');
+  
+  images.forEach(img => {
+    img.addEventListener('click', function() {
+      this.classList.toggle('zoomed');
+      
+      if (this.classList.contains('zoomed')) {
+        this.style.transform = 'scale(1.5)';
+        this.style.zIndex = '1000';
+        this.style.position = 'relative';
+        this.style.cursor = 'zoom-out';
+      } else {
+        this.style.transform = 'scale(1)';
+        this.style.zIndex = '1';
+        this.style.cursor = 'zoom-in';
+      }
+    });
+    
+    // Close zoom when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!img.contains(e.target) && img.classList.contains('zoomed')) {
+        img.classList.remove('zoomed');
+        img.style.transform = 'scale(1)';
+        img.style.zIndex = '1';
+        img.style.cursor = 'zoom-in';
+      }
+    });
+  });
+}
+
+function initHostelsAnimations() {
+  // Add intersection observer for scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        entry.target.style.transition = 'all 0.8s ease';
+      }
+    });
+  }, observerOptions);
+
+  // Observe all section cards
+  const sectionCards = document.querySelectorAll('.hostels-section-card');
+  sectionCards.forEach((card, index) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(30px)';
+    card.style.transitionDelay = `${index * 0.2}s`;
+    observer.observe(card);
+  });
+
+  // Observe feature items
+  const featureItems = document.querySelectorAll('.feature-item');
+  featureItems.forEach((item, index) => {
+    item.style.opacity = '0';
+    item.style.transform = 'translateX(-20px)';
+    item.style.transitionDelay = `${index * 0.1}s`;
+    observer.observe(item);
+  });
+
+  // Observe price cards
+  const priceCards = document.querySelectorAll('.price-card, .mess-option, .transport-option');
+  priceCards.forEach((card, index) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    card.style.transitionDelay = `${index * 0.15}s`;
+    observer.observe(card);
+  });
+}
+
+function initInteractiveElements() {
+  // Add click tracking for hostel cards
+  const hostelCards = document.querySelectorAll('.hostel-card');
+  
+  hostelCards.forEach(card => {
+    card.addEventListener('click', function() {
+      const hostelName = this.querySelector('h3').textContent;
+      trackHostelView(hostelName);
+    });
+  });
+
+  // Add hover effects for all interactive cards
+  const interactiveCards = document.querySelectorAll('.feature-item, .price-card, .meal-card, .route-card');
+  
+  interactiveCards.forEach(card => {
+    card.addEventListener('mouseenter', function() {
+      this.style.zIndex = '5';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+      this.style.zIndex = '1';
+    });
+  });
+
+  // Add copy functionality for addresses
+  const addresses = document.querySelectorAll('.hostel-address');
+  
+  addresses.forEach(address => {
+    address.style.cursor = 'pointer';
+    address.title = 'Click to copy address';
+    
+    address.addEventListener('click', function() {
+      const textToCopy = this.textContent.replace('Address:', '').trim();
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        showCopyFeedback(this);
+      });
+    });
+  });
+}
+
+function showCopyFeedback(element) {
+  const originalText = element.textContent;
+  element.textContent = '✓ Address copied!';
+  element.style.color = 'var(--emerald)';
+  
+  setTimeout(() => {
+    element.textContent = originalText;
+    element.style.color = '';
+  }, 2000);
+}
+
+function trackHostelView(hostelName) {
+  console.log(`Hostel viewed: ${hostelName}`);
+  
+  // You can add analytics tracking here
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'hostel_view', {
+      'event_category': 'Hostels Page',
+      'event_label': hostelName
+    });
+  }
+}
+
+// Enhanced loading animation for hero section
+function initHeroAnimation() {
+  const heroContent = document.querySelector('.hostels-hero-content');
+  if (heroContent) {
+    heroContent.style.opacity = '0';
+    heroContent.style.transform = 'translateY(20px)';
+    heroContent.style.transition = 'all 1s ease';
+    
+    setTimeout(() => {
+      heroContent.style.opacity = '1';
+      heroContent.style.transform = 'translateY(0)';
+    }, 300);
+  }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  initHostelsPage();
+  initHeroAnimation();
+});
+
+// Export for module use
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { initHostelsPage, trackHostelView };
+}
+
+// Mobile Dropdown Fix (reuse from main.js)
+(function(){
+  const dropdowns = document.querySelectorAll('.dropdown');
+  
+  dropdowns.forEach(dropdown => {
+    dropdown.addEventListener('click', function(e) {
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        this.classList.toggle('active');
+        
+        dropdowns.forEach(otherDropdown => {
+          if (otherDropdown !== this) {
+            otherDropdown.classList.remove('active');
+          }
+        });
+      }
+    });
+  });
+  
+  document.addEventListener('click', function(e) {
+    if (window.innerWidth <= 768) {
+      if (!e.target.closest('.dropdown')) {
+        dropdowns.forEach(dropdown => {
+          dropdown.classList.remove('active');
+        });
+      }
+    }
+  });
+
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+      dropdowns.forEach(dropdown => {
+        dropdown.classList.remove('active');
+      });
+    }
+  });
+})();
