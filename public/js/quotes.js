@@ -263,11 +263,3 @@ loadQuotes();
 
 
 
-// Add this temporarily to your server.js (run once, then remove)
-db.run(`INSERT INTO quotes (name, quote, image, likes) VALUES (?, ?, ?, ?)`, 
-  ['Junaid', 'ACCEPT ALL THE SITUATIONS WITH A SMILE', 'images/junaid.png', 0],
-  function(err) {
-    if(err) console.error('Error adding quote:', err);
-    else console.log('✅ New quote added with ID:', this.lastID);
-  }
-);
