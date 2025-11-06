@@ -1964,3 +1964,231 @@ setTimeout(testFAQ, 500);
 
 
 
+// Viva Page JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+  initVivaPage();
+});
+
+function initVivaPage() {
+  console.log('🚀 Initializing Viva Page...');
+  
+  // Initialize subject navigation
+  initSubjectNavigation();
+  
+  // Initialize animations
+  initVivaAnimations();
+  
+  // Initialize question interactions
+  initQuestionInteractions();
+  
+  console.log('✅ Viva page initialized successfully!');
+}
+
+function initSubjectNavigation() {
+  const subjectButtons = document.querySelectorAll('.viva-subject-btn');
+  const subjectSections = document.querySelectorAll('.viva-subject-section');
+  
+  subjectButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const targetSubject = this.getAttribute('data-subject');
+      
+      // Remove active class from all buttons and sections
+      subjectButtons.forEach(btn => btn.classList.remove('active'));
+      subjectSections.forEach(section => section.classList.remove('active'));
+      
+      // Add active class to clicked button
+      this.classList.add('active');
+      
+      // Show corresponding section
+      const targetSection = document.getElementById(`viva-${targetSubject}-section`);
+      if (targetSection) {
+        targetSection.classList.add('active');
+        
+        // Track subject change for analytics
+        trackSubjectChange(targetSubject);
+      }
+    });
+  });
+}
+
+function initVivaAnimations() {
+  // Add intersection observer for scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        entry.target.style.transition = 'all 0.8s ease';
+      }
+    });
+  }, observerOptions);
+
+  // Observe all question items
+  const questionItems = document.querySelectorAll('.viva-question-item');
+  questionItems.forEach((item, index) => {
+    item.style.opacity = '0';
+    item.style.transform = 'translateY(20px)';
+    item.style.transitionDelay = `${index * 0.1}s`;
+    observer.observe(item);
+  });
+
+  // Observe stats cards
+  const statCards = document.querySelectorAll('.viva-stat-card');
+  statCards.forEach((card, index) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    card.style.transitionDelay = `${index * 0.15}s`;
+    observer.observe(card);
+  });
+
+  // Observe tip cards
+  const tipCards = document.querySelectorAll('.viva-tip-card');
+  tipCards.forEach((card, index) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    card.style.transitionDelay = `${index * 0.2}s`;
+    observer.observe(card);
+  });
+}
+
+function initQuestionInteractions() {
+  const questionItems = document.querySelectorAll('.viva-question-item');
+  
+  questionItems.forEach(item => {
+    // Add click to copy functionality
+    item.addEventListener('click', function(e) {
+      // Don't trigger if clicking on a button or link
+      if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
+      
+      // Toggle active state for visual feedback
+      this.classList.toggle('viva-question-active');
+      
+      // Copy question and answer to clipboard
+      copyQuestionToClipboard(this);
+    });
+    
+    // Add hover effects
+    item.addEventListener('mouseenter', function() {
+      this.style.zIndex = '5';
+    });
+    
+    item.addEventListener('mouseleave', function() {
+      this.style.zIndex = '1';
+    });
+  });
+}
+
+function copyQuestionToClipboard(questionElement) {
+  const questionHeader = questionElement.querySelector('.viva-question-header h3');
+  const answerContent = questionElement.querySelector('.viva-answer-content');
+  
+  if (questionHeader && answerContent) {
+    const questionText = questionHeader.textContent;
+    const answerText = answerContent.textContent;
+    const textToCopy = `Question: ${questionText}\n\nAnswer: ${answerText}`;
+    
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      // Show temporary success feedback
+      showCopyFeedback(questionElement);
+    }).catch(err => {
+      console.error('Failed to copy text: ', err);
+    });
+  }
+}
+
+function showCopyFeedback(element) {
+  const originalBackground = element.style.background;
+  
+  // Highlight the element
+  element.style.background = 'var(--light-bg)';
+  element.style.borderColor = 'var(--crimson)';
+  
+  // Reset after 1 second
+  setTimeout(() => {
+    element.style.background = originalBackground;
+    element.style.borderColor = 'var(--emerald)';
+  }, 1000);
+}
+
+function trackSubjectChange(subject) {
+  console.log(`Subject changed to: ${subject}`);
+  
+  // You can add analytics tracking here
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'subject_change', {
+      'event_category': 'Viva Page',
+      'event_label': subject
+    });
+  }
+}
+
+// Enhanced loading animation for hero section
+function initHeroAnimation() {
+  const heroContent = document.querySelector('.viva-hero-content');
+  if (heroContent) {
+    heroContent.style.opacity = '0';
+    heroContent.style.transform = 'translateY(20px)';
+    heroContent.style.transition = 'all 1s ease';
+    
+    setTimeout(() => {
+      heroContent.style.opacity = '1';
+      heroContent.style.transform = 'translateY(0)';
+    }, 300);
+  }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  initVivaPage();
+  initHeroAnimation();
+});
+
+// Export for module use
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { initVivaPage, trackSubjectChange };
+}
+
+// Mobile Dropdown Fix (reuse from main.js)
+(function(){
+  const dropdowns = document.querySelectorAll('.dropdown');
+  
+  dropdowns.forEach(dropdown => {
+    dropdown.addEventListener('click', function(e) {
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        this.classList.toggle('active');
+        
+        dropdowns.forEach(otherDropdown => {
+          if (otherDropdown !== this) {
+            otherDropdown.classList.remove('active');
+          }
+        });
+      }
+    });
+  });
+  
+  document.addEventListener('click', function(e) {
+    if (window.innerWidth <= 768) {
+      if (!e.target.closest('.dropdown')) {
+        dropdowns.forEach(dropdown => {
+          dropdown.classList.remove('active');
+        });
+      }
+    }
+  });
+
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+      dropdowns.forEach(dropdown => {
+        dropdown.classList.remove('active');
+      });
+    }
+  });
+})();
