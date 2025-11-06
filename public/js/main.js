@@ -1725,3 +1725,149 @@ document.addEventListener('DOMContentLoaded', function() {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { initAchievementsPage, animateCounter };
 }
+
+
+
+// Campus Facilities Page JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+  initCampusPage();
+});
+
+function initCampusPage() {
+  // Initialize animations
+  addScrollAnimations();
+  addImageZoom();
+  addFacilityInteractions();
+  console.log('Campus facilities page enhanced successfully!');
+}
+
+function addScrollAnimations() {
+  // Add intersection observer for scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        entry.target.style.transition = 'all 0.8s ease';
+      }
+    });
+  }, observerOptions);
+
+  // Observe all facility cards
+  const facilityCards = document.querySelectorAll('.facility-card');
+  facilityCards.forEach((card, index) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(30px)';
+    card.style.transitionDelay = `${index * 0.1}s`;
+    observer.observe(card);
+  });
+
+  // Observe showcase image
+  const showcaseImage = document.querySelector('.showcase-image');
+  if (showcaseImage) {
+    showcaseImage.style.opacity = '0';
+    showcaseImage.style.transform = 'scale(0.95)';
+    showcaseImage.style.transition = 'all 0.8s ease 0.2s';
+    observer.observe(showcaseImage);
+  }
+}
+
+function addImageZoom() {
+  // Add image zoom functionality for facility images
+  const facilityImages = document.querySelectorAll('.facility-image img');
+  
+  facilityImages.forEach(img => {
+    img.addEventListener('click', function() {
+      this.classList.toggle('zoomed');
+      
+      if (this.classList.contains('zoomed')) {
+        this.style.transform = 'scale(1.5)';
+        this.style.zIndex = '1000';
+        this.style.position = 'relative';
+        this.style.cursor = 'zoom-out';
+      } else {
+        this.style.transform = 'scale(1)';
+        this.style.zIndex = '1';
+        this.style.cursor = 'zoom-in';
+      }
+    });
+    
+    // Close zoom when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!img.contains(e.target) && img.classList.contains('zoomed')) {
+        img.classList.remove('zoomed');
+        img.style.transform = 'scale(1)';
+        img.style.zIndex = '1';
+        img.style.cursor = 'zoom-in';
+      }
+    });
+  });
+}
+
+function addFacilityInteractions() {
+  // Add enhanced hover effects for facility cards
+  const facilityCards = document.querySelectorAll('.facility-card');
+  
+  facilityCards.forEach(card => {
+    card.addEventListener('mouseenter', function() {
+      this.style.zIndex = '10';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+      this.style.zIndex = '1';
+    });
+  });
+
+  // Add click tracking for highlights
+  const highlightItems = document.querySelectorAll('.highlight-item');
+  
+  highlightItems.forEach(item => {
+    item.addEventListener('click', function() {
+      const highlightText = this.querySelector('.highlight-text').textContent;
+      trackFacilityView(highlightText);
+    });
+  });
+}
+
+function trackFacilityView(facilityName) {
+  console.log(`Facility viewed: ${facilityName}`);
+  
+  // You can add analytics tracking here
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'facility_view', {
+      'event_category': 'Campus Facilities',
+      'event_label': facilityName
+    });
+  }
+}
+
+// Enhanced loading animation for hero section
+function initHeroAnimation() {
+  const heroContent = document.querySelector('.hero-content');
+  if (heroContent) {
+    heroContent.style.opacity = '0';
+    heroContent.style.transform = 'translateY(20px)';
+    heroContent.style.transition = 'all 1s ease';
+    
+    setTimeout(() => {
+      heroContent.style.opacity = '1';
+      heroContent.style.transform = 'translateY(0)';
+    }, 300);
+  }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  initCampusPage();
+  initHeroAnimation();
+});
+
+// Export for module use
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { initCampusPage, trackFacilityView };
+}
