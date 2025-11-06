@@ -2434,3 +2434,250 @@ if (typeof module !== 'undefined' && module.exports) {
     }
   });
 })();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Examination Page JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+  initExaminationPage();
+});
+
+function initExaminationPage() {
+  console.log('📚 Initializing Examination Page...');
+  
+  // Initialize semester navigation
+  initSemesterNavigation();
+  
+  // Initialize animations
+  initExaminationAnimations();
+  
+  // Initialize interactive elements
+  initInteractiveElements();
+  
+  console.log('✅ Examination page initialized successfully!');
+}
+
+function initSemesterNavigation() {
+  const semesterButtons = document.querySelectorAll('.semester-btn');
+  const semesterSections = document.querySelectorAll('.semester-section');
+  
+  semesterButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const targetSemester = this.getAttribute('data-semester');
+      
+      // Remove active class from all buttons and sections
+      semesterButtons.forEach(btn => btn.classList.remove('active'));
+      semesterSections.forEach(section => section.classList.remove('active'));
+      
+      // Add active class to clicked button
+      this.classList.add('active');
+      
+      // Show corresponding section
+      const targetSection = document.getElementById(`${targetSemester}-semester`);
+      if (targetSection) {
+        targetSection.classList.add('active');
+        
+        // Track semester change for analytics
+        trackSemesterChange(targetSemester);
+      }
+    });
+  });
+}
+
+function initExaminationAnimations() {
+  // Add intersection observer for scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        entry.target.style.transition = 'all 0.8s ease';
+      }
+    });
+  }, observerOptions);
+
+  // Observe all timeline cards
+  const timelineCards = document.querySelectorAll('.assessment-card, .exam-card, .lab-card, .final-exam-card');
+  timelineCards.forEach((card, index) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    card.style.transitionDelay = `${index * 0.1}s`;
+    observer.observe(card);
+  });
+
+  // Observe reference cards
+  const refCards = document.querySelectorAll('.ref-card');
+  refCards.forEach((card, index) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    card.style.transitionDelay = `${index * 0.15}s`;
+    observer.observe(card);
+  });
+}
+
+function initInteractiveElements() {
+  // Add click tracking for exam cards
+  const examCards = document.querySelectorAll('.exam-card, .final-exam-card');
+  
+  examCards.forEach(card => {
+    card.addEventListener('click', function() {
+      const examType = this.querySelector('.exam-type')?.textContent || 
+                      this.querySelector('h3')?.textContent;
+      trackExamView(examType);
+    });
+  });
+
+  // Add hover effects for all interactive cards
+  const interactiveCards = document.querySelectorAll('.assessment-card, .exam-card, .lab-card, .ref-card, .format-item, .item-card, .format-section');
+  
+  interactiveCards.forEach(card => {
+    card.addEventListener('mouseenter', function() {
+      this.style.zIndex = '5';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+      this.style.zIndex = '1';
+    });
+  });
+
+  // Add copy functionality for exam formats
+  const examFormats = document.querySelectorAll('.exam-format, .exam-format-detailed');
+  
+  examFormats.forEach(format => {
+    format.style.cursor = 'pointer';
+    format.title = 'Click to copy exam format';
+    
+    format.addEventListener('click', function() {
+      const formatText = this.textContent.trim();
+      navigator.clipboard.writeText(formatText).then(() => {
+        showCopyFeedback(this);
+      });
+    });
+  });
+}
+
+function showCopyFeedback(element) {
+  const originalHTML = element.innerHTML;
+  element.innerHTML = '<div style="text-align: center; color: var(--emerald); font-weight: 600;">✓ Format copied!</div>';
+  
+  setTimeout(() => {
+    element.innerHTML = originalHTML;
+  }, 2000);
+}
+
+function trackSemesterChange(semester) {
+  console.log(`Semester changed to: ${semester}`);
+  
+  // You can add analytics tracking here
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'semester_change', {
+      'event_category': 'Examination Page',
+      'event_label': semester
+    });
+  }
+}
+
+function trackExamView(examType) {
+  console.log(`Exam viewed: ${examType}`);
+  
+  // You can add analytics tracking here
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'exam_view', {
+      'event_category': 'Examination Page',
+      'event_label': examType
+    });
+  }
+}
+
+// Enhanced loading animation for hero section
+function initHeroAnimation() {
+  const heroContent = document.querySelector('.examination-hero-content');
+  if (heroContent) {
+    heroContent.style.opacity = '0';
+    heroContent.style.transform = 'translateY(20px)';
+    heroContent.style.transition = 'all 1s ease';
+    
+    setTimeout(() => {
+      heroContent.style.opacity = '1';
+      heroContent.style.transform = 'translateY(0)';
+    }, 300);
+  }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  initExaminationPage();
+  initHeroAnimation();
+});
+
+// Export for module use
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { initExaminationPage, trackSemesterChange, trackExamView };
+}
+
+// Mobile Dropdown Fix (reuse from main.js)
+(function(){
+  const dropdowns = document.querySelectorAll('.dropdown');
+  
+  dropdowns.forEach(dropdown => {
+    dropdown.addEventListener('click', function(e) {
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        this.classList.toggle('active');
+        
+        dropdowns.forEach(otherDropdown => {
+          if (otherDropdown !== this) {
+            otherDropdown.classList.remove('active');
+          }
+        });
+      }
+    });
+  });
+  
+  document.addEventListener('click', function(e) {
+    if (window.innerWidth <= 768) {
+      if (!e.target.closest('.dropdown')) {
+        dropdowns.forEach(dropdown => {
+          dropdown.classList.remove('active');
+        });
+      }
+    }
+  });
+
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+      dropdowns.forEach(dropdown => {
+        dropdown.classList.remove('active');
+      });
+    }
+  });
+})();
