@@ -1,178 +1,106 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Quotes Wall - ShadanForums</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" type="image/png" href="images/shadanlogo.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotes Wall - ShadanForums</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/quotes.css">
+    <link rel="icon" type="image/png" href="images/shadanlogo.png">
 </head>
 <body>
-  <div class="app">
-    <header class="topbar">
-      <div class="brand"><a href="index.html">ShadanForums</a></div>
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="forum.html">Forums</a>
-        <a href="announcements.html">Announcements</a>
-        
-        <!-- OLD DROPDOWN (hidden on mobile) -->
-        <div class="dropdown">
-          <a href="" class="dropdown-toggle">Subjects</a>
-          <div class="dropdown-content">
-            <a href="oops.html">OOPS</a>
-            <a href="coa.html">COA</a>
-            <a href="datastructures.html">Data Structures</a>
-            <a href="sdc.html">SDC</a>
-            <a href="maths.html">Maths</a>
-            <a href="digitalelectronics.html">Digital Electronics</a>
-          </div>
-        </div>
-        
-        <!-- NEW MOBILE DROPDOWN (hidden on desktop) -->
-        <div class="mobile-dropdown">
-          <button class="mobile-dropdown-btn">
-            <span>Subjects</span>
-            <span class="mobile-dropdown-arrow">▼</span>
-          </button>
-          <div class="mobile-dropdown-menu">
-            <a href="oops.html" class="mobile-dropdown-link">OOPS</a>
-            <a href="coa.html" class="mobile-dropdown-link">COA</a>
-            <a href="datastructures.html" class="mobile-dropdown-link">Data Structures</a>
-            <a href="sdc.html" class="mobile-dropdown-link">SDC</a>
-            <a href="maths.html" class="mobile-dropdown-link">Maths</a>
-            <a href="digitalelectronics.html" class="mobile-dropdown-link">Digital Electronics</a>
-          </div>
-        </div>
-        
-        <a href="about.html">About Us</a>
-        <a href="more.html">More</a>
-      </nav>
-    </header>
+    <div class="app">
+        <header class="topbar">
+            <div class="brand"><a href="index.html">ShadanForums</a></div>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="forum.html">Forums</a>
+                <a href="announcements.html">Announcements</a>
+                
+                <div class="dropdown">
+                    <a href="" class="dropdown-toggle">Subjects</a>
+                    <div class="dropdown-content">
+                        <a href="oops.html">OOPS</a>
+                        <a href="coa.html">COA</a>
+                        <a href="datastructures.html">Data Structures</a>
+                        <a href="sdc.html">SDC</a>
+                        <a href="maths.html">Maths</a>
+                        <a href="digitalelectronics.html">Digital Electronics</a>
+                    </div>
+                </div>
+                
+                <div class="mobile-dropdown">
+                    <button class="mobile-dropdown-btn">
+                        <span>Subjects</span>
+                        <span class="mobile-dropdown-arrow">▼</span>
+                    </button>
+                    <div class="mobile-dropdown-menu">
+                        <a href="oops.html" class="mobile-dropdown-link">OOPS</a>
+                        <a href="coa.html" class="mobile-dropdown-link">COA</a>
+                        <a href="datastructures.html" class="mobile-dropdown-link">Data Structures</a>
+                        <a href="sdc.html" class="mobile-dropdown-link">SDC</a>
+                        <a href="maths.html" class="mobile-dropdown-link">Maths</a>
+                        <a href="digitalelectronics.html" class="mobile-dropdown-link">Digital Electronics</a>
+                    </div>
+                </div>
+                
+                <a href="about.html">About Us</a>
+                <a href="more.html">More</a>
+            </nav>
+        </header>
 
-    <!-- Quotes Wall Content -->
-    <main class="quotes-container">
-      <!-- Hero Section -->
-      <section class="quotes-hero">
-        <div class="hero-content">
-          <h1>Quotes Wall</h1>
-          <p class="hero-subtitle">View the fun and inspiring quotes from our students!</p>
-        </div>
-      </section>
+        <main class="quotes-container">
+            <section class="quotes-hero">
+                <div class="hero-content">
+                    <h1>Quotes Wall</h1>
+                    <p class="hero-subtitle">Inspirational quotes from our amazing students</p>
+                    
+                    <div class="quotes-stats">
+                        <div class="stat">
+                            <span class="stat-number">6</span>
+                            <span class="stat-label">Total Quotes</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number" id="total-likes">0</span>
+                            <span class="stat-label">Total Likes</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">6</span>
+                            <span class="stat-label">Students</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-      <!-- Quotes Grid -->
-      <section class="quotes-section">
-        <div class="quotes-grid">
-          
-          <!-- Affan's Quote -->
-          <div class="quote-card">
-            <div class="quote-image">
-              <img src="images/affan3.jpg" alt="Mohammed Affan Rahman" class="student-photo">
-            </div>
-            <div class="quote-content">
-              <div class="quote-text">
-                <p>"Dyslexics are teople poo."</p>
-              </div>
-              <div class="quote-author">
-                <p>~ Mohammed Affan Rahman</p>
-              </div>
-            </div>
-          </div>
+            <section class="quotes-section">
+                <div class="section-header">
+                    <div class="section-icon">💬</div>
+                    <h2>Student Wisdom</h2>
+                    <p class="section-subtitle">Words of inspiration, humor, and motivation from our community</p>
+                </div>
 
-          <!-- Adil's Quote -->
-          <div class="quote-card">
-            <div class="quote-image">
-              <img src="images/adil.JPG" alt="Adil Shareef" class="student-photo">
-            </div>
-            <div class="quote-content">
-              <div class="quote-text">
-                <p>"Chill. You're doin just fine."</p>
-              </div>
-              <div class="quote-author">
-                <p>~ Adil Shareef</p>
-              </div>
-            </div>
-          </div>
+                <div class="quotes-grid" id="quotes-grid">
+                    <!-- Quotes will be loaded here by JavaScript -->
+                </div>
+            </section>
+        </main>
 
-          <!-- Zubair's Quote -->
-          <div class="quote-card">
-            <div class="quote-image">
-              <img src="images/zubair.JPG" alt="Syed Zubair Hussain" class="student-photo">
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>ShadanForums</h3>
+                    <p>Empowering Engineers, Building Futures</p>
+                </div>
+                <div class="footer-info">
+                    <p>&copy; 2024 Shadan Forums. All rights reserved.</p>
+                    <p>Shadan College of Engineering and Technology - Where Innovation Meets Excellence</p>
+                    <p>📍 Himayat Sagar Road, Peerancheru, Hyderabad</p>
+                </div>
             </div>
-            <div class="quote-content">
-              <div class="quote-text">
-                <p>"A little progress each day adds up to big results."</p>
-              </div>
-              <div class="quote-author">
-                <p>~ Syed Zubair Hussain</p>
-              </div>
-            </div>
-          </div>
+        </footer>
+    </div>
 
-          <!-- Saud's Quote -->
-          <div class="quote-card">
-            <div class="quote-image">
-              <img src="images/saud.JPG" alt="Mohammed Saoud Shaikh" class="student-photo">
-            </div>
-            <div class="quote-content">
-              <div class="quote-text">
-                <p>"Life is a race and we are racist."</p>
-              </div>
-              <div class="quote-author">
-                <p>~ Mohammed Saoud Shaikh</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Muzammil's Quote -->
-          <div class="quote-card">
-            <div class="quote-image">
-              <img src="images/muzammil.JPG" alt="Muzammil Shaikh" class="student-photo">
-            </div>
-            <div class="quote-content">
-              <div class="quote-text">
-                <p>"It always seems impossible until its done."</p>
-              </div>
-              <div class="quote-author">
-                <p>~ Muzammil Shaikh</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Ayaz's Quote -->
-          <div class="quote-card">
-            <div class="quote-image">
-              <img src="images/ayaz.png" alt="Aiyaz Moin Khan" class="student-photo">
-            </div>
-            <div class="quote-content">
-              <div class="quote-text">
-                <p>"Keep going. One day, the mistakes you hated will make sense."</p>
-              </div>
-              <div class="quote-author">
-                <p>~ Aiyaz Moin Khan</p>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-content">
-        <div class="footer-logo">
-          <h3>ShadanForums</h3>
-          <p>Empowering Engineers, Building Futures</p>
-        </div>
-        <div class="footer-info">
-          <p>&copy; 2024 Shadan Forums. All rights reserved.</p>
-          <p>Shadan College of Engineering and Technology - Where Innovation Meets Excellence</p>
-          <p>📍 Himayat Sagar Road, Peerancheru, Hyderabad</p>
-        </div>
-      </div>
-    </footer>
-  </div>
-
-  <script src="js/main.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/quotes.js"></script>
 </body>
 </html>
