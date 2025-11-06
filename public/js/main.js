@@ -1951,3 +1951,140 @@ function testFAQ() {
 
 // Run test after initialization
 setTimeout(testFAQ, 500);
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Viva Q&A Page JavaScript - SIMPLIFIED
+document.addEventListener('DOMContentLoaded', function() {
+    initVivaPage();
+});
+
+function initVivaPage() {
+    // Initialize subject navigation
+    initSubjectNavigation();
+    
+    // Add scroll animations
+    addScrollAnimations();
+    
+    console.log('Viva Q&A page initialized successfully!');
+}
+
+function initSubjectNavigation() {
+    const subjectBtns = document.querySelectorAll('.subject-btn');
+    const subjectSections = document.querySelectorAll('.subject-section');
+    
+    subjectBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const subject = this.getAttribute('data-subject');
+            
+            // Update active button
+            subjectBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Show corresponding section
+            subjectSections.forEach(section => {
+                section.classList.remove('active');
+                if (section.id === `${subject}-section`) {
+                    section.classList.add('active');
+                }
+            });
+            
+            console.log(`Switched to ${subject} section`);
+        });
+    });
+}
+
+function addScrollAnimations() {
+    // Add intersection observer for scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+                entry.target.style.transition = 'all 0.8s ease';
+            }
+        });
+    }, observerOptions);
+
+    // Observe all question cards
+    const questionCards = document.querySelectorAll('.question-card');
+    questionCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transitionDelay = `${index * 0.05}s`;
+        observer.observe(card);
+    });
+
+    // Observe tip cards
+    const tipCards = document.querySelectorAll('.tip-card');
+    tipCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transitionDelay = `${index * 0.1}s`;
+        observer.observe(card);
+    });
+}
+
+// Enhanced loading animation for hero section
+function initHeroAnimation() {
+    const heroContent = document.querySelector('.hero-content');
+    if (heroContent) {
+        heroContent.style.opacity = '0';
+        heroContent.style.transform = 'translateY(20px)';
+        heroContent.style.transition = 'all 1s ease';
+        
+        setTimeout(() => {
+            heroContent.style.opacity = '1';
+            heroContent.style.transform = 'translateY(0)';
+        }, 300);
+    }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initVivaPage();
+    initHeroAnimation();
+});
+
+// Test function to verify everything is working
+function testVivaPage() {
+    const sections = document.querySelectorAll('.subject-section');
+    const cards = document.querySelectorAll('.question-card');
+    const answers = document.querySelectorAll('.answer-content');
+    
+    console.log('Viva Page Test:', {
+        sections: sections.length,
+        questionCards: cards.length,
+        answerContents: answers.length,
+        activeSection: document.querySelector('.subject-section.active').id
+    });
+    
+    // Check if answers are visible
+    answers.forEach((answer, index) => {
+        const computedStyle = window.getComputedStyle(answer);
+        console.log(`Answer ${index + 1}:`, {
+            opacity: computedStyle.opacity,
+            display: computedStyle.display,
+            visibility: computedStyle.visibility,
+            height: computedStyle.height
+        });
+    });
+}
+
+// Run test after initialization
+setTimeout(testVivaPage, 1000);
