@@ -298,7 +298,6 @@ db.serialize(() => {
         ['Mohammed Saoud Shaikh', 'Life is a race and we are racist.', 'images/saud.JPG', 0],
         ['Muzammil Shaikh', 'It always seems impossible until its done.', 'images/muzammil.JPG', 0],
         ['Aiyaz Moin Khan', 'Keep going. One day, the mistakes you hated will make sense.', 'images/ayaz.png', 0]
-        ['Adil Shareef', 'Chill. You are doin just fine.', 'images/ashareef.png', 0],
       ];
       
       const stmt = db.prepare(`INSERT INTO quotes (name, quote, image, likes) VALUES (?, ?, ?, ?)`);
