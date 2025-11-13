@@ -1,7 +1,7 @@
 {
   "name": "university-forum",
-  "version": "1.1.0",
-  "description": "Minimal forum website for university project with registration and Quill editor",
+  "version": "1.2.0",
+  "description": "Minimal forum website for university project with registration and file uploads",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -11,6 +11,7 @@
     "sqlite3": "^5.1.6",
     "express-session": "^1.17.3",
     "body-parser": "^1.20.2",
-    "bcryptjs": "^2.4.3"
+    "bcryptjs": "^2.4.3",
+    "multer": "^1.4.5-lts.1"
   }
 }

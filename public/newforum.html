@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Forums - ShadanForums</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/newforum.css">
+  <link rel="icon" type="image/png" href="images/shadanlogo.png">
+</head>
+<body>
+  <div class="app">
+    <!-- Same Header -->
+    <header class="topbar">
+      <div class="brand"><a href="index.html">ShadanForums</a></div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="forum.html">Forums</a>
+        <a href="announcements.html">Announcements</a>
+        
+        <!-- OLD DROPDOWN (hidden on mobile) -->
+        <div class="dropdown">
+          <a href="" class="dropdown-toggle">Subjects</a>
+          <div class="dropdown-content">
+            <a href="oops.html">OOPS</a>
+            <a href="coa.html">COA</a>
+            <a href="datastructures.html">Data Structures</a>
+            <a href="sdc.html">SDC</a>
+            <a href="maths.html">Maths</a>
+            <a href="digitalelectronics.html">Digital Electronics</a>
+          </div>
+        </div>
+        
+        <!-- NEW MOBILE DROPDOWN (hidden on desktop) -->
+        <div class="mobile-dropdown">
+          <button class="mobile-dropdown-btn">
+            <span>Subjects</span>
+            <span class="mobile-dropdown-arrow">▼</span>
+          </button>
+          <div class="mobile-dropdown-menu">
+            <a href="oops.html" class="mobile-dropdown-link">OOPS</a>
+            <a href="coa.html" class="mobile-dropdown-link">COA</a>
+            <a href="datastructures.html" class="mobile-dropdown-link">Data Structures</a>
+            <a href="sdc.html" class="mobile-dropdown-link">SDC</a>
+            <a href="maths.html" class="mobile-dropdown-link">Maths</a>
+            <a href="digitalelectronics.html" class="mobile-dropdown-link">Digital Electronics</a>
+          </div>
+        </div>
+        
+        <a href="about.html">About Us</a>
+        <a href="more.html">More</a>
+      </nav>
+      <div class="actions">
+        <button class="login-button" id="forum-login-btn">Login</button>
+        <button class="login-button" id="forum-logout-btn" style="display: none;">Logout</button>
+        <span id="forum-user-info" style="display: none; color: var(--emerald); font-weight: 600; margin-left: 1rem;"></span>
+      </div>
+    </header>
+
+    <!-- Main Forum Content -->
+    <main class="forum-main-container">
+      <!-- Hero Section -->
+      <section class="forum-hero-section">
+        <h1>💬 Community Forums</h1>
+        <p class="forum-hero-subtitle">Connect, Discuss, and Learn Together</p>
+      </section>
+
+      <!-- Forum Controls -->
+      <div class="forum-controls-section">
+        <button class="forum-create-thread-btn" id="create-thread-btn">
+          <span class="btn-icon">➕</span>
+          <span>Create New Thread</span>
+        </button>
+      </div>
+
+      <!-- Threads List -->
+      <div class="forum-threads-container" id="threads-container">
+        <div class="forum-loading">Loading threads...</div>
+      </div>
+    </main>
+
+    <!-- Same Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <h3>ShadanForums</h3>
+          <p>Empowering Engineers, Building Futures</p>
+        </div>
+        <div class="footer-info">
+          <p>&copy; 2025 Shadan Forums. All rights reserved.</p>
+          <p>Shadan College of Engineering and Technology - Where Innovation Meets Excellence</p>
+          <p>📍 Himayat Sagar Road, Peerancheru, Hyderabad</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Auth Modal -->
+  <div class="forum-modal-overlay" id="auth-modal" style="display: none;">
+    <div class="forum-modal-container">
+      <div class="forum-modal-header">
+        <h2 id="auth-modal-title">Login</h2>
+        <button class="forum-modal-close" id="auth-modal-close">✕</button>
+      </div>
+      <div class="forum-modal-body">
+        <form id="auth-form">
+          <div class="forum-form-group">
+            <label>Username</label>
+            <input type="text" name="username" required class="forum-input">
+          </div>
+          <div class="forum-form-group">
+            <label>Password</label>
+            <input type="password" name="password" required class="forum-input">
+          </div>
+          <div class="forum-form-group" id="confirm-password-group" style="display: none;">
+            <label>Confirm Password</label>
+            <input type="password" name="confirm_password" class="forum-input">
+          </div>
+          <div class="forum-error" id="auth-error"></div>
+          <div class="forum-form-actions">
+            <button type="submit" class="forum-btn-primary" id="auth-submit-btn">Login</button>
+            <button type="button" class="forum-btn-secondary" id="auth-cancel-btn">Cancel</button>
+          </div>
+        </form>
+        <div class="forum-auth-toggle">
+          <span id="auth-toggle-text">Don't have an account?</span>
+          <a href="#" id="auth-toggle-link">Register</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Thread Modal -->
+  <div class="forum-modal-overlay" id="thread-modal" style="display: none;">
+    <div class="forum-modal-container forum-modal-large">
+      <div class="forum-modal-header">
+        <h2>Create New Thread</h2>
+        <button class="forum-modal-close" id="thread-modal-close">✕</button>
+      </div>
+      <div class="forum-modal-body">
+        <form id="thread-form">
+          <div class="forum-form-group">
+            <label>Thread Title *</label>
+            <input type="text" name="title" required class="forum-input" placeholder="Enter thread title...">
+          </div>
+          <div class="forum-form-group">
+            <label>Content *</label>
+            <textarea name="content" required class="forum-textarea" rows="8" placeholder="Write your post content..."></textarea>
+          </div>
+          <div class="forum-form-group">
+            <label>Attachment (Optional)</label>
+            <input type="file" name="attachment" class="forum-file-input" accept="image/*,.pdf,.doc,.docx">
+            <div class="forum-file-info">Max size: 5MB. Supported: Images, PDF, DOC</div>
+          </div>
+          <div class="forum-error" id="thread-error"></div>
+          <div class="forum-form-actions">
+            <button type="submit" class="forum-btn-primary">Post Thread</button>
+            <button type="button" class="forum-btn-secondary" id="thread-cancel-btn">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Thread View Modal -->
+  <div class="forum-modal-overlay" id="view-thread-modal" style="display: none;">
+    <div class="forum-modal-container forum-modal-large">
+      <div class="forum-modal-header">
+        <h2 id="view-thread-title">Thread Title</h2>
+        <button class="forum-modal-close" id="view-thread-close">✕</button>
+      </div>
+      <div class="forum-modal-body">
+        <div class="forum-thread-details" id="thread-details-content">
+          <!-- Thread content will be loaded here -->
+        </div>
+        
+        <!-- Reply Form -->
+        <div class="forum-reply-section">
+          <h3>Post a Reply</h3>
+          <form id="reply-form">
+            <div class="forum-form-group">
+              <textarea name="reply_content" required class="forum-textarea" rows="4" placeholder="Write your reply..."></textarea>
+            </div>
+            <div class="forum-form-group">
+              <label>Attachment (Optional)</label>
+              <input type="file" name="reply_attachment" class="forum-file-input" accept="image/*,.pdf,.doc,.docx">
+            </div>
+            <div class="forum-error" id="reply-error"></div>
+            <button type="submit" class="forum-btn-primary">Post Reply</button>
+          </form>
+        </div>
+
+        <!-- Replies List -->
+        <div class="forum-replies-container" id="replies-container">
+          <!-- Replies will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/newforum.js"></script>
+</body>
+</html>
