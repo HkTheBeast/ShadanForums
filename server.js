@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const bcrypt = require('bcryptjs');
+const multer = require('multer');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,17 +21,23 @@ app.use(session({
   cookie: { maxAge: 1000 * 60 * 60 * 24, sameSite: 'lax' } // 1 day
 }));
 
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Initialize database
 const dbFile = path.join(__dirname, 'data.sqlite');
 const db = new sqlite3.Database(dbFile);
 
+// Create all tables
 db.serialize(() => {
+  // Old forum tables
   db.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
+  
   db.run(`CREATE TABLE IF NOT EXISTS posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     author TEXT NOT NULL,
@@ -38,10 +46,66 @@ db.serialize(() => {
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME
   )`);
+
+  // New forum tables
+  db.run(`CREATE TABLE IF NOT EXISTS forum_users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);
+  
+  db.run(`CREATE TABLE IF NOT EXISTS forum_threads (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    author TEXT NOT NULL,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    attachment TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME
+  )`);
+  
+  db.run(`CREATE TABLE IF NOT EXISTS forum_replies (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    thread_id INTEGER NOT NULL,
+    author TEXT NOT NULL,
+    content TEXT NOT NULL,
+    attachment TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (thread_id) REFERENCES forum_threads(id) ON DELETE CASCADE
+  )`);
 });
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadDir = path.join(__dirname, 'public', 'uploads');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + '-' + file.originalname);
+  }
+});
+
+const upload = multer({ 
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: function (req, file, cb) {
+    const allowedTypes = /jpeg|jpg|png|gif|pdf|doc|docx/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+    
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error('Only images, PDF, and DOC files are allowed'));
+    }
+  }
+});
 
 // Helper: password complexity (simple check)
 function validPassword(p){
@@ -49,7 +113,22 @@ function validPassword(p){
   return typeof p === 'string' && p.length >= 8 && /[A-Za-z]/.test(p) && /[0-9]/.test(p);
 }
 
-// Auth endpoints
+// Middleware to check auth
+function ensureAuth(req, res, next){
+  if(req.session && req.session.user){
+    return next();
+  }
+  return res.status(401).json({ ok:false, error: 'Not authenticated' });
+}
+
+function ensureForumAuth(req, res, next) {
+  if (req.session && req.session.forumUser) {
+    return next();
+  }
+  return res.status(401).json({ ok: false, error: 'Not authenticated' });
+}
+
+// ===== OLD FORUM AUTH ENDPOINTS =====
 app.post('/api/register', (req, res) => {
   const { username, password } = req.body;
   if(!username || !password) return res.status(400).json({ ok:false, error: 'Username and password required' });
@@ -60,7 +139,6 @@ app.post('/api/register', (req, res) => {
       if(err.message && err.message.includes('UNIQUE')) return res.status(409).json({ ok:false, error: 'Username already taken' });
       return res.status(500).json({ ok:false, error: err.message });
     }
-    // set session
     req.session.user = { id: this.lastID, username };
     return res.json({ ok:true, user: { id: this.lastID, username } });
   });
@@ -90,14 +168,7 @@ app.get('/api/me', (req, res) => {
   return res.json({ ok:true, user: null });
 });
 
-function ensureAuth(req, res, next){
-  if(req.session && req.session.user){
-    return next();
-  }
-  return res.status(401).json({ ok:false, error: 'Not authenticated' });
-}
-
-// Posts API
+// ===== OLD FORUM POSTS API =====
 app.get('/api/posts', (req, res) => {
   db.all(`SELECT * FROM posts ORDER BY created_at DESC`, [], (err, rows) => {
     if(err) return res.status(500).json({ ok:false, error: err.message });
@@ -147,109 +218,7 @@ app.delete('/api/posts/:id', ensureAuth, (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log('Server running on port', PORT);
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ===== ADD THESE ROUTES TO YOUR server.js =====
-// Add after your existing routes but before app.listen()
-
-const multer = require('multer');
-const fs = require('fs');
-
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const uploadDir = path.join(__dirname, 'public', 'uploads');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + '-' + file.originalname);
-  }
-});
-
-const upload = multer({ 
-  storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-  fileFilter: function (req, file, cb) {
-    const allowedTypes = /jpeg|jpg|png|gif|pdf|doc|docx/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
-    
-    if (mimetype && extname) {
-      return cb(null, true);
-    } else {
-      cb(new Error('Only images, PDF, and DOC files are allowed'));
-    }
-  }
-});
-
-// Create forum tables
-db.serialize(() => {
-  db.run(`CREATE TABLE IF NOT EXISTS forum_users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  )`);
-  
-  db.run(`CREATE TABLE IF NOT EXISTS forum_threads (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    author TEXT NOT NULL,
-    title TEXT NOT NULL,
-    content TEXT NOT NULL,
-    attachment TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME
-  )`);
-  
-  db.run(`CREATE TABLE IF NOT EXISTS forum_replies (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    thread_id INTEGER NOT NULL,
-    author TEXT NOT NULL,
-    content TEXT NOT NULL,
-    attachment TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (thread_id) REFERENCES forum_threads(id) ON DELETE CASCADE
-  )`);
-});
-
-// Middleware to check auth for forum
-function ensureForumAuth(req, res, next) {
-  if (req.session && req.session.forumUser) {
-    return next();
-  }
-  return res.status(401).json({ ok: false, error: 'Not authenticated' });
-}
-
-// ===== FORUM AUTH ROUTES =====
-
-// Register
+// ===== NEW FORUM AUTH ROUTES =====
 app.post('/api/forum/register', (req, res) => {
   const { username, password } = req.body;
   
@@ -279,7 +248,6 @@ app.post('/api/forum/register', (req, res) => {
   );
 });
 
-// Login
 app.post('/api/forum/login', (req, res) => {
   const { username, password } = req.body;
   
@@ -305,13 +273,11 @@ app.post('/api/forum/login', (req, res) => {
   });
 });
 
-// Logout
 app.post('/api/forum/logout', (req, res) => {
   req.session.forumUser = null;
   return res.json({ ok: true });
 });
 
-// Check auth
 app.get('/api/forum/me', (req, res) => {
   if (req.session && req.session.forumUser) {
     return res.json({ ok: true, user: req.session.forumUser });
@@ -319,9 +285,7 @@ app.get('/api/forum/me', (req, res) => {
   return res.json({ ok: true, user: null });
 });
 
-// ===== FORUM THREAD ROUTES =====
-
-// Get all threads
+// ===== NEW FORUM THREAD ROUTES =====
 app.get('/api/forum/threads', (req, res) => {
   db.all(`
     SELECT 
@@ -337,7 +301,6 @@ app.get('/api/forum/threads', (req, res) => {
   });
 });
 
-// Get single thread
 app.get('/api/forum/threads/:id', (req, res) => {
   const id = req.params.id;
   
@@ -352,7 +315,6 @@ app.get('/api/forum/threads/:id', (req, res) => {
   });
 });
 
-// Create thread
 app.post('/api/forum/threads', ensureForumAuth, upload.single('attachment'), (req, res) => {
   const { title, content } = req.body;
   const author = req.session.forumUser.username;
@@ -380,7 +342,6 @@ app.post('/api/forum/threads', ensureForumAuth, upload.single('attachment'), (re
   );
 });
 
-// Delete thread
 app.delete('/api/forum/threads/:id', ensureForumAuth, (req, res) => {
   const id = req.params.id;
   
@@ -413,9 +374,7 @@ app.delete('/api/forum/threads/:id', ensureForumAuth, (req, res) => {
   });
 });
 
-// ===== FORUM REPLY ROUTES =====
-
-// Get replies for thread
+// ===== NEW FORUM REPLY ROUTES =====
 app.get('/api/forum/threads/:id/replies', (req, res) => {
   const threadId = req.params.id;
   
@@ -431,7 +390,6 @@ app.get('/api/forum/threads/:id/replies', (req, res) => {
   );
 });
 
-// Create reply
 app.post('/api/forum/threads/:id/replies', ensureForumAuth, upload.single('attachment'), (req, res) => {
   const threadId = req.params.id;
   const { content } = req.body;
@@ -460,4 +418,8 @@ app.post('/api/forum/threads/:id/replies', ensureForumAuth, upload.single('attac
   );
 });
 
-// ===== END OF FORUM ROUTES =====
+// ===== START SERVER (MUST BE LAST!) =====
+app.listen(PORT, () => {
+  console.log('✅ Server running on port', PORT);
+  console.log('📁 Uploads directory:', path.join(__dirname, 'public', 'uploads'));
+});
