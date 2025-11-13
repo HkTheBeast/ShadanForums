@@ -74,6 +74,15 @@ db.serialize(() => {
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (thread_id) REFERENCES forum_threads(id) ON DELETE CASCADE
   )`);
+
+  // Quote likes table
+  db.run(`CREATE TABLE IF NOT EXISTS quote_likes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    quote_author TEXT NOT NULL,
+    user_id INTEGER NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(quote_author, user_id)
+  )`);
 });
 
 // Configure multer for file uploads
@@ -193,6 +202,80 @@ app.get('/api/forum/me', (req, res) => {
     return res.json({ ok: true, user: req.session.forumUser });
   }
   return res.json({ ok: true, user: null });
+});
+
+// ===== QUOTE LIKES ROUTES =====
+app.get('/api/quotes/likes', (req, res) => {
+  db.all(`SELECT quote_author, COUNT(*) as like_count FROM quote_likes GROUP BY quote_author`, 
+    [], (err, rows) => {
+      if (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+      }
+      
+      // Convert to object for easier access
+      const likesMap = {};
+      rows.forEach(row => {
+        likesMap[row.quote_author] = row.like_count;
+      });
+      
+      return res.json({ ok: true, likes: likesMap });
+    }
+  );
+});
+
+app.post('/api/quotes/like', ensureForumAuth, (req, res) => {
+  const { quoteAuthor } = req.body;
+  const userId = req.session.forumUser.id;
+  
+  if (!quoteAuthor) {
+    return res.status(400).json({ ok: false, error: 'Quote author required' });
+  }
+  
+  // Check if already liked
+  db.get(`SELECT * FROM quote_likes WHERE quote_author = ? AND user_id = ?`, 
+    [quoteAuthor, userId], (err, row) => {
+      if (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+      }
+      
+      if (row) {
+        // Unlike if already liked
+        db.run(`DELETE FROM quote_likes WHERE quote_author = ? AND user_id = ?`, 
+          [quoteAuthor, userId], function(err) {
+            if (err) {
+              return res.status(500).json({ ok: false, error: err.message });
+            }
+            return res.json({ ok: true, liked: false });
+          }
+        );
+      } else {
+        // Like if not already liked
+        db.run(`INSERT INTO quote_likes (quote_author, user_id) VALUES (?, ?)`, 
+          [quoteAuthor, userId], function(err) {
+            if (err) {
+              return res.status(500).json({ ok: false, error: err.message });
+            }
+            return res.json({ ok: true, liked: true });
+          }
+        );
+      }
+    }
+  );
+});
+
+app.get('/api/quotes/my-likes', ensureForumAuth, (req, res) => {
+  const userId = req.session.forumUser.id;
+  
+  db.all(`SELECT quote_author FROM quote_likes WHERE user_id = ?`, 
+    [userId], (err, rows) => {
+      if (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+      }
+      
+      const myLikes = rows.map(row => row.quote_author);
+      return res.json({ ok: true, myLikes });
+    }
+  );
 });
 
 // ===== NEW FORUM THREAD ROUTES =====
