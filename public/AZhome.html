@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTrack | Teacher Portal</title>
+    <link rel="stylesheet" href="css/AZstyle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span class="brand-text">Edu<span class="brand-highlight">Track</span></span>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="#" class="nav-link active"><i class="fas fa-home"></i> Home</a>
+                <a href="#" class="nav-link"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="#" class="nav-link"><i class="fas fa-users"></i> Students</a>
+                <a href="#" class="nav-link"><i class="fas fa-calendar-alt"></i> Attendance</a>
+                <a href="#" class="nav-link"><i class="fas fa-graduation-cap"></i> Grades</a>
+                <a href="#" class="nav-link"><i class="fas fa-comment-alt"></i> Remarks</a>
+            </div>
+            
+            <div class="nav-actions">
+                <button class="btn btn-outline" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <button class="btn btn-primary" id="registerBtn">
+                    <i class="fas fa-user-plus"></i> Register
+                </button>
+                <div class="mobile-toggle" id="mobileToggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#" class="mobile-nav-link active"><i class="fas fa-home"></i> Home</a>
+        <a href="#" class="mobile-nav-link"><i class="fas fa-chart-line"></i> Dashboard</a>
+        <a href="#" class="mobile-nav-link"><i class="fas fa-users"></i> Students</a>
+        <a href="#" class="mobile-nav-link"><i class="fas fa-calendar-alt"></i> Attendance</a>
+        <a href="#" class="mobile-nav-link"><i class="fas fa-graduation-cap"></i> Grades</a>
+        <a href="#" class="mobile-nav-link"><i class="fas fa-comment-alt"></i> Remarks</a>
+        <div class="mobile-actions">
+            <button class="btn btn-outline mobile-btn" id="mobileLoginBtn">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+            <button class="btn btn-primary mobile-btn" id="mobileRegisterBtn">
+                <i class="fas fa-user-plus"></i> Register
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-star"></i>
+                    <span>Empowering Educators Since 2023</span>
+                </div>
+                <h1 class="hero-title">
+                    Streamline Your <span class="text-gradient">Teaching</span> Journey
+                </h1>
+                <p class="hero-subtitle">
+                    A comprehensive portal for teachers to monitor student progress, 
+                    track attendance, manage grades, and provide personalized feedback 
+                    all in one intuitive platform.
+                </p>
+                <div class="hero-cta">
+                    <button class="btn btn-primary btn-lg" id="heroRegisterBtn">
+                        Get Started Free <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn btn-secondary btn-lg" id="heroDemoBtn">
+                        <i class="fas fa-play-circle"></i> Watch Demo
+                    </button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number" data-count="1500">0</span>
+                        <span class="stat-label">Active Teachers</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" data-count="45000">0</span>
+                        <span class="stat-label">Students Tracked</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" data-count="99">0</span>
+                        <span class="stat-label">% Satisfaction</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-visual">
+                <div class="floating-card card-1">
+                    <i class="fas fa-user-graduate"></i>
+                    <h4>Student Profiles</h4>
+                    <p>Comprehensive student records</p>
+                </div>
+                <div class="floating-card card-2">
+                    <i class="fas fa-chart-bar"></i>
+                    <h4>Analytics</h4>
+                    <p>Performance insights</p>
+                </div>
+                <div class="floating-card card-3">
+                    <i class="fas fa-calendar-check"></i>
+                    <h4>Attendance</h4>
+                    <p>Real-time tracking</p>
+                </div>
+                <div class="dashboard-preview">
+                    <div class="dashboard-header">
+                        <div class="dashboard-dots">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                        </div>
+                        <span>Teacher Dashboard</span>
+                    </div>
+                    <div class="dashboard-content">
+                        <div class="dashboard-row">
+                            <div class="dashboard-item"></div>
+                            <div class="dashboard-item"></div>
+                        </div>
+                        <div class="dashboard-row">
+                            <div class="dashboard-item"></div>
+                        </div>
+                        <div class="dashboard-row">
+                            <div class="dashboard-item"></div>
+                            <div class="dashboard-item"></div>
+                            <div class="dashboard-item"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hero-scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="section-header">
+            <h2 class="section-title">Everything You Need in <span class="text-gradient">One Place</span></h2>
+            <p class="section-subtitle">Powerful tools designed specifically for educators</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <h3 class="feature-title">Attendance Management</h3>
+                <p class="feature-description">
+                    Track student attendance with our intuitive calendar system. Mark present, absent, or late with a single click.
+                </p>
+                <div class="feature-badge">Real-time</div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <h3 class="feature-title">Grade Tracking</h3>
+                <p class="feature-description">
+                    Record and calculate grades automatically. Generate report cards and performance analytics with ease.
+                </p>
+                <div class="feature-badge">Automated</div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3 class="feature-title">Student Remarks</h3>
+                <p class="feature-description">
+                    Provide personalized feedback, warnings, and commendations. Track behavioral patterns over time.
+                </p>
+                <div class="feature-badge">Personalized</div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <h3 class="feature-title">Notifications</h3>
+                <p class="feature-description">
+                    Get alerts for important events, pending tasks, and student milestones. Never miss a deadline.
+                </p>
+                <div class="feature-badge">Smart Alerts</div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-file-export"></i>
+                </div>
+                <h3 class="feature-title">Reports & Analytics</h3>
+                <p class="feature-description">
+                    Generate comprehensive reports for parents and administrators. Export data in multiple formats.
+                </p>
+                <div class="feature-badge">Export Ready</div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3 class="feature-title">Mobile Friendly</h3>
+                <p class="feature-description">
+                    Access your dashboard from any device. Update records on-the-go with our responsive design.
+                </p>
+                <div class="feature-badge">Responsive</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="cta-container">
+            <div class="cta-content">
+                <h2 class="cta-title">Ready to Transform Your <span class="text-gradient">Teaching Experience</span>?</h2>
+                <p class="cta-text">
+                    Join thousands of educators who have streamlined their workflow with EduTrack. 
+                    No credit card required. Start your free account today.
+                </p>
+                <div class="cta-buttons">
+                    <button class="btn btn-primary btn-xl" id="ctaRegisterBtn">
+                        <i class="fas fa-rocket"></i> Start Free Account
+                    </button>
+                    <button class="btn btn-secondary btn-xl" id="ctaContactBtn">
+                        <i class="fas fa-question-circle"></i> Need Help?
+                    </button>
+                </div>
+                <div class="cta-note">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Your data is secure & private. We never share your information.</span>
+                </div>
+            </div>
+            
+            <div class="cta-visual">
+                <div class="cta-orbits">
+                    <div class="orbit orbit-1">
+                        <div class="orbit-item">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+                    <div class="orbit orbit-2">
+                        <div class="orbit-item">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                    </div>
+                    <div class="orbit orbit-3">
+                        <div class="orbit-item">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <div class="nav-brand">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <span class="brand-text">Edu<span class="brand-highlight">Track</span></span>
+                    </div>
+                    <p class="footer-tagline">
+                        Empowering educators with intuitive tools for better student management.
+                    </p>
+                    <div class="footer-social">
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4 class="footer-title">Platform</h4>
+                        <a href="#" class="footer-link">Features</a>
+                        <a href="#" class="footer-link">Pricing</a>
+                        <a href="#" class="footer-link">API</a>
+                        <a href="#" class="footer-link">Documentation</a>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h4 class="footer-title">Company</h4>
+                        <a href="#" class="footer-link">About Us</a>
+                        <a href="#" class="footer-link">Careers</a>
+                        <a href="#" class="footer-link">Blog</a>
+                        <a href="#" class="footer-link">Press</a>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h4 class="footer-title">Support</h4>
+                        <a href="#" class="footer-link">Help Center</a>
+                        <a href="#" class="footer-link">Contact Us</a>
+                        <a href="#" class="footer-link">Privacy Policy</a>
+                        <a href="#" class="footer-link">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    <p>&copy; 2023 EduTrack Teacher Portal. All rights reserved.</p>
+                </div>
+                <div class="footer-extra">
+                    <span>Made with <i class="fas fa-heart" style="color: #ff4757;"></i> for educators worldwide</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Notification Toast -->
+    <div class="toast" id="notificationToast">
+        <div class="toast-content">
+            <i class="fas fa-info-circle"></i>
+            <span id="toastMessage">Welcome to EduTrack Teacher Portal!</span>
+        </div>
+        <button class="toast-close" id="toastClose">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <script src="js/AZscript.js"></script>
+</body>
+</html>

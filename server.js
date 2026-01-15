@@ -10,7 +10,7 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
+// ================= MIDDLEWARE =================
 app.use(bodyParser.json({limit: '5mb'}));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
@@ -18,17 +18,26 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'replace_this_with_a_strong_secret',
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 1000 * 60 * 60 * 24, sameSite: 'lax' } // 1 day
+  cookie: { 
+    maxAge: 1000 * 60 * 60 * 24, 
+    sameSite: 'lax',
+    httpOnly: true
+  }
 }));
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Initialize database
+// Set view engine for HTML pages
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'html');
+app.engine('html', require('ejs').renderFile);
+
+// ================= DATABASE SETUP =================
 const dbFile = path.join(__dirname, 'data.sqlite');
 const db = new sqlite3.Database(dbFile);
 
-// Create all tables
+// Create all tables (EXACTLY AS YOU HAD THEM)
 db.serialize(() => {
   // Old forum tables
   db.run(`CREATE TABLE IF NOT EXISTS users (
@@ -85,7 +94,7 @@ db.serialize(() => {
   )`);
 });
 
-// Configure multer for file uploads
+// ================= MULTER FOR FILE UPLOADS =================
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const uploadDir = path.join(__dirname, 'public', 'uploads');
@@ -116,7 +125,7 @@ const upload = multer({
   }
 });
 
-// Helper: password complexity (simple check)
+// ================= HELPER FUNCTIONS =================
 function validPassword(p){
   // at least 8 chars, 1 letter, 1 number
   return typeof p === 'string' && p.length >= 8 && /[A-Za-z]/.test(p) && /[0-9]/.test(p);
@@ -137,7 +146,234 @@ function ensureForumAuth(req, res, next) {
   return res.status(401).json({ ok: false, error: 'Not authenticated' });
 }
 
-// ===== NEW FORUM AUTH ROUTES =====
+// ================= PAGE ROUTES (NEW - FOR TEACHER PORTAL) =================
+app.get('/', (req, res) => {
+  if (req.session.user) {
+    return res.redirect('/home');
+  }
+  res.redirect('/login');
+});
+
+app.get('/home', (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  res.render('AZhome.html', { 
+    user: req.session.user,
+    isAuthenticated: true 
+  });
+});
+
+app.get('/login', (req, res) => {
+  if (req.session.user) {
+    return res.redirect('/home');
+  }
+  res.render('login.html', { 
+    error: null,
+    isAuthenticated: false 
+  });
+});
+
+app.get('/register', (req, res) => {
+  if (req.session.user) {
+    return res.redirect('/home');
+  }
+  res.render('register.html', { 
+    error: null,
+    isAuthenticated: false 
+  });
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Logout error:', err);
+    }
+    res.redirect('/login');
+  });
+});
+
+// ================= TEACHER PORTAL AUTHENTICATION API =================
+app.post('/api/auth/register', async (req, res) => {
+  const { username, password, confirmPassword } = req.body;
+  
+  console.log('Teacher Portal Registration attempt:', { username });
+  
+  // Validation
+  if (!username || !password || !confirmPassword) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'All fields are required' 
+    });
+  }
+  
+  if (password !== confirmPassword) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Passwords do not match' 
+    });
+  }
+  
+  if (password.length < 8) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Password must be at least 8 characters' 
+    });
+  }
+  
+  if (username.length < 3) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Username must be at least 3 characters' 
+    });
+  }
+  
+  // Check username format
+  const usernameRegex = /^[a-zA-Z0-9_]+$/;
+  if (!usernameRegex.test(username)) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Username can only contain letters, numbers, and underscores' 
+    });
+  }
+  
+  // Check if username exists in users table
+  db.get('SELECT id FROM users WHERE username = ?', [username], async (err, row) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({ 
+        success: false, 
+        message: 'Server error. Please try again.' 
+      });
+    }
+    
+    if (row) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Username already taken' 
+      });
+    }
+    
+    try {
+      // Hash password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      
+      // Insert user
+      db.run(
+        'INSERT INTO users (username, password) VALUES (?, ?)',
+        [username, hashedPassword],
+        function(err) {
+          if (err) {
+            console.error('Insert error:', err);
+            return res.status(500).json({ 
+              success: false, 
+              message: 'Registration failed. Please try again.' 
+            });
+          }
+          
+          // Create session for teacher portal
+          req.session.user = { 
+            id: this.lastID, 
+            username: username 
+          };
+          
+          console.log('Teacher Portal Registration successful for user:', username);
+          
+          return res.json({ 
+            success: true, 
+            message: 'Registration successful! Redirecting...',
+            redirect: '/home'
+          });
+        }
+      );
+    } catch (error) {
+      console.error('Hash error:', error);
+      return res.status(500).json({ 
+        success: false, 
+        message: 'Server error. Please try again.' 
+      });
+    }
+  });
+});
+
+app.post('/api/auth/login', (req, res) => {
+  const { username, password } = req.body;
+  
+  console.log('Teacher Portal Login attempt:', { username });
+  
+  if (!username || !password) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Username and password are required' 
+    });
+  }
+  
+  // Find user in users table
+  db.get('SELECT * FROM users WHERE username = ?', [username], (err, user) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({ 
+        success: false, 
+        message: 'Server error. Please try again.' 
+      });
+    }
+    
+    if (!user) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Invalid username or password' 
+      });
+    }
+    
+    // Compare password
+    bcrypt.compare(password, user.password, (err, isMatch) => {
+      if (err) {
+        console.error('Password comparison error:', err);
+        return res.status(500).json({ 
+          success: false, 
+          message: 'Server error. Please try again.' 
+        });
+      }
+      
+      if (!isMatch) {
+        return res.status(401).json({ 
+          success: false, 
+          message: 'Invalid username or password' 
+        });
+      }
+      
+      // Create session for teacher portal
+      req.session.user = { 
+        id: user.id, 
+        username: user.username 
+      };
+      
+      console.log('Teacher Portal Login successful for user:', username);
+      
+      return res.json({ 
+        success: true, 
+        message: 'Login successful! Redirecting...',
+        redirect: '/home'
+      });
+    });
+  });
+});
+
+// Check authentication status
+app.get('/api/auth/status', (req, res) => {
+  if (req.session.user) {
+    return res.json({ 
+      isAuthenticated: true, 
+      user: req.session.user 
+    });
+  }
+  return res.json({ 
+    isAuthenticated: false 
+  });
+});
+
+// ================= EXISTING FORUM AUTH ROUTES (KEEPING EVERYTHING) =====
 app.post('/api/forum/register', (req, res) => {
   const { username, password } = req.body;
   
@@ -204,7 +440,7 @@ app.get('/api/forum/me', (req, res) => {
   return res.json({ ok: true, user: null });
 });
 
-// ===== QUOTE LIKES ROUTES =====
+// ================= QUOTE LIKES ROUTES (KEEPING EVERYTHING) =====
 app.get('/api/quotes/likes', (req, res) => {
   db.all(`SELECT quote_author, COUNT(*) as like_count FROM quote_likes GROUP BY quote_author`, 
     [], (err, rows) => {
@@ -278,7 +514,7 @@ app.get('/api/quotes/my-likes', ensureForumAuth, (req, res) => {
   );
 });
 
-// ===== NEW FORUM THREAD ROUTES =====
+// ================= NEW FORUM THREAD ROUTES (KEEPING EVERYTHING) =====
 app.get('/api/forum/threads', (req, res) => {
   db.all(`
     SELECT 
@@ -367,7 +603,7 @@ app.delete('/api/forum/threads/:id', ensureForumAuth, (req, res) => {
   });
 });
 
-// ===== NEW FORUM REPLY ROUTES =====
+// ================= NEW FORUM REPLY ROUTES (KEEPING EVERYTHING) =====
 app.get('/api/forum/threads/:id/replies', (req, res) => {
   const threadId = req.params.id;
   
@@ -411,8 +647,57 @@ app.post('/api/forum/threads/:id/replies', ensureForumAuth, upload.single('attac
   );
 });
 
-// ===== START SERVER (MUST BE LAST!) =====
+// ================= ERROR HANDLING =================
+app.use((err, req, res, next) => {
+  console.error('Server error:', err.stack);
+  
+  if (err instanceof multer.MulterError) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'File upload error: ' + err.message 
+    });
+  }
+  
+  // For HTML pages, render error page
+  if (req.accepts('html')) {
+    return res.status(500).render('login.html', { 
+      error: 'Something went wrong! Please try again.',
+      isAuthenticated: false 
+    });
+  }
+  
+  // For API calls, return JSON
+  if (req.accepts('json')) {
+    return res.status(500).json({ 
+      ok: false, 
+      error: 'Something went wrong!' 
+    });
+  }
+});
+
+// 404 handler
+app.use((req, res) => {
+  if (req.accepts('html')) {
+    return res.status(404).render('login.html', { 
+      error: 'Page not found',
+      isAuthenticated: false 
+    });
+  }
+  
+  if (req.accepts('json')) {
+    return res.status(404).json({ 
+      ok: false, 
+      error: 'Not found' 
+    });
+  }
+});
+
+// ================= START SERVER =================
 app.listen(PORT, () => {
   console.log('✅ Server running on port', PORT);
   console.log('📁 Uploads directory:', path.join(__dirname, 'public', 'uploads'));
+  console.log('📁 Views directory:', path.join(__dirname, 'views'));
+  console.log('🌐 Teacher Portal: http://localhost:' + PORT + '/home');
+  console.log('🔐 Login: http://localhost:' + PORT + '/login');
+  console.log('📝 Register: http://localhost:' + PORT + '/register');
 });
