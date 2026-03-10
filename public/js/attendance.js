@@ -5,11 +5,10 @@
 'use strict';
 
 // ─── State ────────────────────────────────────────────────────────
-let attRecords = {};   // { studentId: 'present'|'absent'|'late' }
-let attStudents = [];  // students returned by the API for selected date
-let summaryData = [];  // full summary from /api/attendance/summary
+let attRecords  = {};
+let attStudents = [];
+let summaryData = [];
 
-// ─── DOM refs ────────────────────────────────────────────────────
 let D = {};
 
 // ─── Helpers ─────────────────────────────────────────────────────
@@ -23,8 +22,8 @@ function escapeHTML(str) {
 
 let toastTimer;
 function showToast(msg, isError = false) {
-    D.toast.className     = 'toast' + (isError ? ' error' : '');
-    D.toastIcon.className = isError ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+    D.toast.className      = 'toast' + (isError ? ' error' : '');
+    D.toastIcon.className  = isError ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
     D.toastMsg.textContent = msg;
     D.toast.classList.add('show');
     clearTimeout(toastTimer);
@@ -46,9 +45,9 @@ function showError(el, msg) { el.textContent = msg; el.classList.add('show'); }
 function clearError(el)     { el.textContent = '';  el.classList.remove('show'); }
 
 function todayISO() {
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const d  = new Date();
+    const y  = d.getFullYear();
+    const m  = String(d.getMonth() + 1).padStart(2, '0');
     const dy = String(d.getDate()).padStart(2, '0');
     return `${y}-${m}-${dy}`;
 }
@@ -72,6 +71,34 @@ async function api(method, path, body) {
     const data = await res.json();
     if (!data.ok) throw new Error(data.error || 'Server error');
     return data;
+}
+
+// ─── Hamburger menu ───────────────────────────────────────────────
+function initHamburger() {
+    const btn   = $('navHamburger');
+    const links = $('navLinks');
+    if (!btn || !links) return;
+
+    btn.addEventListener('click', () => {
+        btn.classList.toggle('open');
+        links.classList.toggle('open');
+    });
+
+    // Close when a nav link is clicked
+    links.querySelectorAll('.nav-link-btn').forEach(link => {
+        link.addEventListener('click', () => {
+            btn.classList.remove('open');
+            links.classList.remove('open');
+        });
+    });
+
+    // Close on outside click
+    document.addEventListener('click', e => {
+        if (!btn.contains(e.target) && !links.contains(e.target)) {
+            btn.classList.remove('open');
+            links.classList.remove('open');
+        }
+    });
 }
 
 // ─── Auth modal ───────────────────────────────────────────────────
@@ -133,7 +160,7 @@ async function handleRegister() {
 
 async function handleLogout() {
     try { await api('POST', '/api/teacher/logout'); } catch (_) {}
-    attRecords = {};
+    attRecords  = {};
     attStudents = [];
     summaryData = [];
     await initPage();
@@ -150,7 +177,7 @@ async function initPage() {
 
     if (teacher) {
         D.navUserArea.innerHTML = `
-            <div style="display:flex;align-items:center;gap:.6rem;">
+            <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;">
                 <div class="nav-user-badge">
                     <i class="fas fa-user-circle"></i>
                     <span>${escapeHTML(teacher.username)}</span>
@@ -162,7 +189,6 @@ async function initPage() {
         $('logoutBtn').addEventListener('click', handleLogout);
         D.loginGate.style.display = 'none';
         D.dashboard.style.display = 'block';
-        // Set today's date and load
         D.attDate.value = todayISO();
         await loadAttendanceForDate(D.attDate.value);
     } else {
@@ -191,12 +217,9 @@ async function loadAttendanceForDate(date) {
     if (!date) return;
     try {
         const data = await api('GET', `/api/attendance?date=${date}`);
-        attStudents = data.attendance;  // [{ id, name, roll_number, avatar, status }]
-
-        // Reset local record map from what server returned
-        attRecords = {};
+        attStudents = data.attendance;
+        attRecords  = {};
         attStudents.forEach(s => { attRecords[s.id] = s.status; });
-
         renderAttList();
     } catch (err) {
         showToast('Could not load attendance: ' + err.message, true);
@@ -206,24 +229,21 @@ async function loadAttendanceForDate(date) {
 // ─── Render attendance list ───────────────────────────────────────
 function renderAttList() {
     if (attStudents.length === 0) {
-        D.attList.innerHTML   = '';
-        D.attEmpty.style.display  = 'block';
+        D.attList.innerHTML        = '';
+        D.attEmpty.style.display   = 'block';
         D.attSaveRow.style.display = 'none';
         updateDayStats();
         return;
     }
     D.attEmpty.style.display   = 'none';
     D.attSaveRow.style.display = 'flex';
-
     D.attList.innerHTML = attStudents.map(s => buildAttRowHTML(s)).join('');
 
-    // Wire up buttons
     attStudents.forEach(s => {
         ['present', 'late', 'absent'].forEach(status => {
             const btn = $(`att-${status}-${s.id}`);
             if (btn) btn.addEventListener('click', () => setStatus(s.id, status));
         });
-        // Reflect current state
         reflectStatus(s.id, attRecords[s.id] || 'absent');
     });
 
@@ -267,7 +287,6 @@ function setStatus(studentId, status) {
 function reflectStatus(studentId, status) {
     const row = $('att-row-' + studentId);
     if (row) row.dataset.status = status;
-
     ['present', 'late', 'absent'].forEach(s => {
         const btn = $(`att-${s}-${studentId}`);
         if (btn) btn.classList.toggle('active', s === status);
@@ -276,15 +295,10 @@ function reflectStatus(studentId, status) {
 
 function updateDayStats() {
     const statuses = Object.values(attRecords);
-    const present  = statuses.filter(s => s === 'present').length;
-    const late     = statuses.filter(s => s === 'late').length;
-    const absent   = statuses.filter(s => s === 'absent').length;
-    const total    = attStudents.length;
-
-    D.dayPresent.textContent = present;
-    D.dayLate.textContent    = late;
-    D.dayAbsent.textContent  = absent;
-    D.dayTotal.textContent   = total;
+    D.dayPresent.textContent = statuses.filter(s => s === 'present').length;
+    D.dayLate.textContent    = statuses.filter(s => s === 'late').length;
+    D.dayAbsent.textContent  = statuses.filter(s => s === 'absent').length;
+    D.dayTotal.textContent   = attStudents.length;
 }
 
 // ─── Mark all ─────────────────────────────────────────────────────
@@ -327,7 +341,7 @@ async function loadSummary() {
 
 function renderSummary() {
     if (summaryData.length === 0) {
-        D.summaryGrid.innerHTML   = '';
+        D.summaryGrid.innerHTML      = '';
         D.summaryEmpty.style.display = 'block';
         return;
     }
@@ -341,13 +355,11 @@ function renderSummary() {
 }
 
 function buildSummaryCardHTML(s) {
-    const pct = s.percentage;
+    const pct    = s.percentage;
     const noData = pct === null || s.total_days === 0;
-
     const pctClass = noData ? '' : pct >= 75 ? 'high' : pct >= 50 ? 'mid' : 'low';
     const isLow    = !noData && pct < 75;
 
-    // SVG ring
     const radius = 26;
     const circ   = 2 * Math.PI * radius;
     const offset = noData ? circ : circ - (pct / 100) * circ;
@@ -359,8 +371,6 @@ function buildSummaryCardHTML(s) {
     const lowBadge = isLow
         ? `<div class="low-att-badge"><i class="fas fa-exclamation-triangle"></i> Low Attendance</div>`
         : '';
-
-    const barWidth = noData ? '0' : pct;
 
     return `
     <div class="summary-card ${isLow ? 'low-att' : ''}">
@@ -380,8 +390,8 @@ function buildSummaryCardHTML(s) {
                     <circle class="pct-ring-bg" cx="32" cy="32" r="${radius}"/>
                     <circle class="pct-ring-fg ${pctClass}"
                         cx="32" cy="32" r="${radius}"
-                        stroke-dasharray="${circ}"
-                        stroke-dashoffset="${offset}"/>
+                        stroke-dasharray="${circ.toFixed(2)}"
+                        stroke-dashoffset="${offset.toFixed(2)}"/>
                 </svg>
                 <div class="pct-ring-text">
                     ${noData
@@ -411,7 +421,7 @@ function buildSummaryCardHTML(s) {
         </div>
 
         <div class="summary-progress-wrap">
-            <div class="summary-progress-bar ${pctClass}" style="width:${barWidth}%"></div>
+            <div class="summary-progress-bar ${pctClass}" style="width:${noData ? 0 : pct}%"></div>
         </div>
 
         <button class="btn-history" id="hist-btn-${s.student_id}">
@@ -422,23 +432,21 @@ function buildSummaryCardHTML(s) {
 
 // ─── History modal ────────────────────────────────────────────────
 async function openHistoryModal(studentId, name, roll) {
-    D.historyModalTitle.innerHTML = '<i class="fas fa-history"></i> Attendance History';
+    D.historyModalTitle.innerHTML      = '<i class="fas fa-history"></i> Attendance History';
     D.historyModalSubtitle.textContent = `${name} — ${roll}`;
-    D.historyContent.innerHTML = '<div class="hist-empty"><i class="fas fa-spinner fa-spin"></i> Loading…</div>';
+    D.historyContent.innerHTML         = '<div class="hist-empty"><i class="fas fa-spinner fa-spin"></i> Loading…</div>';
     D.historyModal.classList.add('active');
 
     try {
-        const data = await api('GET', `/api/attendance/history/${studentId}`);
+        const data    = await api('GET', `/api/attendance/history/${studentId}`);
         const history = data.history;
 
         if (history.length === 0) {
-            D.historyContent.innerHTML = '<div class="hist-empty">No attendance records found for this student.</div>';
+            D.historyContent.innerHTML = '<div class="hist-empty">No records found for this student.</div>';
             return;
         }
 
-        // Build from newest to oldest
-        const reversed = [...history].reverse();
-        D.historyContent.innerHTML = reversed.map(h => `
+        D.historyContent.innerHTML = [...history].reverse().map(h => `
             <div class="hist-row">
                 <span class="hist-date"><i class="fas fa-calendar-day"></i> ${formatDateDisplay(h.date)}</span>
                 <span class="hist-status ${h.status}">${h.status.charAt(0).toUpperCase() + h.status.slice(1)}</span>
@@ -456,57 +464,59 @@ function closeHistoryModal() {
 // ─── Wire everything ──────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     D = {
-        loginGate:         $('loginGate'),
-        dashboard:         $('dashboard'),
-        navUserArea:       $('navUserArea'),
+        loginGate:            $('loginGate'),
+        dashboard:            $('dashboard'),
+        navUserArea:          $('navUserArea'),
 
-        authModal:         $('authModal'),
-        tabLogin:          $('tabLogin'),
-        tabRegister:       $('tabRegister'),
-        loginForm:         $('loginForm'),
-        registerForm:      $('registerForm'),
-        authError:         $('authError'),
-        loginUsername:     $('loginUsername'),
-        loginPassword:     $('loginPassword'),
-        loginBtn:          $('loginBtn'),
-        regUsername:       $('regUsername'),
-        regPassword:       $('regPassword'),
-        regConfirm:        $('regConfirm'),
-        registerBtn:       $('registerBtn'),
+        authModal:            $('authModal'),
+        tabLogin:             $('tabLogin'),
+        tabRegister:          $('tabRegister'),
+        loginForm:            $('loginForm'),
+        registerForm:         $('registerForm'),
+        authError:            $('authError'),
+        loginUsername:        $('loginUsername'),
+        loginPassword:        $('loginPassword'),
+        loginBtn:             $('loginBtn'),
+        regUsername:          $('regUsername'),
+        regPassword:          $('regPassword'),
+        regConfirm:           $('regConfirm'),
+        registerBtn:          $('registerBtn'),
 
-        tabTake:           $('tabTake'),
-        tabSummary:        $('tabSummary'),
-        paneTake:          $('paneTake'),
-        paneSummary:       $('paneSummary'),
+        tabTake:              $('tabTake'),
+        tabSummary:           $('tabSummary'),
+        paneTake:             $('paneTake'),
+        paneSummary:          $('paneSummary'),
 
-        attDate:           $('attDate'),
-        markAllPresent:    $('markAllPresent'),
-        markAllAbsent:     $('markAllAbsent'),
-        dayPresent:        $('dayPresent'),
-        dayLate:           $('dayLate'),
-        dayAbsent:         $('dayAbsent'),
-        dayTotal:          $('dayTotal'),
-        attList:           $('attList'),
-        attEmpty:          $('attEmpty'),
-        attSaveRow:        $('attSaveRow'),
-        saveAttendanceBtn: $('saveAttendanceBtn'),
+        attDate:              $('attDate'),
+        markAllPresent:       $('markAllPresent'),
+        markAllAbsent:        $('markAllAbsent'),
+        dayPresent:           $('dayPresent'),
+        dayLate:              $('dayLate'),
+        dayAbsent:            $('dayAbsent'),
+        dayTotal:             $('dayTotal'),
+        attList:              $('attList'),
+        attEmpty:             $('attEmpty'),
+        attSaveRow:           $('attSaveRow'),
+        saveAttendanceBtn:    $('saveAttendanceBtn'),
 
-        summaryGrid:       $('summaryGrid'),
-        summaryEmpty:      $('summaryEmpty'),
+        summaryGrid:          $('summaryGrid'),
+        summaryEmpty:         $('summaryEmpty'),
 
-        historyModal:      $('historyModal'),
-        historyModalTitle: $('historyModalTitle'),
+        historyModal:         $('historyModal'),
+        historyModalTitle:    $('historyModalTitle'),
         historyModalSubtitle: $('historyModalSubtitle'),
-        historyContent:    $('historyContent'),
-        closeHistoryBtn:   $('closeHistoryBtn'),
+        historyContent:       $('historyContent'),
+        closeHistoryBtn:      $('closeHistoryBtn'),
 
-        toast:             $('toast'),
-        toastIcon:         $('toastIcon'),
-        toastMsg:          $('toastMsg'),
+        toast:                $('toast'),
+        toastIcon:            $('toastIcon'),
+        toastMsg:             $('toastMsg'),
     };
 
+    // Hamburger
+    initHamburger();
+
     // Auth
-    D.openAuthBtn && D.openAuthBtn.addEventListener('click', openAuthModal);
     D.tabLogin.addEventListener('click',    () => switchTab('login'));
     D.tabRegister.addEventListener('click', () => switchTab('register'));
     D.loginBtn.addEventListener('click',    handleLogin);
@@ -531,7 +541,7 @@ document.addEventListener('DOMContentLoaded', () => {
     D.closeHistoryBtn.addEventListener('click', closeHistoryModal);
     D.historyModal.addEventListener('click', e => { if (e.target === D.historyModal) closeHistoryModal(); });
 
-    // Enter key for login
+    // Enter key
     [D.loginUsername, D.loginPassword].forEach(el =>
         el.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); }));
     [D.regUsername, D.regPassword, D.regConfirm].forEach(el =>
@@ -542,7 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Escape') { closeAuthModal(); closeHistoryModal(); }
     });
 
-    // Handle the login gate button (rendered after initPage)
+    // Login gate button
     document.addEventListener('click', e => {
         if (e.target && e.target.id === 'openAuthBtn') openAuthModal();
     });

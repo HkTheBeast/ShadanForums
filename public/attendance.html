@@ -19,24 +19,29 @@
 
     <!-- ══ NAVBAR ══════════════════════════════════════════════ -->
     <nav class="navbar">
-    <div class="nav-container">
-        <a href="Aindex.html" class="logo">
-            <div class="logo-icon"><i class="fas fa-chalkboard-teacher"></i></div>
-            <div class="logo-text">
-                <span class="logo-main">Svlent</span>
-                <span class="logo-sub">Classroom Hub</span>
+        <div class="nav-container">
+            <a href="Aindex.html" class="logo">
+                <div class="logo-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                <div class="logo-text">
+                    <span class="logo-main">Svlent</span>
+                    <span class="logo-sub">Classroom Hub</span>
+                </div>
+            </a>
+            <div class="nav-links" id="navLinks">
+                <a href="Aindex.html"      class="nav-link-btn"><i class="fas fa-home"></i> Home</a>
+                <a href="students.html"    class="nav-link-btn"><i class="fas fa-id-card"></i> Students</a>
+                <a href="attendance.html"  class="nav-link-btn nav-active"><i class="fas fa-calendar-check"></i> Attendance</a>
+                <a href="submissions.html" class="nav-link-btn"><i class="fas fa-tasks"></i> Submissions</a>
+                <a href="marks.html"       class="nav-link-btn"><i class="fas fa-chart-bar"></i> Marks</a>
+                <a href="highlights.html"  class="nav-link-btn"><i class="fas fa-star"></i> Highlights</a>
+                <div id="navUserArea"></div>
             </div>
-        </a>
-        <div class="nav-links">
-            <a href="Aindex.html"      class="nav-link-btn"><i class="fas fa-home"></i> Home</a>
-            <a href="attendance.html"  class="nav-link-btn"><i class="fas fa-calendar-check"></i> Attendance</a>
-            <a href="submissions.html" class="nav-link-btn"><i class="fas fa-tasks"></i> Submissions</a>
-            <a href="marks.html"       class="nav-link-btn"><i class="fas fa-chart-bar"></i> Marks</a>
-            <a href="highlights.html"  class="nav-link-btn"><i class="fas fa-star"></i> Highlights</a>
-            <div id="navUserArea"></div>
+            <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
-    </div>
-</nav>
+    </nav>
+
     <!-- ══ MAIN ════════════════════════════════════════════════ -->
     <main class="main">
 
@@ -60,10 +65,10 @@
 
             <!-- Tab nav -->
             <div class="att-tabs">
-                <button class="att-tab active" id="tabTake" data-tab="take">
+                <button class="att-tab active" id="tabTake">
                     <i class="fas fa-pen-alt"></i> Take Attendance
                 </button>
-                <button class="att-tab" id="tabSummary" data-tab="summary">
+                <button class="att-tab" id="tabSummary">
                     <i class="fas fa-chart-pie"></i> Summary &amp; History
                 </button>
             </div>
@@ -71,24 +76,22 @@
             <!-- ══ TAB: TAKE ATTENDANCE ══════════════════════ -->
             <div id="paneTake" class="att-pane">
 
-                <!-- Date selector row -->
                 <div class="att-date-row">
                     <div class="att-date-wrap">
                         <i class="fas fa-calendar-alt"></i>
                         <input type="date" id="attDate" class="att-date-input">
                     </div>
                     <div class="att-quick-actions">
-                        <button class="btn-quick present" id="markAllPresent" title="Mark all Present">
+                        <button class="btn-quick present" id="markAllPresent">
                             <i class="fas fa-check-double"></i> All Present
                         </button>
-                        <button class="btn-quick absent" id="markAllAbsent" title="Mark all Absent">
+                        <button class="btn-quick absent" id="markAllAbsent">
                             <i class="fas fa-times"></i> All Absent
                         </button>
                     </div>
                 </div>
 
-                <!-- Attendance stats for this date -->
-                <div class="att-day-stats" id="attDayStats">
+                <div class="att-day-stats">
                     <div class="att-day-stat present-stat">
                         <span class="att-day-num" id="dayPresent">0</span>
                         <span class="att-day-lbl">Present</span>
@@ -107,7 +110,6 @@
                     </div>
                 </div>
 
-                <!-- Attendance list -->
                 <div id="attList" class="att-list"></div>
 
                 <div id="attEmpty" class="empty-state" style="display:none;">
@@ -116,7 +118,6 @@
                     <p>Add students from the <a href="students.html" style="color:var(--accent-teal)">Students</a> page first.</p>
                 </div>
 
-                <!-- Save button -->
                 <div class="att-save-row" id="attSaveRow" style="display:none;">
                     <button class="btn-save-att" id="saveAttendanceBtn">
                         <i class="fas fa-save"></i> Save Attendance for this Day
@@ -127,22 +128,18 @@
 
             <!-- ══ TAB: SUMMARY & HISTORY ═══════════════════ -->
             <div id="paneSummary" class="att-pane" style="display:none;">
-
-                <!-- Summary cards grid -->
                 <div id="summaryGrid" class="summary-grid"></div>
-
                 <div id="summaryEmpty" class="empty-state" style="display:none;">
                     <i class="fas fa-calendar-times"></i>
                     <h3>No attendance data yet</h3>
                     <p>Take attendance first to see summaries here.</p>
                 </div>
-
             </div>
 
         </div>
     </main>
 
-    <!-- ══ AUTH MODAL (same as students page) ═════════════════ -->
+    <!-- ══ AUTH MODAL ══════════════════════════════════════════ -->
     <div class="modal-overlay" id="authModal">
         <div class="auth-modal">
             <div class="modal-header">
