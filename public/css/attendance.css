@@ -285,7 +285,7 @@
     border-radius: var(--r-md);
 }
 a.nav-active[href="students.html"]    { color: var(--accent-purple) !important; }
-a.nav-active[href="attendance.html"]  { color: var(--accent-teal)   !important; }
+a.nav-active[href="attendance.html"]  { color: var(--accent-red)   !important; }
 a.nav-active[href="submissions.html"] { color: var(--accent-blue)   !important; }
 a.nav-active[href="marks.html"]       { color: var(--accent-amber)  !important; }
 a.nav-active[href="highlights.html"]  { color: var(--accent-gold)   !important; }
