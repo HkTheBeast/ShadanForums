@@ -534,12 +534,12 @@ async function saveMarks() {
 
     const mid1     = toVal(D.markMid1.value,     30);
     const mid2     = toVal(D.markMid2.value,     30);
-    const internal = toVal(D.markInternal.value, 25);
+    const internal = toVal(D.markInternal.value, 50);
     const external = toVal(D.markExternal.value, 50);
 
     if (String(mid1).startsWith('ERR'))     return showError(D.marksError, 'Mid 1 must be between 0 and 30.');
     if (String(mid2).startsWith('ERR'))     return showError(D.marksError, 'Mid 2 must be between 0 and 30.');
-    if (String(internal).startsWith('ERR')) return showError(D.marksError, 'Internal Lab must be between 0 and 25.');
+    if (String(internal).startsWith('ERR')) return showError(D.marksError, 'Internal Lab must be between 0 and 50.');
     if (String(external).startsWith('ERR')) return showError(D.marksError, 'External Lab must be between 0 and 50.');
 
     setLoading(D.saveMarksBtn, true);
