@@ -5,419 +5,342 @@
     <title>Svlent | Classroom Management Hub</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="description" content="Svlent - Classroom management platform for teachers. Track attendance, assignments, performance, and student progress.">
-    <link rel="stylesheet" href="css/Astyle.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/Astyle.css">
 </head>
 <body>
-    <!-- Background Image with Overlay -->
-    <div class="background-image"></div>
-    
-    <!-- Animated Background Elements -->
-    <div class="bg-animation">
-        <div class="bg-particle" id="particle-1"></div>
-        <div class="bg-particle" id="particle-2"></div>
-        <div class="bg-particle" id="particle-3"></div>
-        <div class="bg-particle" id="particle-4"></div>
+
+<!-- ══ BACKGROUND ═══════════════════════════════════════════════ -->
+<div class="bg-grid"></div>
+<div class="bg-glow bg-glow-1"></div>
+<div class="bg-glow bg-glow-2"></div>
+<div class="bg-glow bg-glow-3"></div>
+
+<!-- ══ NAVBAR ═══════════════════════════════════════════════════ -->
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <a href="Aindex.html" class="logo">
+            <div class="logo-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+            <div class="logo-text">
+                <span class="logo-main">Svlent</span>
+                <span class="logo-sub">Classroom Hub</span>
+            </div>
+        </a>
+        <div class="nav-menu" id="navMenu">
+            <a href="Aindex.html" class="nav-link active"><i class="fas fa-home"></i> Home</a>
+            <a href="Adashboard.html" class="nav-link"><i class="fas fa-th-large"></i> Dashboard</a>
+            <a href="students.html" class="nav-link"><i class="fas fa-users"></i> Students</a>
+            <a href="attendance.html" class="nav-link"><i class="fas fa-calendar-check"></i> Attendance</a>
+        </div>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- ══ HERO ══════════════════════════════════════════════════════ -->
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-eyebrow">
+            <span class="eyebrow-dot"></span>
+            Classroom Management, Reimagined
+        </div>
+        <h1 class="hero-title">
+            The hub that keeps<br>
+            your classroom<br>
+            <span class="hero-title-accent">in perfect order.</span>
+        </h1>
+        <p class="hero-desc">
+            Svlent brings attendance, assignments, marks, and student records into one clean, fast dashboard — so you spend less time on admin and more time teaching.
+        </p>
+        <div class="hero-cta">
+            <a href="students.html" class="btn-hero-primary">
+                <i class="fas fa-rocket"></i> Open Students
+            </a>
+            <a href="attendance.html" class="btn-hero-secondary">
+                <i class="fas fa-calendar-check"></i> Take Attendance
+            </a>
+        </div>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <span class="hero-stat-num">6+</span>
+                <span class="hero-stat-lbl">Tracking Tools</span>
+            </div>
+            <div class="hero-stat-divider"></div>
+            <div class="hero-stat">
+                <span class="hero-stat-num">1</span>
+                <span class="hero-stat-lbl">Central Hub</span>
+            </div>
+            <div class="hero-stat-divider"></div>
+            <div class="hero-stat">
+                <span class="hero-stat-num">0</span>
+                <span class="hero-stat-lbl">Paper Trails</span>
+            </div>
+        </div>
     </div>
 
-    <!-- Navigation -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <div class="brand-logo">
-                <a href="Aindex.html" class="logo">
-                    <div class="logo-icon">
-                        <i class="fas fa-chalkboard-teacher"></i>
-                    </div>
-                    <div class="logo-text">
-                        <span class="logo-main">Svlent</span>
-                        <span class="logo-sub">Classroom Hub</span>
-                    </div>
-                </a>
-            </div>
-
-            <div class="nav-menu">
-                <a href="Aindex.html" class="nav-link active">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
-                    <div class="nav-indicator"></div>
-                </a>
-                <a href="Adashboard.html" class="nav-link">
-                    <i class="fas fa-star"></i>
-                    <span>Dashboard</span>
-                    <div class="nav-indicator"></div>
-                </a>
-                <a href="#overview" class="nav-link">
-                    <i class="fas fa-info-circle"></i>
-                    <span>Overview</span>
-                    <div class="nav-indicator"></div>
-                </a>
-                <a href="students.html" class="nav-link">
-    <i class="fas fa-users"></i>
-    <span>Students</span>
-    <div class="nav-indicator"></div>
-</a>
-            </div>
-
-            <button class="mobile-toggle" id="mobileToggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1 class="hero-title">
-                <span class="gradient-text">Svlent</span> Welcomes You!
-            </h1>
-            <h2 class="hero-subtitle">Your All-In-One Classroom Management Hub</h2>
-            <p class="hero-description">
-                Take complete control of your classroom with the most intuitive, powerful, and organized platform designed specifically for modern educators.
-            </p>
-            <div class="hero-buttons">
-                <a href="#features" class="btn-primary">
-                    <i class="fas fa-rocket"></i>
-                    Explore Features
-                </a>
+    <!-- Decorative side panel -->
+    <div class="hero-panel">
+        <div class="panel-card panel-card--1">
+            <div class="panel-card-icon"><i class="fas fa-calendar-check"></i></div>
+            <div class="panel-card-info">
+                <span class="panel-card-label">Today's Attendance</span>
+                <div class="panel-bar-wrap">
+                    <div class="panel-bar" style="width:82%"></div>
+                </div>
+                <span class="panel-card-value">82% Present</span>
             </div>
         </div>
-        <div class="hero-visual">
-            <div class="floating-cards">
-                <div class="floating-card card-1">
-                    <i class="fas fa-users"></i>
-                    <span>Attendance</span>
-                </div>
-                <div class="floating-card card-2">
-                    <i class="fas fa-tasks"></i>
-                    <span>Assignments</span>
-                </div>
-                <div class="floating-card card-3">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Analytics</span>
+        <div class="panel-card panel-card--2">
+            <div class="panel-card-icon"><i class="fas fa-tasks"></i></div>
+            <div class="panel-card-info">
+                <span class="panel-card-label">Assignments Due</span>
+                <div class="panel-chips">
+                    <span class="chip chip--done">Done 18</span>
+                    <span class="chip chip--pending">Pending 4</span>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- Main Content -->
-    <main class="container">
-        <!-- Overview Section -->
-        <section class="section intro-section" id="overview">
-            <div class="section-header">
-                <h2>Take Control of Everything and Everyone in Your Classroom!</h2>
-                <p class="section-subtitle">With SVLENT, you can effortlessly manage every aspect of your classroom</p>
+        <div class="panel-card panel-card--3">
+            <div class="panel-card-icon"><i class="fas fa-star"></i></div>
+            <div class="panel-card-info">
+                <span class="panel-card-label">Highlighted Students</span>
+                <span class="panel-card-value" style="font-size:1.4rem;color:var(--accent-gold)">3 ⭐</span>
             </div>
-            
-            <div class="intro-content">
-                <div class="intro-text">
-                    
-                    <div class="overview-text">
-                        <p>
-                            SVLENT is the dedicated platform designed to give teachers seamless control over the pulse of their classroom.
-                            Built to streamline your workflow, it consolidates everything from daily attendance and assignment tracking 
-                            to performance analytics and student behavior notes into one intuitive, centralized hub. By centralizing these 
-                            essential tasks, SVLENT replaces scattered systems and paper trails with clarity and efficiency, allowing you 
-                            to reclaim time and focus on what truly matters—connecting with and guiding your students.
-                        </p>
-                        
-                        <p>
-                            From the moment you begin, you gain complete, organized oversight. Mark daily attendance in seconds and 
-                            maintain clear, automatic records. Track assignment completion in real-time to instantly see who is on track 
-                            and who may need support. Log marks and scores to build a comprehensive academic profile for each learner, 
-                            and go beyond grades by tracking custom performance levels and rating students against specific skills or 
-                            rubrics to capture a full picture of their growth.
-                        </p>
-                        
-                        <p>
-                            SVLENT empowers you to support the complete development of every student. The platform's structured 
-                            annotation system allows you to formally flag areas of concern to document and manage needed interventions. 
-                            Conversely, you can spotlight achievements and positive contributions to encourage a supportive classroom 
-                            environment. To keep your own workflow smooth, a built-in task manager helps you organize your responsibilities 
-                            and reminders right alongside your student data, ensuring your entire classroom ecosystem is synchronized.
-                        </p>
-                    </div>
-                </div>
+        </div>
+        <div class="panel-card panel-card--4">
+            <div class="panel-card-icon"><i class="fas fa-chart-bar"></i></div>
+            <div class="panel-card-info">
+                <span class="panel-card-label">Mid 1 Average</span>
+                <span class="panel-card-value">24.5 <small style="color:var(--text-muted);font-size:.7rem">/30</small></span>
             </div>
-        </section>
+        </div>
+    </div>
+</section>
 
-        <!-- Features Grid -->
-        <section class="section features-section" id="features">
-            <div class="section-header">
-                <h2>Svlent Offers You Everything You Need</h2>
-                <p class="section-subtitle">Comprehensive tools designed specifically for classroom management</p>
+<!-- ══ FEATURE STRIP ═════════════════════════════════════════════ -->
+<section class="feature-strip">
+    <div class="strip-item"><i class="fas fa-calendar-check"></i> Attendance Tracking</div>
+    <div class="strip-divider"></div>
+    <div class="strip-item"><i class="fas fa-tasks"></i> Assignment Monitoring</div>
+    <div class="strip-divider"></div>
+    <div class="strip-item"><i class="fas fa-chart-bar"></i> Marks & Grades</div>
+    <div class="strip-divider"></div>
+    <div class="strip-item"><i class="fas fa-star"></i> Student Highlights</div>
+    <div class="strip-divider"></div>
+    <div class="strip-item"><i class="fas fa-exclamation-triangle"></i> Warning System</div>
+    <div class="strip-divider"></div>
+    <div class="strip-item"><i class="fas fa-book"></i> Record Submissions</div>
+</section>
+
+<!-- ══ WHAT IS SVLENT ════════════════════════════════════════════ -->
+<section class="what-section container-wide">
+    <div class="what-text">
+        <div class="section-eyebrow">What is Svlent?</div>
+        <h2 class="section-heading">One place for<br>everything that matters<br>in your classroom.</h2>
+        <p class="section-body">
+            Svlent is a dedicated teacher's platform that consolidates daily attendance, 
+            assignment tracking, marks, record submissions, student highlights, and warnings 
+            into a single, organized dashboard. No more scattered spreadsheets. No more paper.
+        </p>
+        <p class="section-body">
+            Every student gets a full profile. Every action is saved instantly. 
+            You stay in control of your classroom without drowning in admin.
+        </p>
+        <a href="students.html" class="btn-outline">
+            <i class="fas fa-users"></i> View Students
+        </a>
+    </div>
+    <div class="what-visual">
+        <div class="feature-list-visual">
+            <div class="flv-item flv-item--active">
+                <div class="flv-icon"><i class="fas fa-calendar-check"></i></div>
+                <div class="flv-text">
+                    <strong>Attendance</strong>
+                    <span>Mark daily presence. Track percentages. Spot patterns instantly.</span>
+                </div>
+                <div class="flv-badge badge--teal">Live</div>
             </div>
-
-            <div class="features-grid">
-                <!-- Feature 1 -->
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-calendar-check"></i>
-                    </div>
-                    <h3>📅 Attendance Management</h3>
-                    <p>Log daily presence in seconds with our visual class roster. View historical trends, identify patterns of absence, and maintain clear records for reporting.</p>
-                    <div class="feature-details">
-                        <p><strong>Key Benefits:</strong></p>
-                        <ul class="feature-list">
-                            <li>Visual class roster interface</li>
-                            <li>Historical attendance trends</li>
-                            <li>Pattern recognition for absences</li>
-                            <li>Automated record keeping</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Feature 2 -->
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-clipboard-list"></i>
-                    </div>
-                    <h3>✅ Assignment Tracking</h3>
-                    <p>Monitor work submission in real time. See at a glance which tasks are turned in, pending, or missing, and quickly follow up with students who need support.</p>
-                    <div class="feature-details">
-                        <p><strong>Key Benefits:</strong></p>
-                        <ul class="feature-list">
-                            <li>Real-time submission tracking</li>
-                            <li>Visual progress indicators</li>
-                            <li>Missing assignment alerts</li>
-                            <li>Student follow-up tools</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Feature 3 -->
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-bar"></i>
-                    </div>
-                    <h3>📊 Marks & Grades Management</h3>
-                    <p>Record scores, grades, and assessment results in a centralized digital gradebook. Organize marks by subject, unit, or term with automatic calculations.</p>
-                    <div class="feature-details">
-                        <p><strong>Key Benefits:</strong></p>
-                        <ul class="feature-list">
-                            <li>Centralized digital gradebook</li>
-                            <li>Automatic grade calculations</li>
-                            <li>Customizable grading scales</li>
-                            <li>Organized by subject/term</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Feature 4 -->
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-bullseye"></i>
-                    </div>
-                    <h3>📈 Performance Analytics</h3>
-                    <p>Go beyond letter grades. Define custom performance bands and track how each student progresses against learning standards or skills over time.</p>
-                    <div class="feature-details">
-                        <p><strong>Key Benefits:</strong></p>
-                        <ul class="feature-list">
-                            <li>Custom performance criteria</li>
-                            <li>Skill-based tracking</li>
-                            <li>Progress over time analysis</li>
-                            <li>Learning standard alignment</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Feature 5 -->
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                    <h3>⭐ Student Rating System</h3>
-                    <p>Add quick, structured feedback on specific criteria such as participation, collaboration, or effort. Use customizable rating scales for consistent assessment.</p>
-                    <div class="feature-details">
-                        <p><strong>Key Benefits:</strong></p>
-                        <ul class="feature-list">
-                            <li>Structured feedback system</li>
-                            <li>Customizable rating criteria</li>
-                            <li>Consistent assessment framework</li>
-                            <li>Multi-criteria evaluation</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Feature 6 -->
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-award"></i>
-                    </div>
-                    <h3>🟢 Student Highlighting</h3>
-                    <p>Celebrate positive moments and achievements. Flag outstanding work, acts of kindness, or improvement milestones to encourage a supportive environment.</p>
-                    <div class="feature-details">
-                        <p><strong>Key Benefits:</strong></p>
-                        <ul class="feature-list">
-                            <li>Achievement recognition</li>
-                            <li>Positive behavior tracking</li>
-                            <li>Milestone celebration</li>
-                            <li>Encouragement system</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Feature 7 -->
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-exclamation-triangle"></i>
-                    </div>
-                    <h3>⚠️ Student Warning System</h3>
-                    <p>Document areas of concern with structured, private notes. Log academic or behavioral warnings to track interventions and maintain clear records.</p>
-                    <div class="feature-details">
-                        <p><strong>Key Benefits:</strong></p>
-                        <ul class="feature-list">
-                            <li>Structured incident logging</li>
-                            <li>Private documentation</li>
-                            <li>Intervention tracking</li>
-                            <li>Pattern analysis</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Feature 8 -->
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-tasks"></i>
-                    </div>
-                    <h3>📝 Teacher's Task Manager</h3>
-                    <p>Keep your own workflow on track with a personal task manager built right into your dashboard. Set reminders and organize responsibilities efficiently.</p>
-                    <div class="feature-details">
-                        <p><strong>Key Benefits:</strong></p>
-                        <ul class="feature-list">
-                            <li>Integrated task management</li>
-                            <li>Reminder system</li>
-                            <li>Workflow organization</li>
-                            <li>Priority setting</li>
-                        </ul>
-                    </div>
+            <div class="flv-item">
+                <div class="flv-icon"><i class="fas fa-tasks"></i></div>
+                <div class="flv-text">
+                    <strong>Assignments</strong>
+                    <span>Toggle done/pending per student with one click.</span>
                 </div>
             </div>
-        </section>
-
-        <!-- Classroom Benefits -->
-        <section class="section benefits-section">
-            <div class="section-header">
-                <h2>Why Choose Svlent for Your Classroom?</h2>
-                <p class="section-subtitle">Transforming classroom management through intelligent design</p>
-            </div>
-
-            <div class="benefits-grid">
-                <div class="benefit-card">
-                    <div class="benefit-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <h3>Time Efficiency</h3>
-                    <p>Reduce administrative tasks by up to 70% with automated processes and streamlined interfaces designed specifically for educators.</p>
-                </div>
-
-                <div class="benefit-card">
-                    <div class="benefit-icon">
-                        <i class="fas fa-chart-pie"></i>
-                    </div>
-                    <h3>Data-Driven Insights</h3>
-                    <p>Gain valuable insights into student performance patterns, helping you make informed decisions about teaching strategies and interventions.</p>
-                </div>
-
-                <div class="benefit-card">
-                    <div class="benefit-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3>Student-Centered Focus</h3>
-                    <p>Move beyond grades to track holistic development, including behavior, participation, and social-emotional growth.</p>
-                </div>
-
-                <div class="benefit-card">
-                    <div class="benefit-icon">
-                        <i class="fas fa-sync-alt"></i>
-                    </div>
-                    <h3>Seamless Integration</h3>
-                    <p>All classroom management tools in one place—no more switching between multiple systems or maintaining paper records.</p>
+            <div class="flv-item">
+                <div class="flv-icon"><i class="fas fa-chart-bar"></i></div>
+                <div class="flv-text">
+                    <strong>Marks</strong>
+                    <span>Mid 1, Mid 2, Internal Lab, External Lab — all tracked.</span>
                 </div>
             </div>
-        </section>
-
-        <!-- Final Summary -->
-        <section class="section summary-section">
-            <div class="summary-content">
-                <h2 class="summary-title">Your Complete Classroom Solution</h2>
-                <div class="summary-grid">
-                    <div class="summary-point">
-                        <h3><i class="fas fa-check-circle"></i> Comprehensive Tracking</h3>
-                        <p>From attendance to assignments, marks to behavior—everything in one organized system.</p>
-                    </div>
-                    <div class="summary-point">
-                        <h3><i class="fas fa-check-circle"></i> Real-Time Updates</h3>
-                        <p>Instant access to classroom data, enabling timely interventions and support.</p>
-                    </div>
-                    <div class="summary-point">
-                        <h3><i class="fas fa-check-circle"></i> Organized Documentation</h3>
-                        <p>Maintain clear, searchable records for every student and every classroom event.</p>
-                    </div>
-                    <div class="summary-point">
-                        <h3><i class="fas fa-check-circle"></i> Focus on Teaching</h3>
-                        <p>Spend less time on administration and more time on what matters—teaching and connecting with students.</p>
-                    </div>
-                </div>
-                <div class="closing-statement">
-                    <p>
-                        <strong>Svlent</strong> is more than just a classroom management tool—it's your partner in creating an organized, 
-                        efficient, and student-focused learning environment. Designed with educators in mind, it provides the structure 
-                        and insights needed to support every student's journey while keeping your workflow smooth and manageable.
-                    </p>
+            <div class="flv-item">
+                <div class="flv-icon"><i class="fas fa-book-open"></i></div>
+                <div class="flv-text">
+                    <strong>Record Submissions</strong>
+                    <span>Record book, observation book, PPT — mark what's in.</span>
                 </div>
             </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-brand">
-                <a href="Aindex.html" class="footer-logo">
-                    <i class="fas fa-chalkboard-teacher"></i>
-                    <span>Svlent</span>
-                </a>
-                <p class="footer-tagline">Empowering Educators, Transforming Classrooms</p>
-                <p class="footer-mission">
-                    A dedicated platform for organized classroom management and student tracking.
-                </p>
-                
-                <!-- Footer Buttons -->
-                <div class="footer-buttons">
-                    <button class="footer-btn btn-1">
-                        <i class="fas fa-cog"></i>
-                        <span>Settings</span>
-                    </button>
-                    <button class="footer-btn btn-2">
-                        <i class="fas fa-question-circle"></i>
-                        <span>Help Center</span>
-                    </button>
-                    <button class="footer-btn btn-3">
-                        <i class="fas fa-download"></i>
-                        <span>Resources</span>
-                    </button>
+            <div class="flv-item">
+                <div class="flv-icon"><i class="fas fa-star"></i></div>
+                <div class="flv-text">
+                    <strong>Highlights & Warnings</strong>
+                    <span>Recognise great work and log concerns formally.</span>
                 </div>
             </div>
         </div>
+    </div>
+</section>
 
-        <div class="footer-bottom">
-            <p>&copy; <span id="currentYear"></span> Svlent Classroom Management System.</p>
-            <p>Designed for educators who care about organized, efficient teaching.</p>
+<!-- ══ HOW IT WORKS ══════════════════════════════════════════════ -->
+<section class="how-section">
+    <div class="container-wide">
+        <div class="section-eyebrow" style="text-align:center">How It Works</div>
+        <h2 class="section-heading" style="text-align:center;max-width:600px;margin:0 auto 4rem">
+            Three steps to a fully organized classroom.
+        </h2>
+        <div class="how-steps">
+            <div class="how-step">
+                <div class="step-num">01</div>
+                <div class="step-icon"><i class="fas fa-user-plus"></i></div>
+                <h3>Add Your Students</h3>
+                <p>Create student profiles with roll numbers, names, and optional photos. Your class roster is ready in minutes.</p>
+            </div>
+            <div class="how-connector"><i class="fas fa-arrow-right"></i></div>
+            <div class="how-step">
+                <div class="step-num">02</div>
+                <div class="step-icon"><i class="fas fa-calendar-check"></i></div>
+                <h3>Track Daily</h3>
+                <p>Take attendance each day, toggle assignment completion, update marks, and log record submissions as they come in.</p>
+            </div>
+            <div class="how-connector"><i class="fas fa-arrow-right"></i></div>
+            <div class="how-step">
+                <div class="step-num">03</div>
+                <div class="step-icon"><i class="fas fa-chart-pie"></i></div>
+                <h3>See the Full Picture</h3>
+                <p>View attendance percentages, mark summaries, and flag students who need attention — all from the dashboard.</p>
+            </div>
         </div>
-    </footer>
+    </div>
+</section>
 
-    <!-- Back to Top Button -->
-    <button class="back-to-top" id="backToTop">
-        <i class="fas fa-chevron-up"></i>
-    </button>
+<!-- ══ FEATURES DEEP DIVE ════════════════════════════════════════ -->
+<section class="features-section container-wide">
+    <div class="section-eyebrow">Everything Included</div>
+    <h2 class="section-heading">Built for how teachers actually work.</h2>
 
-    <script src="js/Amain.js"></script>
-    <script>
-        // Set current year in footer
-        document.getElementById('currentYear').textContent = new Date().getFullYear();
-    </script>
+    <div class="features-bento">
+        <!-- Big card: Attendance -->
+        <div class="bento-card bento-card--tall bento-card--teal">
+            <div class="bento-icon"><i class="fas fa-calendar-check"></i></div>
+            <h3>Attendance Tracking</h3>
+            <p>Mark the whole class in under a minute. Present, Late, or Absent — all saved to the database. View each student's running percentage and full history at any time.</p>
+            <div class="bento-tag">Daily → Database → Percentage</div>
+        </div>
+
+        <!-- Medium: Assignments -->
+        <div class="bento-card bento-card--purple">
+            <div class="bento-icon"><i class="fas fa-tasks"></i></div>
+            <h3>Assignment Tracking</h3>
+            <p>One toggle per student, per assignment. Instantly see who's done and who isn't.</p>
+        </div>
+
+        <!-- Medium: Marks -->
+        <div class="bento-card bento-card--pink">
+            <div class="bento-icon"><i class="fas fa-chart-bar"></i></div>
+            <h3>Marks & Grades</h3>
+            <p>Enter Mid 1, Mid 2, Internal Lab and External Lab marks. Auto-totals, displayed right on the student card.</p>
+        </div>
+
+        <!-- Small: Highlights -->
+        <div class="bento-card bento-card--gold">
+            <div class="bento-icon"><i class="fas fa-star"></i></div>
+            <h3>Highlights</h3>
+            <p>Star your best performers. Cards glow gold.</p>
+        </div>
+
+        <!-- Small: Warnings -->
+        <div class="bento-card bento-card--red">
+            <div class="bento-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3>Warnings</h3>
+            <p>Log 1–3 formal warnings. Cards turn red at max.</p>
+        </div>
+
+        <!-- Wide: Records -->
+        <div class="bento-card bento-card--wide bento-card--blue">
+            <div class="bento-icon"><i class="fas fa-book-open"></i></div>
+            <h3>Record &amp; Submission Tracking</h3>
+            <p>Track Record Book, Observation Book, and PPT submission status for every student — all toggled directly from their profile card.</p>
+            <div class="bento-chips">
+                <span class="bento-chip">Record Book</span>
+                <span class="bento-chip">Obs. Book</span>
+                <span class="bento-chip">PPT Submitted</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ CTA BAND ══════════════════════════════════════════════════ -->
+<section class="cta-band">
+    <div class="cta-band-inner">
+        <div class="cta-band-text">
+            <h2>Your classroom is waiting.</h2>
+            <p>Start adding students and take your first attendance in under 2 minutes.</p>
+        </div>
+        <div class="cta-band-btns">
+            <a href="students.html" class="btn-hero-primary">
+                <i class="fas fa-users"></i> Go to Students
+            </a>
+            <a href="attendance.html" class="btn-hero-secondary">
+                <i class="fas fa-calendar-check"></i> Take Attendance
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ══ FOOTER ════════════════════════════════════════════════════ -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <a href="Aindex.html" class="logo" style="text-decoration:none">
+                <div class="logo-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                <div class="logo-text">
+                    <span class="logo-main">Svlent</span>
+                    <span class="logo-sub">Classroom Hub</span>
+                </div>
+            </a>
+            <p class="footer-tagline">Empowering educators.<br>Organizing classrooms.</p>
+        </div>
+        <div class="footer-links">
+            <div class="footer-col">
+                <h4>Pages</h4>
+                <a href="Aindex.html">Home</a>
+                <a href="students.html">Students</a>
+                <a href="attendance.html">Attendance</a>
+                <a href="Adashboard.html">Dashboard</a>
+            </div>
+            <div class="footer-col">
+                <h4>Features</h4>
+                <a href="students.html">Assignment Tracking</a>
+                <a href="attendance.html">Attendance</a>
+                <a href="students.html">Marks & Grades</a>
+                <a href="students.html">Highlights & Warnings</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; <span id="currentYear"></span> Svlent Classroom Management System. Designed for educators.</p>
+    </div>
+</footer>
+
+<!-- Back to top -->
+<button class="back-to-top" id="backToTop"><i class="fas fa-chevron-up"></i></button>
+
+<script src="js/Amain.js"></script>
+<script>
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
