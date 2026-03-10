@@ -104,18 +104,31 @@ db.serialize(() => {
         assignment2     INTEGER DEFAULT 0,
         highlighted     INTEGER DEFAULT 0,
         warnings        INTEGER DEFAULT 0,
-        -- Marks (NULL = not entered yet)
         mark_mid1       REAL,
         mark_mid2       REAL,
         mark_internal_lab REAL,
         mark_external_lab REAL,
-        -- Record submissions (toggle like assignments)
         record_book     INTEGER DEFAULT 0,
         obs_book        INTEGER DEFAULT 0,
         ppt_submitted   INTEGER DEFAULT 0,
         created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (teacher_id) REFERENCES teacher_accounts(id) ON DELETE CASCADE,
         UNIQUE(teacher_id, roll_number)
+    )`);
+
+    // ── Attendance table ───────────────────────────────────────
+    // Each row = one student's status on one date
+    // status: 'present' | 'absent' | 'late'
+    db.run(`CREATE TABLE IF NOT EXISTS attendance (
+        id         INTEGER PRIMARY KEY AUTOINCREMENT,
+        student_id INTEGER NOT NULL,
+        teacher_id INTEGER NOT NULL,
+        date       TEXT NOT NULL,
+        status     TEXT NOT NULL DEFAULT 'absent',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+        FOREIGN KEY (teacher_id) REFERENCES teacher_accounts(id) ON DELETE CASCADE,
+        UNIQUE(student_id, date)
     )`);
 
     // Safe migration for databases created before these columns existed
@@ -411,7 +424,6 @@ app.get('/api/teacher/me', (req, res) => {
 // STUDENT CRUD  /api/students/...
 // ================================================================
 
-// GET all students
 app.get('/api/students', ensureTeacher, (req, res) => {
     db.all(`SELECT * FROM students WHERE teacher_id = ? ORDER BY created_at ASC`,
         [req.session.teacher.id], (err, rows) => {
@@ -421,7 +433,6 @@ app.get('/api/students', ensureTeacher, (req, res) => {
     );
 });
 
-// POST — create student
 app.post('/api/students', ensureTeacher, (req, res) => {
     const teacherId = req.session.teacher.id;
     const { roll_number, name, avatar } = req.body;
@@ -445,7 +456,6 @@ app.post('/api/students', ensureTeacher, (req, res) => {
     );
 });
 
-// PUT — update name / roll / avatar
 app.put('/api/students/:id', ensureTeacher, (req, res) => {
     const teacherId = req.session.teacher.id;
     const studentId = parseInt(req.params.id);
@@ -476,7 +486,6 @@ app.put('/api/students/:id', ensureTeacher, (req, res) => {
     );
 });
 
-// PATCH — toggle assignment1 / assignment2
 app.patch('/api/students/:id/assignment', ensureTeacher, (req, res) => {
     const teacherId = req.session.teacher.id;
     const studentId = parseInt(req.params.id);
@@ -498,7 +507,6 @@ app.patch('/api/students/:id/assignment', ensureTeacher, (req, res) => {
     );
 });
 
-// PATCH — toggle highlighted
 app.patch('/api/students/:id/highlight', ensureTeacher, (req, res) => {
     const teacherId = req.session.teacher.id;
     const studentId = parseInt(req.params.id);
@@ -518,7 +526,6 @@ app.patch('/api/students/:id/highlight', ensureTeacher, (req, res) => {
     );
 });
 
-// PATCH — set warnings (0-3)
 app.patch('/api/students/:id/warnings', ensureTeacher, (req, res) => {
     const teacherId = req.session.teacher.id;
     const studentId = parseInt(req.params.id);
@@ -541,9 +548,6 @@ app.patch('/api/students/:id/warnings', ensureTeacher, (req, res) => {
     );
 });
 
-// ── NEW: PATCH — save marks (mid1, mid2, internal_lab, external_lab) ──
-// Expects body: { mark_mid1, mark_mid2, mark_internal_lab, mark_external_lab }
-// Any field can be null (clears the mark) or a number
 app.patch('/api/students/:id/marks', ensureTeacher, (req, res) => {
     const teacherId = req.session.teacher.id;
     const studentId = parseInt(req.params.id);
@@ -594,8 +598,6 @@ app.patch('/api/students/:id/marks', ensureTeacher, (req, res) => {
     );
 });
 
-// ── NEW: PATCH — toggle record/observation book/ppt submitted ──
-// field must be one of: record_book, obs_book, ppt_submitted
 app.patch('/api/students/:id/record', ensureTeacher, (req, res) => {
     const teacherId = req.session.teacher.id;
     const studentId = parseInt(req.params.id);
@@ -619,7 +621,6 @@ app.patch('/api/students/:id/record', ensureTeacher, (req, res) => {
     );
 });
 
-// DELETE — remove student
 app.delete('/api/students/:id', ensureTeacher, (req, res) => {
     const teacherId = req.session.teacher.id;
     const studentId = parseInt(req.params.id);
@@ -634,6 +635,153 @@ app.delete('/api/students/:id', ensureTeacher, (req, res) => {
                     return res.json({ ok: true });
                 }
             );
+        }
+    );
+});
+
+// ================================================================
+// ATTENDANCE  /api/attendance/...
+// ================================================================
+
+// GET attendance for a specific date (returns all students with their status for that day)
+// GET /api/attendance?date=2024-01-15
+app.get('/api/attendance', ensureTeacher, (req, res) => {
+    const teacherId = req.session.teacher.id;
+    const date      = req.query.date;
+    if (!date) return res.status(400).json({ ok: false, error: 'date query param required (YYYY-MM-DD).' });
+
+    // Get all students for this teacher, left-join attendance for the given date
+    db.all(
+        `SELECT s.id, s.name, s.roll_number, s.avatar,
+                COALESCE(a.status, 'absent') AS status
+         FROM students s
+         LEFT JOIN attendance a ON a.student_id = s.id AND a.date = ?
+         WHERE s.teacher_id = ?
+         ORDER BY s.created_at ASC`,
+        [date, teacherId],
+        (err, rows) => {
+            if (err) return res.status(500).json({ ok: false, error: 'Server error.' });
+            return res.json({ ok: true, date, attendance: rows });
+        }
+    );
+});
+
+// POST /api/attendance  — bulk save attendance for a date
+// body: { date: "YYYY-MM-DD", records: [ { student_id, status }, ... ] }
+app.post('/api/attendance', ensureTeacher, (req, res) => {
+    const teacherId = req.session.teacher.id;
+    const { date, records } = req.body;
+
+    if (!date || !Array.isArray(records) || records.length === 0)
+        return res.status(400).json({ ok: false, error: 'date and records[] are required.' });
+
+    const VALID_STATUSES = ['present', 'absent', 'late'];
+    for (const r of records) {
+        if (!r.student_id || !VALID_STATUSES.includes(r.status))
+            return res.status(400).json({ ok: false, error: 'Each record needs student_id and valid status.' });
+    }
+
+    // Use a transaction for atomicity
+    db.serialize(() => {
+        db.run('BEGIN TRANSACTION');
+        let errored = false;
+
+        const stmt = db.prepare(
+            `INSERT INTO attendance (student_id, teacher_id, date, status)
+             VALUES (?, ?, ?, ?)
+             ON CONFLICT(student_id, date) DO UPDATE SET status = excluded.status`
+        );
+
+        for (const r of records) {
+            stmt.run([r.student_id, teacherId, date, r.status], (err) => {
+                if (err) errored = true;
+            });
+        }
+
+        stmt.finalize((err) => {
+            if (err || errored) {
+                db.run('ROLLBACK');
+                return res.status(500).json({ ok: false, error: 'Server error saving attendance.' });
+            }
+            db.run('COMMIT', (commitErr) => {
+                if (commitErr) return res.status(500).json({ ok: false, error: 'Server error committing.' });
+                return res.json({ ok: true, date, saved: records.length });
+            });
+        });
+    });
+});
+
+// GET /api/attendance/summary — attendance percentage for every student
+// Returns: [{ student_id, name, roll_number, total_days, present, late, absent, percentage }]
+app.get('/api/attendance/summary', ensureTeacher, (req, res) => {
+    const teacherId = req.session.teacher.id;
+
+    db.all(
+        `SELECT
+            s.id        AS student_id,
+            s.name,
+            s.roll_number,
+            s.avatar,
+            COUNT(a.id)                                             AS total_days,
+            SUM(CASE WHEN a.status = 'present' THEN 1 ELSE 0 END)  AS present,
+            SUM(CASE WHEN a.status = 'late'    THEN 1 ELSE 0 END)  AS late,
+            SUM(CASE WHEN a.status = 'absent'  THEN 1 ELSE 0 END)  AS absent
+         FROM students s
+         LEFT JOIN attendance a ON a.student_id = s.id AND a.teacher_id = ?
+         WHERE s.teacher_id = ?
+         GROUP BY s.id
+         ORDER BY s.created_at ASC`,
+        [teacherId, teacherId],
+        (err, rows) => {
+            if (err) return res.status(500).json({ ok: false, error: 'Server error.' });
+            const summary = rows.map(r => ({
+                ...r,
+                percentage: r.total_days > 0
+                    ? Math.round(((r.present + r.late) / r.total_days) * 100)
+                    : null
+            }));
+            return res.json({ ok: true, summary });
+        }
+    );
+});
+
+// GET /api/attendance/history/:studentId — full date-by-date history for one student
+app.get('/api/attendance/history/:studentId', ensureTeacher, (req, res) => {
+    const teacherId = req.session.teacher.id;
+    const studentId = parseInt(req.params.studentId);
+
+    // Verify ownership
+    db.get(`SELECT id FROM students WHERE id = ? AND teacher_id = ?`, [studentId, teacherId],
+        (err, row) => {
+            if (err)  return res.status(500).json({ ok: false, error: 'Server error.' });
+            if (!row) return res.status(404).json({ ok: false, error: 'Student not found.' });
+
+            db.all(
+                `SELECT date, status FROM attendance
+                 WHERE student_id = ? AND teacher_id = ?
+                 ORDER BY date ASC`,
+                [studentId, teacherId],
+                (err2, rows) => {
+                    if (err2) return res.status(500).json({ ok: false, error: 'Server error.' });
+                    return res.json({ ok: true, studentId, history: rows });
+                }
+            );
+        }
+    );
+});
+
+// GET /api/attendance/dates — list of all dates attendance was taken for this teacher
+app.get('/api/attendance/dates', ensureTeacher, (req, res) => {
+    const teacherId = req.session.teacher.id;
+
+    db.all(
+        `SELECT DISTINCT date FROM attendance
+         WHERE teacher_id = ?
+         ORDER BY date DESC`,
+        [teacherId],
+        (err, rows) => {
+            if (err) return res.status(500).json({ ok: false, error: 'Server error.' });
+            return res.json({ ok: true, dates: rows.map(r => r.date) });
         }
     );
 });
