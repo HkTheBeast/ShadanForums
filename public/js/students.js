@@ -1,17 +1,19 @@
 /* ==============================================
-   students.js  —  place in:  js/students.js
+   students.js  —  Profile Hub + Analytics
+   Fetches: /api/students, /api/attendance/summary
+   No assignment/marks editing here — all on dedicated pages
    ============================================== */
-
 'use strict';
 
 // ─── State ────────────────────────────────────────────────────────
-let allStudents    = [];
+let allStudents    = [];   // raw from /api/students
+let attSummary     = {};   // { studentId: { percentage, present, late, absent, total_days } }
+let compositeData  = [];   // merged analytics per student
+let activeFilter   = 'all';
 let currentEditId  = null;
 let pendingDelete  = null;
 let pendingAvatar  = null;
-let marksStudentId = null;
 
-// ─── DOM refs ─────────────────────────────────────────────────────
 let D = {};
 
 // ─── Helpers ──────────────────────────────────────────────────────
@@ -25,8 +27,8 @@ function escapeHTML(str) {
 
 let toastTimer;
 function showToast(msg, isError = false) {
-    D.toast.className     = 'toast' + (isError ? ' error' : '');
-    D.toastIcon.className = isError ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+    D.toast.className      = 'toast' + (isError ? ' error' : '');
+    D.toastIcon.className  = isError ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
     D.toastMsg.textContent = msg;
     D.toast.classList.add('show');
     clearTimeout(toastTimer);
@@ -46,12 +48,6 @@ function setLoading(btn, loading) {
 
 function showError(el, msg) { el.textContent = msg; el.classList.add('show'); }
 function clearError(el)     { el.textContent = '';  el.classList.remove('show'); }
-
-function fmt(val) {
-    if (val === null || val === undefined || val === '') return '—';
-    const n = parseFloat(val);
-    return isNaN(n) ? '—' : (n % 1 === 0 ? String(n) : n.toFixed(1));
-}
 
 // ─── API wrapper ──────────────────────────────────────────────────
 async function api(method, path, body) {
@@ -127,6 +123,8 @@ async function handleRegister() {
 async function handleLogout() {
     try { await api('POST', '/api/teacher/logout'); } catch (_) {}
     allStudents = [];
+    attSummary  = {};
+    compositeData = [];
     await initPage();
     showToast('Logged out successfully.');
 }
@@ -153,7 +151,7 @@ async function initPage() {
         $('logoutBtn').addEventListener('click', handleLogout);
         D.loginGate.style.display = 'none';
         D.dashboard.style.display = 'block';
-        await loadStudents();
+        await loadAll();
     } else {
         D.navUserArea.innerHTML = `
             <button class="nav-link-btn" id="navLoginBtn">
@@ -165,429 +163,279 @@ async function initPage() {
     }
 }
 
-// ─── Load students ────────────────────────────────────────────────
-async function loadStudents() {
+// ─── Load all data ────────────────────────────────────────────────
+async function loadAll() {
+    // Show skeletons
+    D.profileGrid.innerHTML = [1,2,3,4,5,6].map(() =>
+        '<div class="skeleton-card"></div>'
+    ).join('');
+
     try {
-        const data = await api('GET', '/api/students');
-        allStudents = data.students;
-        renderStudents(D.searchInput.value);
+        // Parallel fetch
+        const [studentsData, summaryData] = await Promise.all([
+            api('GET', '/api/students'),
+            api('GET', '/api/attendance/summary').catch(() => ({ summary: [] }))
+        ]);
+
+        allStudents = studentsData.students;
+
+        // Build attendance lookup
+        attSummary = {};
+        (summaryData.summary || []).forEach(s => {
+            attSummary[s.student_id] = s;
+        });
+
+        buildCompositeData();
+        renderProfiles();
     } catch (err) {
-        showToast('Could not load students: ' + err.message, true);
+        showToast('Could not load data: ' + err.message, true);
+        D.profileGrid.innerHTML = '';
     }
 }
 
-// ─── Stats ────────────────────────────────────────────────────────
-function updateStats() {
-    D.statTotal.textContent       = allStudents.length;
-    D.statA1.textContent          = allStudents.filter(s => s.assignment1).length;
-    D.statA2.textContent          = allStudents.filter(s => s.assignment2).length;
-    D.statBoth.textContent        = allStudents.filter(s => s.assignment1 && s.assignment2).length;
-    D.statHighlighted.textContent = allStudents.filter(s => s.highlighted).length;
-    D.statWarned.textContent      = allStudents.filter(s => s.warnings > 0).length;
+// ─── Build composite analytics per student ────────────────────────
+function buildCompositeData() {
+    compositeData = allStudents.map(s => {
+        const att  = attSummary[s.id] || null;
+
+        // ── Attendance score (0–100) ──────────────────────────
+        const attPct = att && att.total_days > 0
+            ? Math.round(((att.present + att.late) / att.total_days) * 100)
+            : null;
+
+        // ── Submissions score (0–100) — 5 items ──────────────
+        const subItems = [s.assignment1, s.assignment2, s.record_book, s.obs_book, s.ppt_submitted];
+        const subDone  = subItems.filter(Boolean).length;
+        const subPct   = Math.round((subDone / 5) * 100);
+
+        // ── Marks score (0–100) — total /160 ─────────────────
+        const markVals = [s.mark_mid1, s.mark_mid2, s.mark_internal_lab, s.mark_external_lab]
+            .filter(v => v !== null && v !== undefined);
+        const markTotal = markVals.reduce((a, b) => a + b, 0);
+        const markMax   = 160;
+        const markPct   = markVals.length > 0 ? Math.round((markTotal / markMax) * 100) : null;
+
+        // ── Behaviour score (0–100) — warnings reduce, highlight adds ──
+        // Base: 100. -25 per warning. +10 if highlighted (capped at 100).
+        let behScore = 100 - (s.warnings * 25);
+        if (s.highlighted) behScore = Math.min(100, behScore + 10);
+        behScore = Math.max(0, behScore);
+
+        // ── Composite score ───────────────────────────────────
+        // Weights: Attendance 30%, Submissions 20%, Marks 35%, Behaviour 15%
+        let composite = null;
+        const hasAny = attPct !== null || markPct !== null;
+
+        if (hasAny) {
+            const attW  = attPct  !== null ? attPct  : 50; // assume 50 if no data
+            const markW = markPct !== null ? markPct : 50;
+            composite = Math.round(
+                attW  * 0.30 +
+                subPct * 0.20 +
+                markW * 0.35 +
+                behScore * 0.15
+            );
+        }
+
+        // ── Grade ─────────────────────────────────────────────
+        let grade = 'N';
+        if (composite !== null) {
+            if (composite >= 90) grade = 'S';
+            else if (composite >= 75) grade = 'A';
+            else if (composite >= 60) grade = 'B';
+            else if (composite >= 45) grade = 'C';
+            else grade = 'D';
+        }
+
+        return {
+            ...s,
+            attPct, subPct, markPct, behScore, markTotal, markMax,
+            composite, grade,
+            attRaw: att,
+            subDone
+        };
+    });
 }
 
 // ─── Render ───────────────────────────────────────────────────────
-function renderStudents(filter = '') {
-    updateStats();
+function renderProfiles() {
+    updateOverview();
 
-    let list = allStudents;
-    const f  = filter.toLowerCase().trim();
-    if (f) {
-        list = list.filter(s =>
-            s.name.toLowerCase().includes(f) ||
-            s.roll_number.toLowerCase().includes(f)
-        );
-    }
+    const q = D.searchInput.value.toLowerCase().trim();
 
-    if (list.length === 0) {
-        D.studentsGrid.innerHTML   = '';
+    const filtered = compositeData.filter(s => {
+        const matchQ = !q ||
+            s.name.toLowerCase().includes(q) ||
+            s.roll_number.toLowerCase().includes(q);
+        if (!matchQ) return false;
+        if (activeFilter === 'all') return true;
+        return s.grade === activeFilter.toUpperCase();
+    });
+
+    if (filtered.length === 0) {
+        D.profileGrid.innerHTML   = '';
         D.emptyState.style.display = 'block';
         return;
     }
     D.emptyState.style.display = 'none';
-    D.studentsGrid.innerHTML   = list.map(buildCardHTML).join('');
+    D.profileGrid.innerHTML = filtered.map(buildCardHTML).join('');
 
-    list.forEach(s => {
-        $('edit-btn-' + s.id).addEventListener('click', () => openEditModal(s.id));
-        $('del-btn-'  + s.id).addEventListener('click', () => openDeleteModal(s.id, s.name));
-        $('chk-a1-'   + s.id).addEventListener('change', e => toggleAssignment(s.id, 'assignment1', e.target.checked));
-        $('chk-a2-'   + s.id).addEventListener('change', e => toggleAssignment(s.id, 'assignment2', e.target.checked));
-        $('hl-btn-' + s.id).addEventListener('click', () => toggleHighlight(s.id));
-        for (let dot = 1; dot <= 3; dot++) {
-            $('wdot-' + s.id + '-' + dot).addEventListener('click', () => handleWarningDotClick(s.id, dot));
-        }
-        $('marks-btn-' + s.id).addEventListener('click', () => openMarksModal(s.id));
-        $('chk-rec-'  + s.id).addEventListener('change', e => toggleRecord(s.id, 'record_book',   e.target.checked));
-        $('chk-obs-'  + s.id).addEventListener('change', e => toggleRecord(s.id, 'obs_book',      e.target.checked));
-        $('chk-ppt-'  + s.id).addEventListener('change', e => toggleRecord(s.id, 'ppt_submitted', e.target.checked));
+    // Wire action buttons
+    filtered.forEach(s => {
+        $('pc-edit-'   + s.id).addEventListener('click', () => openEditModal(s.id));
+        $('pc-delete-' + s.id).addEventListener('click', () => openDeleteModal(s.id, s.name));
     });
 }
 
+function updateOverview() {
+    const grades = { S: 0, A: 0, B: 0, C: 0, D: 0, N: 0 };
+    compositeData.forEach(s => { grades[s.grade] = (grades[s.grade] || 0) + 1; });
+
+    $('ovTotal').textContent = compositeData.length;
+    $('ovS').textContent = grades.S;
+    $('ovA').textContent = grades.A;
+    $('ovB').textContent = grades.B;
+    $('ovC').textContent = grades.C;
+    $('ovD').textContent = grades.D;
+    $('ovN').textContent = grades.N;
+}
+
+// ─── Build one profile card ───────────────────────────────────────
 function buildCardHTML(s) {
     const avatar = s.avatar
-        ? `<img src="${s.avatar}" class="student-avatar" alt="${escapeHTML(s.name)}">`
-        : `<div class="student-avatar-placeholder">${escapeHTML(s.name.charAt(0).toUpperCase())}</div>`;
+        ? `<img src="${s.avatar}" class="pc-avatar" alt="${escapeHTML(s.name)}">`
+        : `<div class="pc-avatar-ph">${escapeHTML(s.name.charAt(0).toUpperCase())}</div>`;
 
-    const cardClass = [
-        'student-card',
-        s.highlighted ? 'is-highlighted' : '',
-        s.warnings >= 3 ? 'is-warned' : ''
-    ].filter(Boolean).join(' ');
+    const gradeClass = 'grade-' + s.grade;
 
-    const hlActive = s.highlighted ? 'active' : '';
-    const hlLabel  = s.highlighted ? '★ Highlighted' : '☆ Highlight';
+    // SVG ring
+    const r    = 34;
+    const circ = 2 * Math.PI * r;
+    const pct  = s.composite !== null ? s.composite : 0;
+    const offset = circ - (pct / 100) * circ;
+    const ringClass = 'r' + s.grade;
 
-    const warningDots = [1, 2, 3].map(dot =>
-        `<div class="w-dot ${dot <= s.warnings ? 'filled' : ''}" id="wdot-${s.id}-${dot}" title="Warning ${dot}"></div>`
-    ).join('');
+    // Grade badge label
+    const gradeLabel = s.grade === 'N'
+        ? '<i class="fas fa-question"></i>'
+        : s.grade;
 
-    let warnBadge = '';
-    if (s.warnings > 0) {
-        const mc = s.warnings >= 3 ? 'max' : '';
-        warnBadge = `<span class="warn-badge ${mc}">${s.warnings}/3</span>`;
-    }
+    // Score display
+    const scoreDisplay = s.composite !== null
+        ? `${s.composite}<span>%</span>`
+        : `<span style="font-size:.7rem">N/A</span>`;
 
-    const hasMarks = s.mark_mid1 !== null || s.mark_mid2 !== null ||
-                     s.mark_internal_lab !== null || s.mark_external_lab !== null;
+    // Metric bars
+    const attVal  = s.attPct  !== null ? s.attPct  + '%' : 'N/A';
+    const attW    = s.attPct  !== null ? s.attPct  : 0;
+    const markVal = s.markPct !== null ? s.markPct + '%' : 'N/A';
+    const markW   = s.markPct !== null ? s.markPct : 0;
 
-    const marksStrip = `
-    <div class="marks-strip">
-        <div class="mark-chip">
-            <span class="mark-chip-label">Mid 1</span>
-            <span class="mark-chip-value ${s.mark_mid1 === null || s.mark_mid1 === undefined ? 'empty' : ''}">${fmt(s.mark_mid1)}<small style="font-size:.6rem;font-weight:400;color:var(--text-muted)">/30</small></span>
-        </div>
-        <div class="mark-chip">
-            <span class="mark-chip-label">Mid 2</span>
-            <span class="mark-chip-value ${s.mark_mid2 === null || s.mark_mid2 === undefined ? 'empty' : ''}">${fmt(s.mark_mid2)}<small style="font-size:.6rem;font-weight:400;color:var(--text-muted)">/30</small></span>
-        </div>
-        <div class="mark-chip">
-            <span class="mark-chip-label">Int. Lab</span>
-            <span class="mark-chip-value ${s.mark_internal_lab === null || s.mark_internal_lab === undefined ? 'empty' : ''}">${fmt(s.mark_internal_lab)}<small style="font-size:.6rem;font-weight:400;color:var(--text-muted)">/50</small></span>
-        </div>
-        <div class="mark-chip">
-            <span class="mark-chip-label">Ext. Lab</span>
-            <span class="mark-chip-value ${s.mark_external_lab === null || s.mark_external_lab === undefined ? 'empty' : ''}">${fmt(s.mark_external_lab)}<small style="font-size:.6rem;font-weight:400;color:var(--text-muted)">/50</small></span>
-        </div>
-    </div>`;
+    // Chips
+    const chips = buildChips(s);
 
     return `
-    <div class="${cardClass}" id="card-${s.id}">
-        <div class="card-top">
+    <div class="profile-card ${gradeClass}" id="pc-card-${s.id}">
+
+        <div class="pc-header">
             ${avatar}
-            <div class="student-info">
-                <div class="student-name">${escapeHTML(s.name)}</div>
-                <div class="student-roll"><i class="fas fa-id-badge"></i> ${escapeHTML(s.roll_number)}</div>
+            <div class="pc-info">
+                <div class="pc-name">${escapeHTML(s.name)}</div>
+                <div class="pc-roll"><i class="fas fa-id-badge"></i> ${escapeHTML(s.roll_number)}</div>
             </div>
-            <div class="card-actions">
-                <button class="btn-icon marks-btn ${hasMarks ? 'has-marks' : ''}" id="marks-btn-${s.id}" title="Enter Marks"><i class="fas fa-chart-bar"></i></button>
-                <button class="btn-icon" id="edit-btn-${s.id}" title="Edit"><i class="fas fa-pen"></i></button>
-                <button class="btn-icon danger" id="del-btn-${s.id}" title="Delete"><i class="fas fa-trash"></i></button>
-            </div>
-        </div>
-
-        <div class="section-label"><i class="fas fa-tasks"></i> Assignments</div>
-        <div class="assignments">
-            <div class="assignment-row">
-                <span class="assignment-label"><i class="fas fa-file-alt"></i> Assignment 1</span>
-                <div class="assignment-right">
-                    <span class="status-badge ${s.assignment1 ? 'status-done' : 'status-pending'}" id="badge-a1-${s.id}">${s.assignment1 ? 'Done' : 'Pending'}</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="chk-a1-${s.id}" ${s.assignment1 ? 'checked' : ''}>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-            </div>
-            <div class="assignment-row">
-                <span class="assignment-label"><i class="fas fa-file-alt"></i> Assignment 2</span>
-                <div class="assignment-right">
-                    <span class="status-badge ${s.assignment2 ? 'status-done' : 'status-pending'}" id="badge-a2-${s.id}">${s.assignment2 ? 'Done' : 'Pending'}</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="chk-a2-${s.id}" ${s.assignment2 ? 'checked' : ''}>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
+            <div class="pc-grade-badge">${gradeLabel}</div>
+            <div class="pc-actions">
+                <button class="btn-icon" id="pc-edit-${s.id}" title="Edit Profile"><i class="fas fa-pen"></i></button>
+                <button class="btn-icon danger" id="pc-delete-${s.id}" title="Delete"><i class="fas fa-trash"></i></button>
             </div>
         </div>
 
-        <div class="section-label"><i class="fas fa-book"></i> Record & Submissions</div>
-        <div class="assignments">
-            <div class="assignment-row">
-                <span class="assignment-label"><i class="fas fa-book-open"></i> Record Book</span>
-                <div class="assignment-right">
-                    <span class="status-badge ${s.record_book ? 'status-done' : 'status-pending'}" id="badge-rec-${s.id}">${s.record_book ? 'Submitted' : 'Pending'}</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="chk-rec-${s.id}" ${s.record_book ? 'checked' : ''}>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
+        <div class="pc-score-row">
+            <div class="pc-score-ring">
+                <svg width="80" height="80" viewBox="0 0 80 80">
+                    <circle class="ring-bg" cx="40" cy="40" r="${r}"/>
+                    <circle class="ring-fg ${ringClass}" cx="40" cy="40" r="${r}"
+                        stroke-dasharray="${circ.toFixed(2)}"
+                        stroke-dashoffset="${offset.toFixed(2)}"/>
+                </svg>
+                <div class="pc-score-num">${scoreDisplay}</div>
             </div>
-            <div class="assignment-row">
-                <span class="assignment-label"><i class="fas fa-glasses"></i> Observation Book</span>
-                <div class="assignment-right">
-                    <span class="status-badge ${s.obs_book ? 'status-done' : 'status-pending'}" id="badge-obs-${s.id}">${s.obs_book ? 'Submitted' : 'Pending'}</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="chk-obs-${s.id}" ${s.obs_book ? 'checked' : ''}>
-                        <span class="toggle-slider"></span>
-                    </label>
+
+            <div class="pc-metrics">
+                <div class="pc-metric">
+                    <span class="pm-label"><i class="fas fa-calendar-check" style="color:var(--accent-teal)"></i> Attendance</span>
+                    <div class="pm-bar-wrap"><div class="pm-bar att" style="width:${attW}%"></div></div>
+                    <span class="pm-val">${attVal}</span>
                 </div>
-            </div>
-            <div class="assignment-row">
-                <span class="assignment-label"><i class="fas fa-desktop"></i> PPT Submitted</span>
-                <div class="assignment-right">
-                    <span class="status-badge ${s.ppt_submitted ? 'status-done' : 'status-pending'}" id="badge-ppt-${s.id}">${s.ppt_submitted ? 'Submitted' : 'Pending'}</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="chk-ppt-${s.id}" ${s.ppt_submitted ? 'checked' : ''}>
-                        <span class="toggle-slider"></span>
-                    </label>
+                <div class="pc-metric">
+                    <span class="pm-label"><i class="fas fa-tasks" style="color:var(--accent-blue)"></i> Submissions</span>
+                    <div class="pm-bar-wrap"><div class="pm-bar sub" style="width:${s.subPct}%"></div></div>
+                    <span class="pm-val">${s.subDone}/5</span>
+                </div>
+                <div class="pc-metric">
+                    <span class="pm-label"><i class="fas fa-chart-bar" style="color:#b06aff"></i> Marks</span>
+                    <div class="pm-bar-wrap"><div class="pm-bar mrk" style="width:${markW}%"></div></div>
+                    <span class="pm-val">${markVal}</span>
+                </div>
+                <div class="pc-metric">
+                    <span class="pm-label"><i class="fas fa-user-check" style="color:var(--accent-amber)"></i> Behaviour</span>
+                    <div class="pm-bar-wrap"><div class="pm-bar beh" style="width:${s.behScore}%"></div></div>
+                    <span class="pm-val">${s.behScore}%</span>
                 </div>
             </div>
         </div>
 
-        <div class="section-label"><i class="fas fa-chart-bar"></i> Marks</div>
-        ${marksStrip}
+        <div class="pc-divider"></div>
 
-        <div class="hw-section">
-            <button class="btn-highlight ${hlActive}" id="hl-btn-${s.id}">
-                <i class="fas fa-star"></i> ${hlLabel}
-            </button>
-            <div class="warning-area">
-                <span class="warning-label">Warnings ${warnBadge}</span>
-                <div class="warning-dots">${warningDots}</div>
-            </div>
+        <div class="pc-chips">
+            ${chips}
+        </div>
+
+        <div class="pc-nav">
+            <a href="attendance.html" class="pc-nav-btn att" title="Attendance">
+                <i class="fas fa-calendar-check"></i> Attendance
+            </a>
+            <a href="submissions.html" class="pc-nav-btn sub" title="Submissions">
+                <i class="fas fa-tasks"></i> Submissions
+            </a>
+            <a href="marks.html" class="pc-nav-btn mrk" title="Marks">
+                <i class="fas fa-chart-bar"></i> Marks
+            </a>
         </div>
     </div>`;
 }
 
-// ─── Toggle assignment ────────────────────────────────────────────
-async function toggleAssignment(id, field, value) {
-    const student = allStudents.find(s => s.id === id);
-    if (student) student[field] = value;
-    updateStats();
+function buildChips(s) {
+    const chips = [];
 
-    const key   = field === 'assignment1' ? 'a1' : 'a2';
-    const badge = $('badge-' + key + '-' + id);
-    if (badge) {
-        badge.className   = 'status-badge ' + (value ? 'status-done' : 'status-pending');
-        badge.textContent = value ? 'Done' : 'Pending';
-    }
-
-    try {
-        await api('PATCH', `/api/students/${id}/assignment`, { field, value });
-    } catch (err) {
-        if (student) student[field] = !value;
-        updateStats();
-        showToast('Could not save: ' + err.message, true);
-        renderStudents(D.searchInput.value);
-    }
-}
-
-// ─── Toggle record / obs book / ppt ──────────────────────────────
-async function toggleRecord(id, field, value) {
-    const student = allStudents.find(s => s.id === id);
-    if (student) student[field] = value;
-
-    const badgeMap = { record_book: 'rec', obs_book: 'obs', ppt_submitted: 'ppt' };
-    const badge    = $('badge-' + badgeMap[field] + '-' + id);
-    if (badge) {
-        badge.className   = 'status-badge ' + (value ? 'status-done' : 'status-pending');
-        badge.textContent = value ? 'Submitted' : 'Pending';
-    }
-
-    try {
-        await api('PATCH', `/api/students/${id}/record`, { field, value });
-    } catch (err) {
-        if (student) student[field] = !value;
-        showToast('Could not save: ' + err.message, true);
-        renderStudents(D.searchInput.value);
-    }
-}
-
-// ─── Toggle highlight ─────────────────────────────────────────────
-async function toggleHighlight(id) {
-    const student = allStudents.find(s => s.id === id);
-    if (!student) return;
-    const newValue = !student.highlighted;
-    student.highlighted = newValue;
-    updateStats();
-
-    const btn  = $('hl-btn-' + id);
-    const card = $('card-'   + id);
-    if (btn)  { btn.className = 'btn-highlight' + (newValue ? ' active' : ''); btn.innerHTML = `<i class="fas fa-star"></i> ${newValue ? '★ Highlighted' : '☆ Highlight'}`; }
-    if (card)   card.classList.toggle('is-highlighted', newValue);
-
-    try {
-        await api('PATCH', `/api/students/${id}/highlight`, { value: newValue });
-        showToast(newValue ? '⭐ Student highlighted!' : 'Highlight removed.');
-    } catch (err) {
-        student.highlighted = !newValue;
-        updateStats();
-        showToast('Could not save: ' + err.message, true);
-        renderStudents(D.searchInput.value);
-    }
-}
-
-// ─── Warning dots ─────────────────────────────────────────────────
-async function handleWarningDotClick(id, dot) {
-    const student = allStudents.find(s => s.id === id);
-    if (!student) return;
-    const newWarnings = student.warnings === dot ? dot - 1 : dot;
-    const old = student.warnings;
-    student.warnings = newWarnings;
-    updateStats();
-    updateWarningDotsUI(id, newWarnings);
-
-    try {
-        await api('PATCH', `/api/students/${id}/warnings`, { warnings: newWarnings });
-        if (newWarnings === 3)       showToast('⚠️ Maximum warnings reached!', true);
-        else if (newWarnings > old)  showToast(`Warning ${newWarnings}/3 added.`);
-        else                          showToast(`Warning reduced to ${newWarnings}/3.`);
-    } catch (err) {
-        student.warnings = old;
-        updateStats();
-        showToast('Could not save: ' + err.message, true);
-        renderStudents(D.searchInput.value);
-    }
-}
-
-function updateWarningDotsUI(id, warnings) {
-    for (let dot = 1; dot <= 3; dot++) {
-        const el = $('wdot-' + id + '-' + dot);
-        if (el) el.classList.toggle('filled', dot <= warnings);
-    }
-    const warnArea = document.querySelector(`#card-${id} .warning-area`);
-    if (warnArea) {
-        const label = warnArea.querySelector('.warning-label');
-        let badge   = warnArea.querySelector('.warn-badge');
-        if (warnings > 0) {
-            const mc = warnings >= 3 ? 'max' : '';
-            if (badge) { badge.className = 'warn-badge ' + mc; badge.textContent = `${warnings}/3`; }
-            else if (label) label.innerHTML = `Warnings <span class="warn-badge ${mc}">${warnings}/3</span>`;
-        } else {
-            if (label) label.innerHTML = 'Warnings ';
-        }
-    }
-    const card = $('card-' + id);
-    if (card) card.classList.toggle('is-warned', warnings >= 3);
-}
-
-// ─── Marks modal ─────────────────────────────────────────────────
-function openMarksModal(id) {
-    const s = allStudents.find(x => x.id === id);
-    if (!s) return;
-    marksStudentId = id;
-    D.marksModalTitle.innerHTML    = '<i class="fas fa-chart-bar"></i> Marks — ' + escapeHTML(s.name);
-    D.marksModalSubtitle.textContent = escapeHTML(s.roll_number);
-
-    D.markMid1.value    = s.mark_mid1     !== null && s.mark_mid1     !== undefined ? s.mark_mid1     : '';
-    D.markMid2.value    = s.mark_mid2     !== null && s.mark_mid2     !== undefined ? s.mark_mid2     : '';
-    D.markInternal.value= s.mark_internal_lab !== null && s.mark_internal_lab !== undefined ? s.mark_internal_lab : '';
-    D.markExternal.value= s.mark_external_lab !== null && s.mark_external_lab !== undefined ? s.mark_external_lab : '';
-
-    recalcTotal();
-    clearError(D.marksError);
-    D.marksModal.classList.add('active');
-}
-
-function closeMarksModal() {
-    D.marksModal.classList.remove('active');
-    marksStudentId = null;
-}
-
-function recalcTotal() {
-    const vals = [
-        parseFloat(D.markMid1.value),
-        parseFloat(D.markMid2.value),
-        parseFloat(D.markInternal.value),
-        parseFloat(D.markExternal.value),
-    ];
-    const entered = vals.filter(v => !isNaN(v));
-    if (entered.length === 0) {
-        D.marksTotal.textContent = '—';
+    // Attendance chip
+    if (s.attPct !== null) {
+        chips.push(`<span class="pc-chip chip-att"><i class="fas fa-calendar-check"></i> ${s.attPct}% Att.</span>`);
     } else {
-        const sum = entered.reduce((a, b) => a + b, 0);
-        D.marksTotal.textContent = sum % 1 === 0 ? String(sum) : sum.toFixed(1);
+        chips.push(`<span class="pc-chip chip-nodata"><i class="fas fa-calendar-times"></i> No Att. Data</span>`);
     }
-}
 
-async function saveMarks() {
-    if (!marksStudentId) return;
-    clearError(D.marksError);
-
-    const toVal = (raw, max) => {
-        if (raw === '' || raw === null || raw === undefined) return null;
-        const n = parseFloat(raw);
-        if (isNaN(n) || n < 0 || n > max) return 'ERR:' + max;
-        return n;
-    };
-
-    const mid1     = toVal(D.markMid1.value,     30);
-    const mid2     = toVal(D.markMid2.value,     30);
-    const internal = toVal(D.markInternal.value, 50);
-    const external = toVal(D.markExternal.value, 50);
-
-    if (String(mid1).startsWith('ERR'))     return showError(D.marksError, 'Mid 1 must be between 0 and 30.');
-    if (String(mid2).startsWith('ERR'))     return showError(D.marksError, 'Mid 2 must be between 0 and 30.');
-    if (String(internal).startsWith('ERR')) return showError(D.marksError, 'Internal Lab must be between 0 and 50.');
-    if (String(external).startsWith('ERR')) return showError(D.marksError, 'External Lab must be between 0 and 50.');
-
-    setLoading(D.saveMarksBtn, true);
-    try {
-        const data = await api('PATCH', `/api/students/${marksStudentId}/marks`, {
-            mark_mid1:         mid1,
-            mark_mid2:         mid2,
-            mark_internal_lab: internal,
-            mark_external_lab: external,
-        });
-        const idx = allStudents.findIndex(s => s.id === marksStudentId);
-        if (idx !== -1) allStudents[idx] = data.student;
-        closeMarksModal();
-        renderStudents(D.searchInput.value);
-        showToast('Marks saved!');
-    } catch (err) {
-        showError(D.marksError, err.message);
-    } finally {
-        setLoading(D.saveMarksBtn, false);
+    // Marks chip
+    if (s.markPct !== null) {
+        chips.push(`<span class="pc-chip chip-marks"><i class="fas fa-chart-bar"></i> ${s.markTotal}/${s.markMax} Marks</span>`);
+    } else {
+        chips.push(`<span class="pc-chip chip-nodata"><i class="fas fa-file-alt"></i> No Marks</span>`);
     }
-}
 
-// ─── Delete ───────────────────────────────────────────────────────
-function openDeleteModal(id, name) {
-    pendingDelete = id;
-    D.deleteModalMsg.textContent = `Delete "${name}"? This cannot be undone.`;
-    D.deleteModal.classList.add('active');
-}
-function closeDeleteModal() {
-    pendingDelete = null;
-    D.deleteModal.classList.remove('active');
-}
+    // Submissions chip
+    chips.push(`<span class="pc-chip chip-sub"><i class="fas fa-tasks"></i> ${s.subDone}/5 Subs.</span>`);
 
-async function confirmDelete() {
-    if (!pendingDelete) return;
-    const id = pendingDelete;
-    setLoading(D.confirmDeleteBtn, true);
-    try {
-        await api('DELETE', `/api/students/${id}`);
-        const card = $('card-' + id);
-        if (card) {
-            card.style.transition = 'opacity .25s, transform .25s';
-            card.style.opacity    = '0';
-            card.style.transform  = 'scale(.95)';
-            setTimeout(() => {
-                allStudents = allStudents.filter(s => s.id !== id);
-                closeDeleteModal();
-                renderStudents(D.searchInput.value);
-            }, 260);
-        } else {
-            allStudents = allStudents.filter(s => s.id !== id);
-            closeDeleteModal();
-            renderStudents(D.searchInput.value);
-        }
-        showToast('Student deleted.');
-    } catch (err) {
-        showToast('Delete failed: ' + err.message, true);
-    } finally {
-        setLoading(D.confirmDeleteBtn, false);
+    // Highlight chip
+    if (s.highlighted) {
+        chips.push(`<span class="pc-chip chip-hl"><i class="fas fa-star"></i> Highlighted</span>`);
     }
+
+    // Warnings chip
+    if (s.warnings > 0) {
+        chips.push(`<span class="pc-chip chip-warn"><i class="fas fa-exclamation-triangle"></i> ${s.warnings}/3 Warnings</span>`);
+    }
+
+    return chips.join('');
 }
 
 // ─── Add / Edit modal ─────────────────────────────────────────────
@@ -608,7 +456,7 @@ function openEditModal(id) {
     if (!s) return;
     currentEditId = id;
     pendingAvatar = s.avatar || null;
-    D.studentModalTitle.textContent = 'Edit Student';
+    D.studentModalTitle.textContent = 'Edit Profile';
     D.studentRoll.value             = s.roll_number;
     D.studentName.value             = s.name;
     D.avatarPreview.innerHTML       = s.avatar
@@ -638,7 +486,7 @@ async function saveStudent() {
             });
             const idx = allStudents.findIndex(s => s.id === currentEditId);
             if (idx !== -1) allStudents[idx] = data.student;
-            showToast('Student updated!');
+            showToast('Profile updated!');
         } else {
             const data = await api('POST', '/api/students', {
                 roll_number: roll, name, avatar: pendingAvatar,
@@ -647,7 +495,8 @@ async function saveStudent() {
             showToast('Student added!');
         }
         closeStudentModal();
-        renderStudents(D.searchInput.value);
+        buildCompositeData();
+        renderProfiles();
     } catch (err) {
         showError(D.studentError, err.message);
     } finally {
@@ -666,6 +515,46 @@ function handleAvatarUpload(e) {
             `<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
     };
     reader.readAsDataURL(file);
+}
+
+// ─── Delete ───────────────────────────────────────────────────────
+function openDeleteModal(id, name) {
+    pendingDelete = id;
+    D.deleteModalMsg.textContent = `Delete "${name}"? This cannot be undone.`;
+    D.deleteModal.classList.add('active');
+}
+function closeDeleteModal() {
+    pendingDelete = null;
+    D.deleteModal.classList.remove('active');
+}
+
+async function confirmDelete() {
+    if (!pendingDelete) return;
+    const id = pendingDelete;
+    setLoading(D.confirmDeleteBtn, true);
+    try {
+        await api('DELETE', `/api/students/${id}`);
+        allStudents = allStudents.filter(s => s.id !== id);
+        delete attSummary[id];
+        closeDeleteModal();
+        buildCompositeData();
+        renderProfiles();
+        showToast('Student deleted.');
+    } catch (err) {
+        showToast('Delete failed: ' + err.message, true);
+    } finally {
+        setLoading(D.confirmDeleteBtn, false);
+    }
+}
+
+// ─── Grade filter ─────────────────────────────────────────────────
+function setFilter(f) {
+    activeFilter = f;
+    ['All', 'S', 'A', 'B', 'C', 'D', 'N'].forEach(g => {
+        const el = $('gf' + (g === 'All' ? 'All' : g));
+        if (el) el.classList.toggle('active', f === (g === 'All' ? 'all' : g));
+    });
+    renderProfiles();
 }
 
 // ─── Wire everything ──────────────────────────────────────────────
@@ -700,35 +589,15 @@ document.addEventListener('DOMContentLoaded', () => {
         saveStudentBtn:    $('saveStudentBtn'),
         cancelStudentBtn:  $('cancelStudentBtn'),
 
-        marksModal:        $('marksModal'),
-        marksModalTitle:   $('marksModalTitle'),
-        marksModalSubtitle:$('marksModalSubtitle'),
-        marksError:        $('marksError'),
-        markMid1:          $('markMid1'),
-        markMid2:          $('markMid2'),
-        markInternal:      $('markInternal'),
-        markExternal:      $('markExternal'),
-        marksTotal:        $('marksTotal'),
-        saveMarksBtn:      $('saveMarksBtn'),
-        cancelMarksBtn:    $('cancelMarksBtn'),
-
         deleteModal:       $('deleteModal'),
         deleteModalMsg:    $('deleteModalMsg'),
         confirmDeleteBtn:  $('confirmDeleteBtn'),
         cancelDeleteBtn:   $('cancelDeleteBtn'),
 
-        openAuthBtn:       $('openAuthBtn'),
         addStudentBtn:     $('addStudentBtn'),
         searchInput:       $('searchInput'),
-        studentsGrid:      $('studentsGrid'),
+        profileGrid:       $('profileGrid'),
         emptyState:        $('emptyState'),
-
-        statTotal:         $('statTotal'),
-        statA1:            $('statA1'),
-        statA2:            $('statA2'),
-        statBoth:          $('statBoth'),
-        statHighlighted:   $('statHighlighted'),
-        statWarned:        $('statWarned'),
 
         toast:             $('toast'),
         toastIcon:         $('toastIcon'),
@@ -736,14 +605,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Auth
-    D.openAuthBtn.addEventListener('click',   openAuthModal);
-    D.tabLogin.addEventListener('click',      () => switchTab('login'));
-    D.tabRegister.addEventListener('click',   () => switchTab('register'));
-    D.loginBtn.addEventListener('click',      handleLogin);
-    D.registerBtn.addEventListener('click',   handleRegister);
-    D.authModal.addEventListener('click',     e => { if (e.target === D.authModal) closeAuthModal(); });
+    D.openAuthBtn && D.openAuthBtn.addEventListener('click', openAuthModal);
+    D.tabLogin.addEventListener('click',    () => switchTab('login'));
+    D.tabRegister.addEventListener('click', () => switchTab('register'));
+    D.loginBtn.addEventListener('click',    handleLogin);
+    D.registerBtn.addEventListener('click', handleRegister);
+    D.authModal.addEventListener('click',   e => { if (e.target === D.authModal) closeAuthModal(); });
 
-    // Student add/edit modal
+    // Student modal
     D.addStudentBtn.addEventListener('click',    openAddModal);
     D.saveStudentBtn.addEventListener('click',   saveStudent);
     D.cancelStudentBtn.addEventListener('click', closeStudentModal);
@@ -752,22 +621,24 @@ document.addEventListener('DOMContentLoaded', () => {
     D.avatarFileInput.addEventListener('change', handleAvatarUpload);
     D.studentModal.addEventListener('click',     e => { if (e.target === D.studentModal) closeStudentModal(); });
 
-    // Marks modal
-    D.saveMarksBtn.addEventListener('click',   saveMarks);
-    D.cancelMarksBtn.addEventListener('click', closeMarksModal);
-    D.marksModal.addEventListener('click',     e => { if (e.target === D.marksModal) closeMarksModal(); });
-    [D.markMid1, D.markMid2, D.markInternal, D.markExternal].forEach(el =>
-        el.addEventListener('input', recalcTotal));
-
     // Delete modal
     D.confirmDeleteBtn.addEventListener('click', confirmDelete);
     D.cancelDeleteBtn.addEventListener('click',  closeDeleteModal);
     D.deleteModal.addEventListener('click',      e => { if (e.target === D.deleteModal) closeDeleteModal(); });
 
     // Search
-    D.searchInput.addEventListener('input', e => renderStudents(e.target.value));
+    D.searchInput.addEventListener('input', () => renderProfiles());
 
-    // Enter key
+    // Grade filters
+    $('gfAll').addEventListener('click', () => setFilter('all'));
+    $('gfS').addEventListener('click',   () => setFilter('S'));
+    $('gfA').addEventListener('click',   () => setFilter('A'));
+    $('gfB').addEventListener('click',   () => setFilter('B'));
+    $('gfC').addEventListener('click',   () => setFilter('C'));
+    $('gfD').addEventListener('click',   () => setFilter('D'));
+    $('gfN').addEventListener('click',   () => setFilter('N'));
+
+    // Enter keys
     [D.loginUsername, D.loginPassword].forEach(el =>
         el.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); }));
     [D.regUsername, D.regPassword, D.regConfirm].forEach(el =>
@@ -775,9 +646,18 @@ document.addEventListener('DOMContentLoaded', () => {
     [D.studentRoll, D.studentName].forEach(el =>
         el.addEventListener('keydown', e => { if (e.key === 'Enter') saveStudent(); }));
 
-    // ESC closes any open modal
+    // ESC
     document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') { closeAuthModal(); closeStudentModal(); closeMarksModal(); closeDeleteModal(); }
+        if (e.key === 'Escape') {
+            closeAuthModal();
+            closeStudentModal();
+            closeDeleteModal();
+        }
+    });
+
+    // Auth gate button (dynamically rendered)
+    document.addEventListener('click', e => {
+        if (e.target && e.target.id === 'openAuthBtn') openAuthModal();
     });
 
     initPage();
