@@ -734,3 +734,122 @@ body {
             .pc-nav { grid-template-columns: repeat(3, 1fr); }
         }
     
+
+
+
+
+
+
+
+
+
+        /* ==============================================
+   SHARED NAVBAR ADDITIONS
+   Append to the bottom of css/students.css
+   Works for every page: students, attendance, etc.
+   ============================================== */
+
+/* ── Active nav link ──────────────────────────────────────── */
+.nav-active {
+    color: var(--accent-teal) !important;
+    background: rgba(42,250,223,.1) !important;
+    border-radius: var(--r-md);
+}
+
+/* ── Nav user area — always horizontal ───────────────────── */
+/* This overrides any flex-direction:column that mobile might set */
+#navUserArea > div {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: .6rem !important;
+    flex-wrap: nowrap !important;
+}
+
+/* ── Hamburger button ─────────────────────────────────────── */
+.nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 40px; height: 40px;
+    background: none;
+    border: 1px solid rgba(42,250,223,.2);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transition: var(--ease);
+    padding: 0;
+    flex-shrink: 0;
+}
+.nav-hamburger:hover {
+    border-color: var(--accent-teal);
+    background: rgba(42,250,223,.08);
+}
+.nav-hamburger span {
+    display: block;
+    width: 18px; height: 2px;
+    background: var(--text-secondary);
+    border-radius: 2px;
+    transition: var(--ease);
+}
+/* Animated X when open */
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── Mobile nav panel ─────────────────────────────────────── */
+@media (max-width: 900px) {
+    .nav-hamburger { display: flex; }
+
+    /* nav-links collapsed by default on mobile */
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%; left: 0; right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        background: rgba(10,25,47,.97);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(42,250,223,.12);
+        padding: .8rem;
+        gap: .25rem;
+        z-index: 999;
+    }
+    .nav-links.open {
+        display: flex;
+        animation: navSlideDown .2s ease both;
+    }
+    @keyframes navSlideDown {
+        from { opacity: 0; transform: translateY(-6px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .nav-links .nav-link-btn {
+        width: 100%;
+        justify-content: flex-start;
+        padding: .7rem 1rem;
+        border-radius: var(--r-md);
+    }
+
+    /* User area inside mobile menu — keep horizontal */
+    .nav-links #navUserArea {
+        padding-top: .6rem;
+        border-top: 1px solid rgba(42,250,223,.08);
+        margin-top: .3rem;
+    }
+    .nav-links #navUserArea > div {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: .6rem !important;
+        flex-wrap: nowrap !important;
+        width: 100%;
+    }
+    /* Logout button fills remaining space on mobile */
+    .nav-links #navUserArea .nav-link-btn {
+        flex: 1;
+        justify-content: center;
+    }
+}

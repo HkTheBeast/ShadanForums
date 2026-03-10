@@ -16,7 +16,7 @@
     <div class="bg-particle"></div>
 </div>
 
-<!-- ══ NAVBAR ══════════════════════════════════════════════════ -->
+<!-- ══ NAVBAR ══════════════════════════════════════════════ -->
 <nav class="navbar">
     <div class="nav-container">
         <a href="Aindex.html" class="logo">
@@ -26,21 +26,24 @@
                 <span class="logo-sub">Classroom Hub</span>
             </div>
         </a>
-        <div class="nav-links">
+        <div class="nav-links" id="navLinks">
             <a href="Aindex.html"      class="nav-link-btn"><i class="fas fa-home"></i> Home</a>
+            <a href="students.html"    class="nav-link-btn nav-active"><i class="fas fa-id-card"></i> Students</a>
             <a href="attendance.html"  class="nav-link-btn"><i class="fas fa-calendar-check"></i> Attendance</a>
             <a href="submissions.html" class="nav-link-btn"><i class="fas fa-tasks"></i> Submissions</a>
             <a href="marks.html"       class="nav-link-btn"><i class="fas fa-chart-bar"></i> Marks</a>
             <a href="highlights.html"  class="nav-link-btn"><i class="fas fa-star"></i> Highlights</a>
             <div id="navUserArea"></div>
         </div>
+        <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
     </div>
 </nav>
 
-<!-- ══ MAIN ════════════════════════════════════════════════════ -->
+<!-- ══ MAIN ════════════════════════════════════════════════ -->
 <main class="main">
 
-    <!-- Not logged in gate -->
     <div id="loginGate" class="login-gate" style="display:none;">
         <i class="fas fa-user-shield"></i>
         <h2>Teacher Login Required</h2>
@@ -50,7 +53,6 @@
         </button>
     </div>
 
-    <!-- Logged in dashboard -->
     <div id="dashboard" style="display:none;">
 
         <div class="page-header">
@@ -58,7 +60,6 @@
             <p>Create and manage student profiles. Performance analytics are calculated from all modules.</p>
         </div>
 
-        <!-- ── Overview Stats ──────────────────────────────────── -->
         <div class="overview-bar" id="overviewBar">
             <div class="ov-card"><div class="ov-num" id="ovTotal">0</div><div class="ov-lbl">Total</div></div>
             <div class="ov-card gold"><div class="ov-num gold" id="ovS">0</div><div class="ov-lbl">Grade S</div></div>
@@ -69,7 +70,6 @@
             <div class="ov-card"><div class="ov-num" id="ovN">0</div><div class="ov-lbl">No Data</div></div>
         </div>
 
-        <!-- ── Controls ────────────────────────────────────────── -->
         <div class="controls-bar">
             <div class="search-wrap">
                 <i class="fas fa-search"></i>
@@ -80,7 +80,6 @@
             </button>
         </div>
 
-        <!-- ── Grade Filter ─────────────────────────────────────── -->
         <div class="grade-filter-bar">
             <span style="font-size:.78rem;color:var(--text-muted);font-weight:600;margin-right:.2rem">Filter:</span>
             <button class="gf-btn active" id="gfAll">All</button>
@@ -92,7 +91,6 @@
             <button class="gf-btn"    id="gfN">No Data</button>
         </div>
 
-        <!-- ── Profile Grid ─────────────────────────────────────── -->
         <div class="profile-grid" id="profileGrid"></div>
 
         <div id="emptyState" class="empty-state" style="display:none;">
@@ -104,7 +102,7 @@
     </div>
 </main>
 
-<!-- ══ AUTH MODAL ══════════════════════════════════════════════ -->
+<!-- ══ AUTH MODAL ══════════════════════════════════════════ -->
 <div class="modal-overlay" id="authModal">
     <div class="auth-modal">
         <div class="modal-header">
@@ -145,7 +143,7 @@
     </div>
 </div>
 
-<!-- ══ ADD / EDIT STUDENT MODAL ════════════════════════════════ -->
+<!-- ══ ADD / EDIT STUDENT MODAL ════════════════════════════ -->
 <div class="modal-overlay" id="studentModal">
     <div class="auth-modal student-modal">
         <div class="modal-header">
@@ -177,7 +175,7 @@
     </div>
 </div>
 
-<!-- ══ DELETE CONFIRM MODAL ════════════════════════════════════ -->
+<!-- ══ DELETE CONFIRM MODAL ════════════════════════════════ -->
 <div class="modal-overlay" id="deleteModal">
     <div class="auth-modal delete-modal">
         <div class="modal-header">
@@ -191,7 +189,7 @@
     </div>
 </div>
 
-<!-- ══ TOAST ════════════════════════════════════════════════════ -->
+<!-- ══ TOAST ════════════════════════════════════════════════ -->
 <div class="toast" id="toast">
     <i id="toastIcon"></i>
     <span id="toastMsg"></span>

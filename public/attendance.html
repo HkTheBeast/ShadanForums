@@ -11,195 +11,192 @@
 </head>
 <body>
 
-    <div class="bg-animation">
-        <div class="bg-particle"></div>
-        <div class="bg-particle"></div>
-        <div class="bg-particle"></div>
+<div class="bg-animation">
+    <div class="bg-particle"></div>
+    <div class="bg-particle"></div>
+    <div class="bg-particle"></div>
+</div>
+
+<!-- ══ NAVBAR ══════════════════════════════════════════════ -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="Aindex.html" class="logo">
+            <div class="logo-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+            <div class="logo-text">
+                <span class="logo-main">Svlent</span>
+                <span class="logo-sub">Classroom Hub</span>
+            </div>
+        </a>
+        <div class="nav-links" id="navLinks">
+            <a href="Aindex.html"      class="nav-link-btn"><i class="fas fa-home"></i> Home</a>
+            <a href="students.html"    class="nav-link-btn"><i class="fas fa-id-card"></i> Students</a>
+            <a href="attendance.html"  class="nav-link-btn nav-active"><i class="fas fa-calendar-check"></i> Attendance</a>
+            <a href="submissions.html" class="nav-link-btn"><i class="fas fa-tasks"></i> Submissions</a>
+            <a href="marks.html"       class="nav-link-btn"><i class="fas fa-chart-bar"></i> Marks</a>
+            <a href="highlights.html"  class="nav-link-btn"><i class="fas fa-star"></i> Highlights</a>
+            <div id="navUserArea"></div>
+        </div>
+        <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- ══ MAIN ════════════════════════════════════════════════ -->
+<main class="main">
+
+    <div id="loginGate" class="login-gate" style="display:none;">
+        <i class="fas fa-calendar-check"></i>
+        <h2>Teacher Login Required</h2>
+        <p>Log in to take and view attendance.</p>
+        <button class="btn-login-gate" id="openAuthBtn">
+            <i class="fas fa-sign-in-alt"></i> Login / Register
+        </button>
     </div>
 
-    <!-- ══ NAVBAR ══════════════════════════════════════════════ -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="Aindex.html" class="logo">
-                <div class="logo-icon"><i class="fas fa-chalkboard-teacher"></i></div>
-                <div class="logo-text">
-                    <span class="logo-main">Svlent</span>
-                    <span class="logo-sub">Classroom Hub</span>
-                </div>
-            </a>
-            <div class="nav-links" id="navLinks">
-                <a href="Aindex.html"      class="nav-link-btn"><i class="fas fa-home"></i> Home</a>
-                <a href="students.html"    class="nav-link-btn"><i class="fas fa-id-card"></i> Students</a>
-                <a href="attendance.html"  class="nav-link-btn nav-active"><i class="fas fa-calendar-check"></i> Attendance</a>
-                <a href="submissions.html" class="nav-link-btn"><i class="fas fa-tasks"></i> Submissions</a>
-                <a href="marks.html"       class="nav-link-btn"><i class="fas fa-chart-bar"></i> Marks</a>
-                <a href="highlights.html"  class="nav-link-btn"><i class="fas fa-star"></i> Highlights</a>
-                <div id="navUserArea"></div>
-            </div>
-            <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
-                <span></span><span></span><span></span>
-            </button>
+    <div id="dashboard" style="display:none;">
+
+        <div class="page-header">
+            <h1><i class="fas fa-calendar-check"></i> Attendance</h1>
+            <p>Mark daily attendance and track each student's presence over time.</p>
         </div>
-    </nav>
 
-    <!-- ══ MAIN ════════════════════════════════════════════════ -->
-    <main class="main">
-
-        <!-- Not logged in gate -->
-        <div id="loginGate" class="login-gate" style="display:none;">
-            <i class="fas fa-calendar-check"></i>
-            <h2>Teacher Login Required</h2>
-            <p>Log in to take and view attendance.</p>
-            <button class="btn-login-gate" id="openAuthBtn">
-                <i class="fas fa-sign-in-alt"></i> Login / Register
+        <div class="att-tabs">
+            <button class="att-tab active" id="tabTake">
+                <i class="fas fa-pen-alt"></i> Take Attendance
+            </button>
+            <button class="att-tab" id="tabSummary">
+                <i class="fas fa-chart-pie"></i> Summary &amp; History
             </button>
         </div>
 
-        <!-- Logged in dashboard -->
-        <div id="dashboard" style="display:none;">
+        <!-- ══ TAB: TAKE ATTENDANCE ══════════════════════ -->
+        <div id="paneTake" class="att-pane">
 
-            <div class="page-header">
-                <h1><i class="fas fa-calendar-check"></i> Attendance</h1>
-                <p>Mark daily attendance and track each student's presence over time.</p>
-            </div>
-
-            <!-- Tab nav -->
-            <div class="att-tabs">
-                <button class="att-tab active" id="tabTake">
-                    <i class="fas fa-pen-alt"></i> Take Attendance
-                </button>
-                <button class="att-tab" id="tabSummary">
-                    <i class="fas fa-chart-pie"></i> Summary &amp; History
-                </button>
-            </div>
-
-            <!-- ══ TAB: TAKE ATTENDANCE ══════════════════════ -->
-            <div id="paneTake" class="att-pane">
-
-                <div class="att-date-row">
-                    <div class="att-date-wrap">
-                        <i class="fas fa-calendar-alt"></i>
-                        <input type="date" id="attDate" class="att-date-input">
-                    </div>
-                    <div class="att-quick-actions">
-                        <button class="btn-quick present" id="markAllPresent">
-                            <i class="fas fa-check-double"></i> All Present
-                        </button>
-                        <button class="btn-quick absent" id="markAllAbsent">
-                            <i class="fas fa-times"></i> All Absent
-                        </button>
-                    </div>
+            <div class="att-date-row">
+                <div class="att-date-wrap">
+                    <i class="fas fa-calendar-alt"></i>
+                    <input type="date" id="attDate" class="att-date-input">
                 </div>
-
-                <div class="att-day-stats">
-                    <div class="att-day-stat present-stat">
-                        <span class="att-day-num" id="dayPresent">0</span>
-                        <span class="att-day-lbl">Present</span>
-                    </div>
-                    <div class="att-day-stat late-stat">
-                        <span class="att-day-num" id="dayLate">0</span>
-                        <span class="att-day-lbl">Late</span>
-                    </div>
-                    <div class="att-day-stat absent-stat">
-                        <span class="att-day-num" id="dayAbsent">0</span>
-                        <span class="att-day-lbl">Absent</span>
-                    </div>
-                    <div class="att-day-stat total-stat">
-                        <span class="att-day-num" id="dayTotal">0</span>
-                        <span class="att-day-lbl">Total</span>
-                    </div>
-                </div>
-
-                <div id="attList" class="att-list"></div>
-
-                <div id="attEmpty" class="empty-state" style="display:none;">
-                    <i class="fas fa-user-graduate"></i>
-                    <h3>No students found</h3>
-                    <p>Add students from the <a href="students.html" style="color:var(--accent-teal)">Students</a> page first.</p>
-                </div>
-
-                <div class="att-save-row" id="attSaveRow" style="display:none;">
-                    <button class="btn-save-att" id="saveAttendanceBtn">
-                        <i class="fas fa-save"></i> Save Attendance for this Day
+                <div class="att-quick-actions">
+                    <button class="btn-quick present" id="markAllPresent">
+                        <i class="fas fa-check-double"></i> All Present
+                    </button>
+                    <button class="btn-quick absent" id="markAllAbsent">
+                        <i class="fas fa-times"></i> All Absent
                     </button>
                 </div>
-
             </div>
 
-            <!-- ══ TAB: SUMMARY & HISTORY ═══════════════════ -->
-            <div id="paneSummary" class="att-pane" style="display:none;">
-                <div id="summaryGrid" class="summary-grid"></div>
-                <div id="summaryEmpty" class="empty-state" style="display:none;">
-                    <i class="fas fa-calendar-times"></i>
-                    <h3>No attendance data yet</h3>
-                    <p>Take attendance first to see summaries here.</p>
+            <div class="att-day-stats">
+                <div class="att-day-stat present-stat">
+                    <span class="att-day-num" id="dayPresent">0</span>
+                    <span class="att-day-lbl">Present</span>
                 </div>
+                <div class="att-day-stat late-stat">
+                    <span class="att-day-num" id="dayLate">0</span>
+                    <span class="att-day-lbl">Late</span>
+                </div>
+                <div class="att-day-stat absent-stat">
+                    <span class="att-day-num" id="dayAbsent">0</span>
+                    <span class="att-day-lbl">Absent</span>
+                </div>
+                <div class="att-day-stat total-stat">
+                    <span class="att-day-num" id="dayTotal">0</span>
+                    <span class="att-day-lbl">Total</span>
+                </div>
+            </div>
+
+            <div id="attList" class="att-list"></div>
+
+            <div id="attEmpty" class="empty-state" style="display:none;">
+                <i class="fas fa-user-graduate"></i>
+                <h3>No students found</h3>
+                <p>Add students from the <a href="students.html" style="color:var(--accent-teal)">Students</a> page first.</p>
+            </div>
+
+            <div class="att-save-row" id="attSaveRow" style="display:none;">
+                <button class="btn-save-att" id="saveAttendanceBtn">
+                    <i class="fas fa-save"></i> Save Attendance for this Day
+                </button>
             </div>
 
         </div>
-    </main>
 
-    <!-- ══ AUTH MODAL ══════════════════════════════════════════ -->
-    <div class="modal-overlay" id="authModal">
-        <div class="auth-modal">
-            <div class="modal-header">
-                <h2><i class="fas fa-chalkboard-teacher"></i> Svlent</h2>
-                <p>Teacher Account</p>
-            </div>
-            <div class="modal-tabs">
-                <button class="modal-tab active" id="tabLogin">Login</button>
-                <button class="modal-tab" id="tabRegister">Register</button>
-            </div>
-            <div class="auth-error" id="authError"></div>
-            <div id="loginForm">
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" class="form-input" id="loginUsername" placeholder="Your username">
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" class="form-input" id="loginPassword" placeholder="Your password">
-                </div>
-                <button class="btn-auth" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
-            </div>
-            <div id="registerForm" style="display:none;">
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" class="form-input" id="regUsername" placeholder="Min 3 characters">
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" class="form-input" id="regPassword" placeholder="Min 6 characters">
-                </div>
-                <div class="form-group">
-                    <label>Confirm Password</label>
-                    <input type="password" class="form-input" id="regConfirm" placeholder="Repeat password">
-                </div>
-                <button class="btn-auth" id="registerBtn"><i class="fas fa-user-plus"></i> Create Account</button>
+        <!-- ══ TAB: SUMMARY & HISTORY ═══════════════════ -->
+        <div id="paneSummary" class="att-pane" style="display:none;">
+            <div id="summaryGrid" class="summary-grid"></div>
+            <div id="summaryEmpty" class="empty-state" style="display:none;">
+                <i class="fas fa-calendar-times"></i>
+                <h3>No attendance data yet</h3>
+                <p>Take attendance first to see summaries here.</p>
             </div>
         </div>
-    </div>
 
-    <!-- ══ HISTORY MODAL ══════════════════════════════════════ -->
-    <div class="modal-overlay" id="historyModal">
-        <div class="auth-modal history-modal">
-            <div class="modal-header">
-                <h2 id="historyModalTitle"><i class="fas fa-history"></i> Attendance History</h2>
-                <p id="historyModalSubtitle"></p>
+    </div>
+</main>
+
+<!-- ══ AUTH MODAL ══════════════════════════════════════════ -->
+<div class="modal-overlay" id="authModal">
+    <div class="auth-modal">
+        <div class="modal-header">
+            <h2><i class="fas fa-chalkboard-teacher"></i> Svlent</h2>
+            <p>Teacher Account</p>
+        </div>
+        <div class="modal-tabs">
+            <button class="modal-tab active" id="tabLogin">Login</button>
+            <button class="modal-tab" id="tabRegister">Register</button>
+        </div>
+        <div class="auth-error" id="authError"></div>
+        <div id="loginForm">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" class="form-input" id="loginUsername" placeholder="Your username">
             </div>
-            <div id="historyContent" class="history-content"></div>
-            <div class="modal-buttons" style="margin-top:1.2rem;">
-                <button class="btn-cancel" id="closeHistoryBtn" style="flex:1;"><i class="fas fa-times"></i> Close</button>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" class="form-input" id="loginPassword" placeholder="Your password">
             </div>
+            <button class="btn-auth" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+        </div>
+        <div id="registerForm" style="display:none;">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" class="form-input" id="regUsername" placeholder="Min 3 characters">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" class="form-input" id="regPassword" placeholder="Min 6 characters">
+            </div>
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" class="form-input" id="regConfirm" placeholder="Repeat password">
+            </div>
+            <button class="btn-auth" id="registerBtn"><i class="fas fa-user-plus"></i> Create Account</button>
         </div>
     </div>
+</div>
 
-    <!-- ══ TOAST ════════════════════════════════════════════════ -->
-    <div class="toast" id="toast">
-        <i id="toastIcon"></i>
-        <span id="toastMsg"></span>
+<!-- ══ HISTORY MODAL ══════════════════════════════════════ -->
+<div class="modal-overlay" id="historyModal">
+    <div class="auth-modal history-modal">
+        <div class="modal-header">
+            <h2 id="historyModalTitle"><i class="fas fa-history"></i> Attendance History</h2>
+            <p id="historyModalSubtitle"></p>
+        </div>
+        <div id="historyContent" class="history-content"></div>
+        <div class="modal-buttons" style="margin-top:1.2rem;">
+            <button class="btn-cancel" id="closeHistoryBtn" style="flex:1;"><i class="fas fa-times"></i> Close</button>
+        </div>
     </div>
+</div>
 
-    <script src="js/attendance.js"></script>
+<!-- ══ TOAST ════════════════════════════════════════════════ -->
+<div class="toast" id="toast">
+    <i id="toastIcon"></i>
+    <span id="toastMsg"></span>
+</div>
+
+<script src="js/attendance.js"></script>
 </body>
 </html>
