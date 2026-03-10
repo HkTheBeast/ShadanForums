@@ -16,6 +16,7 @@
         <div class="bg-particle"></div>
     </div>
 
+    <!-- ══ NAVBAR ══════════════════════════════════════════════ -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="brand-logo">
@@ -34,8 +35,10 @@
         </div>
     </nav>
 
+    <!-- ══ MAIN ════════════════════════════════════════════════ -->
     <main class="main">
 
+        <!-- shown when NOT logged in -->
         <div id="loginGate" class="login-gate" style="display:none;">
             <i class="fas fa-user-shield"></i>
             <h2>Teacher Login Required</h2>
@@ -45,12 +48,15 @@
             </button>
         </div>
 
+        <!-- shown when logged in -->
         <div id="dashboard" style="display:none;">
+
             <div class="page-header">
                 <h1><i class="fas fa-users"></i> Student Profiles</h1>
-                <p>Manage your students and track assignment completion.</p>
+                <p>Manage your students, track assignments, highlights and warnings.</p>
             </div>
 
+            <!-- Stats -->
             <div class="stats-bar">
                 <div class="stat-card">
                     <div class="stat-number" id="statTotal">0</div>
@@ -68,8 +74,17 @@
                     <div class="stat-number" id="statBoth">0</div>
                     <div class="stat-label">Both Complete</div>
                 </div>
+                <div class="stat-card stat-card--gold">
+                    <div class="stat-number stat-gold" id="statHighlighted">0</div>
+                    <div class="stat-label">Highlighted</div>
+                </div>
+                <div class="stat-card stat-card--red">
+                    <div class="stat-number stat-red" id="statWarned">0</div>
+                    <div class="stat-label">With Warnings</div>
+                </div>
             </div>
 
+            <!-- Controls -->
             <div class="controls-bar">
                 <div class="search-wrap">
                     <i class="fas fa-search"></i>
@@ -80,16 +95,18 @@
                 </button>
             </div>
 
+            <!-- Grid -->
             <div class="students-grid" id="studentsGrid"></div>
             <div id="emptyState" class="empty-state" style="display:none;">
                 <i class="fas fa-user-graduate"></i>
                 <h3>No students yet</h3>
                 <p>Click "Add Student" to create your first profile.</p>
             </div>
+
         </div>
     </main>
 
-    <!-- AUTH MODAL -->
+    <!-- ══ AUTH MODAL ══════════════════════════════════════════ -->
     <div class="modal-overlay" id="authModal">
         <div class="auth-modal">
             <div class="modal-header">
@@ -101,6 +118,7 @@
                 <button class="modal-tab" id="tabRegister">Register</button>
             </div>
             <div class="auth-error" id="authError"></div>
+
             <div id="loginForm">
                 <div class="form-group">
                     <label>Username</label>
@@ -112,6 +130,7 @@
                 </div>
                 <button class="btn-auth" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
             </div>
+
             <div id="registerForm" style="display:none;">
                 <div class="form-group">
                     <label>Username</label>
@@ -130,7 +149,7 @@
         </div>
     </div>
 
-    <!-- ADD / EDIT STUDENT MODAL -->
+    <!-- ══ ADD / EDIT STUDENT MODAL ════════════════════════════ -->
     <div class="modal-overlay" id="studentModal">
         <div class="auth-modal student-modal">
             <div class="modal-header">
@@ -161,7 +180,7 @@
         </div>
     </div>
 
-    <!-- DELETE CONFIRM MODAL -->
+    <!-- ══ DELETE CONFIRM MODAL ════════════════════════════════ -->
     <div class="modal-overlay" id="deleteModal">
         <div class="auth-modal delete-modal">
             <div class="modal-header">
@@ -175,6 +194,7 @@
         </div>
     </div>
 
+    <!-- ══ TOAST ════════════════════════════════════════════════ -->
     <div class="toast" id="toast">
         <i id="toastIcon"></i>
         <span id="toastMsg"></span>
