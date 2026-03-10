@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Svlent | Highlights &amp; Warnings</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/students.css">
+    <link rel="stylesheet" href="css/module.css">
+</head>
+<body>
+
+<!-- bg -->
+<div class="bg-animation">
+    <div class="bg-particle"></div>
+    <div class="bg-particle"></div>
+    <div class="bg-particle"></div>
+</div>
+
+<!-- ══ NAVBAR ══════════════════════════════════════════════════ -->
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <a href="Aindex.html" class="logo" style="text-decoration:none">
+            <div class="logo-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+            <div class="logo-text">
+                <span class="logo-main">Svlent</span>
+                <span class="logo-sub">Classroom Hub</span>
+            </div>
+        </a>
+        <div class="nav-links">
+            <a href="Aindex.html"      class="nav-link-btn"><i class="fas fa-home"></i> Home</a>
+            <a href="students.html"    class="nav-link-btn"><i class="fas fa-users"></i> Students</a>
+            <a href="attendance.html"  class="nav-link-btn"><i class="fas fa-calendar-check"></i> Attendance</a>
+            <a href="submissions.html" class="nav-link-btn"><i class="fas fa-tasks"></i> Submissions</a>
+            <a href="marks.html"       class="nav-link-btn"><i class="fas fa-chart-bar"></i> Marks</a>
+            <a href="highlights.html"  class="nav-link-btn" style="color:var(--accent-gold)"><i class="fas fa-star"></i> Highlights</a>
+            <div id="navUserArea"></div>
+        </div>
+    </div>
+</nav>
+
+<!-- ══ MAIN ════════════════════════════════════════════════════ -->
+<main class="main">
+
+    <!-- Login gate -->
+    <div id="loginGate" class="login-gate" style="display:none">
+        <i class="fas fa-user-shield"></i>
+        <h2>Teacher Login Required</h2>
+        <p>Please log in to manage highlights and warnings.</p>
+        <button class="btn-login-gate" id="openAuthBtn">
+            <i class="fas fa-sign-in-alt"></i> Login / Register
+        </button>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" style="display:none">
+
+        <!-- Page header -->
+        <div class="mod-page-header">
+            <h1>
+                <i class="fas fa-star page-icon" style="-webkit-text-fill-color:var(--accent-gold)"></i>
+                Highlights &amp; Warnings
+            </h1>
+            <p>Star outstanding students and log formal warnings. Everything syncs to the database instantly.</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="mod-stats">
+            <div class="mod-stat">
+                <span class="mod-stat-num" id="statTotal">0</span>
+                <span class="mod-stat-lbl">Total Students</span>
+            </div>
+            <div class="mod-stat s-gold">
+                <span class="mod-stat-num c-gold" id="statHL">0</span>
+                <span class="mod-stat-lbl">Highlighted</span>
+            </div>
+            <div class="mod-stat">
+                <span class="mod-stat-num" id="statClean">0</span>
+                <span class="mod-stat-lbl">No Warnings</span>
+            </div>
+            <div class="mod-stat s-red">
+                <span class="mod-stat-num c-red" id="statW1">0</span>
+                <span class="mod-stat-lbl">1 Warning</span>
+            </div>
+            <div class="mod-stat s-red">
+                <span class="mod-stat-num c-red" id="statW2">0</span>
+                <span class="mod-stat-lbl">2 Warnings</span>
+            </div>
+            <div class="mod-stat s-red">
+                <span class="mod-stat-num c-red" id="statW3">0</span>
+                <span class="mod-stat-lbl">Max Warnings</span>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="mod-controls">
+            <div class="search-wrap">
+                <i class="fas fa-search"></i>
+                <input type="text" class="mod-search" id="searchInput" placeholder="Search by name or roll number…">
+            </div>
+            <button class="filter-btn active"  id="btnAll"><i class="fas fa-users"></i> All</button>
+            <button class="filter-btn f-gold"  id="btnHL"><i class="fas fa-star"></i> Highlighted</button>
+            <button class="filter-btn f-red"   id="btnWarn"><i class="fas fa-exclamation-triangle"></i> Warned</button>
+        </div>
+
+        <!-- List -->
+        <div id="hlList" class="mod-list"></div>
+        <div id="hlEmpty" class="mod-empty" style="display:none">
+            <i class="fas fa-star"></i>
+            <h3>No students found</h3>
+            <p>Add students from the <a href="students.html">Students</a> page first.</p>
+        </div>
+
+    </div>
+</main>
+
+<!-- ══ AUTH MODAL (identical pattern to students.html) ═══════ -->
+<div class="modal-overlay" id="authModal">
+    <div class="auth-modal">
+        <div class="modal-header">
+            <h2><i class="fas fa-chalkboard-teacher"></i> Svlent</h2>
+            <p>Teacher Account</p>
+        </div>
+        <div class="modal-tabs">
+            <button class="modal-tab active" id="tabLogin">Login</button>
+            <button class="modal-tab"        id="tabRegister">Register</button>
+        </div>
+        <div class="auth-error" id="authError"></div>
+        <div id="loginForm">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text"     class="form-input" id="loginUsername" placeholder="Your username">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" class="form-input" id="loginPassword" placeholder="Your password">
+            </div>
+            <button class="btn-auth" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+        </div>
+        <div id="registerForm" style="display:none">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text"     class="form-input" id="regUsername" placeholder="Min 3 characters">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" class="form-input" id="regPassword" placeholder="Min 6 characters">
+            </div>
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" class="form-input" id="regConfirm" placeholder="Repeat password">
+            </div>
+            <button class="btn-auth" id="registerBtn"><i class="fas fa-user-plus"></i> Create Account</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><i id="toastIcon"></i><span id="toastMsg"></span></div>
+
+<script src="js/highlights.js"></script>
+</body>
+</html>

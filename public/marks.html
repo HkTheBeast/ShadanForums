@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Svlent | Marks</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/students.css">
+    <link rel="stylesheet" href="css/module.css">
+</head>
+<body>
+
+<div class="bg-animation">
+    <div class="bg-particle"></div>
+    <div class="bg-particle"></div>
+    <div class="bg-particle"></div>
+</div>
+
+<!-- ══ NAVBAR ══════════════════════════════════════════════════ -->
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <a href="Aindex.html" class="logo" style="text-decoration:none">
+            <div class="logo-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+            <div class="logo-text">
+                <span class="logo-main">Svlent</span>
+                <span class="logo-sub">Classroom Hub</span>
+            </div>
+        </a>
+        <div class="nav-links">
+            <a href="Aindex.html"      class="nav-link-btn"><i class="fas fa-home"></i> Home</a>
+            <a href="students.html"    class="nav-link-btn"><i class="fas fa-users"></i> Students</a>
+            <a href="attendance.html"  class="nav-link-btn"><i class="fas fa-calendar-check"></i> Attendance</a>
+            <a href="submissions.html" class="nav-link-btn"><i class="fas fa-tasks"></i> Submissions</a>
+            <a href="marks.html"       class="nav-link-btn" style="color:var(--accent-blue)"><i class="fas fa-chart-bar"></i> Marks</a>
+            <a href="highlights.html"  class="nav-link-btn"><i class="fas fa-star"></i> Highlights</a>
+            <div id="navUserArea"></div>
+        </div>
+    </div>
+</nav>
+
+<!-- ══ MAIN ════════════════════════════════════════════════════ -->
+<main class="main">
+
+    <div id="loginGate" class="login-gate" style="display:none">
+        <i class="fas fa-user-shield"></i>
+        <h2>Teacher Login Required</h2>
+        <p>Please log in to enter marks.</p>
+        <button class="btn-login-gate" id="openAuthBtn">
+            <i class="fas fa-sign-in-alt"></i> Login / Register
+        </button>
+    </div>
+
+    <div id="dashboard" style="display:none">
+
+        <!-- Page header -->
+        <div class="mod-page-header">
+            <h1><i class="fas fa-chart-bar page-icon" style="-webkit-text-fill-color:var(--accent-blue)"></i> Marks</h1>
+            <p>Enter Mid 1 (/30), Mid 2 (/30), Internal Lab (/50), and External Lab (/50) for every student. Save per row.</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="mod-stats">
+            <div class="mod-stat">
+                <span class="mod-stat-num"        id="statTotal">0</span>
+                <span class="mod-stat-lbl">Total Students</span>
+            </div>
+            <div class="mod-stat s-blue">
+                <span class="mod-stat-num c-blue"  id="statEntered">0</span>
+                <span class="mod-stat-lbl">Marks Entered</span>
+            </div>
+            <div class="mod-stat">
+                <span class="mod-stat-num"         id="statPending">0</span>
+                <span class="mod-stat-lbl">No Marks Yet</span>
+            </div>
+            <div class="mod-stat s-blue">
+                <span class="mod-stat-num c-blue"  id="statAvgMid1">—</span>
+                <span class="mod-stat-lbl">Avg Mid 1</span>
+            </div>
+            <div class="mod-stat s-blue">
+                <span class="mod-stat-num c-blue"  id="statAvgMid2">—</span>
+                <span class="mod-stat-lbl">Avg Mid 2</span>
+            </div>
+            <div class="mod-stat s-blue">
+                <span class="mod-stat-num c-blue"  id="statAvgInt">—</span>
+                <span class="mod-stat-lbl">Avg Int. Lab</span>
+            </div>
+            <div class="mod-stat s-blue">
+                <span class="mod-stat-num c-blue"  id="statAvgExt">—</span>
+                <span class="mod-stat-lbl">Avg Ext. Lab</span>
+            </div>
+            <div class="mod-stat s-gold">
+                <span class="mod-stat-num c-gold"  id="statAvgTotal">—</span>
+                <span class="mod-stat-lbl">Avg Total</span>
+            </div>
+        </div>
+
+        <!-- Search + filter -->
+        <div class="mod-controls">
+            <div class="search-wrap">
+                <i class="fas fa-search"></i>
+                <input type="text" class="mod-search" id="searchInput" placeholder="Search by name or roll number…">
+            </div>
+            <button class="filter-btn active" id="btnAll"><i class="fas fa-users"></i> All</button>
+            <button class="filter-btn"        id="btnMissing"><i class="fas fa-clock"></i> No Marks Yet</button>
+            <button class="filter-btn s-blue" id="btnEntered"><i class="fas fa-check"></i> Marks Entered</button>
+        </div>
+
+        <!-- Column headers -->
+        <div class="marks-col-header">
+            <span>Student</span>
+            <span><i class="fas fa-file-alt" style="color:var(--accent-teal)"></i>   Mid 1 <small style="color:var(--text-muted)">/30</small></span>
+            <span><i class="fas fa-file-alt" style="color:#b06aff"></i>              Mid 2 <small style="color:var(--text-muted)">/30</small></span>
+            <span><i class="fas fa-flask"    style="color:var(--accent-amber)"></i>  Int. Lab <small style="color:var(--text-muted)">/50</small></span>
+            <span><i class="fas fa-vial"     style="color:var(--accent-blue)"></i>   Ext. Lab <small style="color:var(--text-muted)">/50</small></span>
+            <span><i class="fas fa-sigma"    style="color:var(--accent-blue)"></i>   Total</span>
+            <span>Save</span>
+        </div>
+
+        <!-- List -->
+        <div id="marksList" class="mod-list"></div>
+        <div id="marksEmpty" class="mod-empty" style="display:none">
+            <i class="fas fa-chart-bar"></i>
+            <h3>No students found</h3>
+            <p>Add students from the <a href="students.html">Students</a> page first.</p>
+        </div>
+
+    </div>
+</main>
+
+<!-- ══ AUTH MODAL ══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="authModal">
+    <div class="auth-modal">
+        <div class="modal-header">
+            <h2><i class="fas fa-chalkboard-teacher"></i> Svlent</h2>
+            <p>Teacher Account</p>
+        </div>
+        <div class="modal-tabs">
+            <button class="modal-tab active" id="tabLogin">Login</button>
+            <button class="modal-tab"        id="tabRegister">Register</button>
+        </div>
+        <div class="auth-error" id="authError"></div>
+        <div id="loginForm">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text"     class="form-input" id="loginUsername" placeholder="Your username">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" class="form-input" id="loginPassword" placeholder="Your password">
+            </div>
+            <button class="btn-auth" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+        </div>
+        <div id="registerForm" style="display:none">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text"     class="form-input" id="regUsername" placeholder="Min 3 characters">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" class="form-input" id="regPassword" placeholder="Min 6 characters">
+            </div>
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" class="form-input" id="regConfirm" placeholder="Repeat password">
+            </div>
+            <button class="btn-auth" id="registerBtn"><i class="fas fa-user-plus"></i> Create Account</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"><i id="toastIcon"></i><span id="toastMsg"></span></div>
+
+<script src="js/marks.js"></script>
+</body>
+</html>
