@@ -551,7 +551,7 @@ app.patch('/api/students/:id/marks', ensureTeacher, (req, res) => {
     const MARK_LIMITS = {
         mark_mid1:         30,
         mark_mid2:         30,
-        mark_internal_lab: 25,
+        mark_internal_lab: 50,
         mark_external_lab: 50,
     };
 
