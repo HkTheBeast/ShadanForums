@@ -38,7 +38,7 @@
     <!-- ══ MAIN ════════════════════════════════════════════════ -->
     <main class="main">
 
-        <!-- shown when NOT logged in -->
+        <!-- Not logged in -->
         <div id="loginGate" class="login-gate" style="display:none;">
             <i class="fas fa-user-shield"></i>
             <h2>Teacher Login Required</h2>
@@ -48,12 +48,12 @@
             </button>
         </div>
 
-        <!-- shown when logged in -->
+        <!-- Logged in dashboard -->
         <div id="dashboard" style="display:none;">
 
             <div class="page-header">
                 <h1><i class="fas fa-users"></i> Student Profiles</h1>
-                <p>Manage your students, track assignments, highlights and warnings.</p>
+                <p>Manage students, assignments, marks, records, highlights and warnings.</p>
             </div>
 
             <!-- Stats -->
@@ -118,7 +118,6 @@
                 <button class="modal-tab" id="tabRegister">Register</button>
             </div>
             <div class="auth-error" id="authError"></div>
-
             <div id="loginForm">
                 <div class="form-group">
                     <label>Username</label>
@@ -130,7 +129,6 @@
                 </div>
                 <button class="btn-auth" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
             </div>
-
             <div id="registerForm" style="display:none;">
                 <div class="form-group">
                     <label>Username</label>
@@ -176,6 +174,47 @@
             <div class="modal-buttons">
                 <button class="btn-auth" id="saveStudentBtn"><i class="fas fa-save"></i> Save</button>
                 <button class="btn-cancel" id="cancelStudentBtn"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ MARKS MODAL ═════════════════════════════════════════ -->
+    <div class="modal-overlay" id="marksModal">
+        <div class="auth-modal marks-modal">
+            <div class="modal-header">
+                <h2 id="marksModalTitle"><i class="fas fa-chart-bar"></i> Enter Marks</h2>
+                <p id="marksModalSubtitle">Student Name</p>
+            </div>
+            <div class="auth-error" id="marksError"></div>
+
+            <div class="marks-grid">
+                <div class="form-group">
+                    <label>Mid 1 <span class="mark-max">/30</span></label>
+                    <input type="number" class="form-input" id="markMid1" placeholder="0 – 30" min="0" max="30" step="0.5">
+                </div>
+                <div class="form-group">
+                    <label>Mid 2 <span class="mark-max">/30</span></label>
+                    <input type="number" class="form-input" id="markMid2" placeholder="0 – 30" min="0" max="30" step="0.5">
+                </div>
+                <div class="form-group">
+                    <label>Internal Lab <span class="mark-max">/25</span></label>
+                    <input type="number" class="form-input" id="markInternal" placeholder="0 – 25" min="0" max="25" step="0.5">
+                </div>
+                <div class="form-group">
+                    <label>External Lab <span class="mark-max">/50</span></label>
+                    <input type="number" class="form-input" id="markExternal" placeholder="0 – 50" min="0" max="50" step="0.5">
+                </div>
+            </div>
+
+            <div class="marks-total-row">
+                <span class="marks-total-label">Total</span>
+                <span class="marks-total-value" id="marksTotal">—</span>
+                <span class="mark-max">/135</span>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn-auth" id="saveMarksBtn"><i class="fas fa-save"></i> Save Marks</button>
+                <button class="btn-cancel" id="cancelMarksBtn"><i class="fas fa-times"></i> Cancel</button>
             </div>
         </div>
     </div>

@@ -93,25 +93,44 @@ db.serialize(() => {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
-    // Students table includes highlighted & warnings from the start
+    // Full students table with all columns
     db.run(`CREATE TABLE IF NOT EXISTS students (
-        id          INTEGER PRIMARY KEY AUTOINCREMENT,
-        teacher_id  INTEGER NOT NULL,
-        roll_number TEXT NOT NULL,
-        name        TEXT NOT NULL,
-        avatar      TEXT,
-        assignment1 INTEGER DEFAULT 0,
-        assignment2 INTEGER DEFAULT 0,
-        highlighted INTEGER DEFAULT 0,
-        warnings    INTEGER DEFAULT 0,
-        created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+        id              INTEGER PRIMARY KEY AUTOINCREMENT,
+        teacher_id      INTEGER NOT NULL,
+        roll_number     TEXT NOT NULL,
+        name            TEXT NOT NULL,
+        avatar          TEXT,
+        assignment1     INTEGER DEFAULT 0,
+        assignment2     INTEGER DEFAULT 0,
+        highlighted     INTEGER DEFAULT 0,
+        warnings        INTEGER DEFAULT 0,
+        -- Marks (NULL = not entered yet)
+        mark_mid1       REAL,
+        mark_mid2       REAL,
+        mark_internal_lab REAL,
+        mark_external_lab REAL,
+        -- Record submissions (toggle like assignments)
+        record_book     INTEGER DEFAULT 0,
+        obs_book        INTEGER DEFAULT 0,
+        ppt_submitted   INTEGER DEFAULT 0,
+        created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (teacher_id) REFERENCES teacher_accounts(id) ON DELETE CASCADE,
         UNIQUE(teacher_id, roll_number)
     )`);
 
-    // Safe migration for databases created before highlighted/warnings existed
-    db.run(`ALTER TABLE students ADD COLUMN highlighted INTEGER DEFAULT 0`, () => {});
-    db.run(`ALTER TABLE students ADD COLUMN warnings    INTEGER DEFAULT 0`, () => {});
+    // Safe migration for databases created before these columns existed
+    const safeAdd = (col, type) =>
+        db.run(`ALTER TABLE students ADD COLUMN ${col} ${type}`, () => {});
+
+    safeAdd('highlighted',       'INTEGER DEFAULT 0');
+    safeAdd('warnings',          'INTEGER DEFAULT 0');
+    safeAdd('mark_mid1',         'REAL');
+    safeAdd('mark_mid2',         'REAL');
+    safeAdd('mark_internal_lab', 'REAL');
+    safeAdd('mark_external_lab', 'REAL');
+    safeAdd('record_book',       'INTEGER DEFAULT 0');
+    safeAdd('obs_book',          'INTEGER DEFAULT 0');
+    safeAdd('ppt_submitted',     'INTEGER DEFAULT 0');
 });
 
 // ================================================================
@@ -392,7 +411,7 @@ app.get('/api/teacher/me', (req, res) => {
 // STUDENT CRUD  /api/students/...
 // ================================================================
 
-// GET all students for this teacher
+// GET all students
 app.get('/api/students', ensureTeacher, (req, res) => {
     db.all(`SELECT * FROM students WHERE teacher_id = ? ORDER BY created_at ASC`,
         [req.session.teacher.id], (err, rows) => {
@@ -479,7 +498,7 @@ app.patch('/api/students/:id/assignment', ensureTeacher, (req, res) => {
     );
 });
 
-// PATCH — set highlighted (true/false)
+// PATCH — toggle highlighted
 app.patch('/api/students/:id/highlight', ensureTeacher, (req, res) => {
     const teacherId = req.session.teacher.id;
     const studentId = parseInt(req.params.id);
@@ -499,7 +518,7 @@ app.patch('/api/students/:id/highlight', ensureTeacher, (req, res) => {
     );
 });
 
-// PATCH — set warnings count (0–3)
+// PATCH — set warnings (0-3)
 app.patch('/api/students/:id/warnings', ensureTeacher, (req, res) => {
     const teacherId = req.session.teacher.id;
     const studentId = parseInt(req.params.id);
@@ -516,6 +535,84 @@ app.patch('/api/students/:id/warnings', ensureTeacher, (req, res) => {
                 [warnings, studentId, teacherId], function (err2) {
                     if (err2) return res.status(500).json({ ok: false, error: 'Server error.' });
                     return res.json({ ok: true, warnings });
+                }
+            );
+        }
+    );
+});
+
+// ── NEW: PATCH — save marks (mid1, mid2, internal_lab, external_lab) ──
+// Expects body: { mark_mid1, mark_mid2, mark_internal_lab, mark_external_lab }
+// Any field can be null (clears the mark) or a number
+app.patch('/api/students/:id/marks', ensureTeacher, (req, res) => {
+    const teacherId = req.session.teacher.id;
+    const studentId = parseInt(req.params.id);
+
+    const MARK_LIMITS = {
+        mark_mid1:         30,
+        mark_mid2:         30,
+        mark_internal_lab: 25,
+        mark_external_lab: 50,
+    };
+
+    const updates = {};
+    for (const [field, max] of Object.entries(MARK_LIMITS)) {
+        if (field in req.body) {
+            const raw = req.body[field];
+            if (raw === null || raw === '' || raw === undefined) {
+                updates[field] = null;
+            } else {
+                const val = parseFloat(raw);
+                if (isNaN(val) || val < 0 || val > max)
+                    return res.status(400).json({ ok: false, error: `${field} must be between 0 and ${max}.` });
+                updates[field] = val;
+            }
+        }
+    }
+
+    if (Object.keys(updates).length === 0)
+        return res.status(400).json({ ok: false, error: 'No mark fields provided.' });
+
+    db.get(`SELECT * FROM students WHERE id = ? AND teacher_id = ?`, [studentId, teacherId],
+        (err, row) => {
+            if (err)  return res.status(500).json({ ok: false, error: 'Server error.' });
+            if (!row) return res.status(404).json({ ok: false, error: 'Student not found.' });
+
+            const setClauses = Object.keys(updates).map(f => `${f} = ?`).join(', ');
+            const values     = [...Object.values(updates), studentId, teacherId];
+
+            db.run(`UPDATE students SET ${setClauses} WHERE id = ? AND teacher_id = ?`,
+                values, function (err2) {
+                    if (err2) return res.status(500).json({ ok: false, error: 'Server error.' });
+                    db.get(`SELECT * FROM students WHERE id = ?`, [studentId], (e, updated) => {
+                        if (e) return res.status(500).json({ ok: false, error: 'Server error.' });
+                        return res.json({ ok: true, student: updated });
+                    });
+                }
+            );
+        }
+    );
+});
+
+// ── NEW: PATCH — toggle record/observation book/ppt submitted ──
+// field must be one of: record_book, obs_book, ppt_submitted
+app.patch('/api/students/:id/record', ensureTeacher, (req, res) => {
+    const teacherId = req.session.teacher.id;
+    const studentId = parseInt(req.params.id);
+    const { field, value } = req.body;
+
+    const ALLOWED = ['record_book', 'obs_book', 'ppt_submitted'];
+    if (!ALLOWED.includes(field))
+        return res.status(400).json({ ok: false, error: 'field must be record_book, obs_book, or ppt_submitted.' });
+
+    db.get(`SELECT * FROM students WHERE id = ? AND teacher_id = ?`, [studentId, teacherId],
+        (err, row) => {
+            if (err)  return res.status(500).json({ ok: false, error: 'Server error.' });
+            if (!row) return res.status(404).json({ ok: false, error: 'Student not found.' });
+            db.run(`UPDATE students SET ${field} = ? WHERE id = ? AND teacher_id = ?`,
+                [value ? 1 : 0, studentId, teacherId], function (err2) {
+                    if (err2) return res.status(500).json({ ok: false, error: 'Server error.' });
+                    return res.json({ ok: true, [field]: value });
                 }
             );
         }
