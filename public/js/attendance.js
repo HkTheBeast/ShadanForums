@@ -150,13 +150,15 @@ async function initPage() {
 
     if (teacher) {
         D.navUserArea.innerHTML = `
-            <div class="nav-user-badge">
-                <i class="fas fa-user-circle"></i>
-                <span>${escapeHTML(teacher.username)}</span>
-            </div>
-            <button class="nav-link-btn" id="logoutBtn">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>`;
+            <div style="display:flex;align-items:center;gap:.6rem;">
+                <div class="nav-user-badge">
+                    <i class="fas fa-user-circle"></i>
+                    <span>${escapeHTML(teacher.username)}</span>
+                </div>
+                <button class="nav-link-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>`;
         $('logoutBtn').addEventListener('click', handleLogout);
         D.loginGate.style.display = 'none';
         D.dashboard.style.display = 'block';

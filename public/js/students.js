@@ -9,7 +9,7 @@ let allStudents    = [];
 let currentEditId  = null;
 let pendingDelete  = null;
 let pendingAvatar  = null;
-let marksStudentId = null;   // which student the marks modal is open for
+let marksStudentId = null;
 
 // ─── DOM refs ─────────────────────────────────────────────────────
 let D = {};
@@ -48,7 +48,6 @@ function showError(el, msg) { el.textContent = msg; el.classList.add('show'); }
 function clearError(el)     { el.textContent = '';  el.classList.remove('show'); }
 
 function fmt(val) {
-    // Format a mark value nicely: null → "—", integer → "15", float → "15.5"
     if (val === null || val === undefined || val === '') return '—';
     const n = parseFloat(val);
     return isNaN(n) ? '—' : (n % 1 === 0 ? String(n) : n.toFixed(1));
@@ -142,13 +141,15 @@ async function initPage() {
 
     if (teacher) {
         D.navUserArea.innerHTML = `
-            <div class="nav-user-badge">
-                <i class="fas fa-user-circle"></i>
-                <span>${escapeHTML(teacher.username)}</span>
-            </div>
-            <button class="nav-link-btn" id="logoutBtn">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>`;
+            <div style="display:flex;align-items:center;gap:.6rem;">
+                <div class="nav-user-badge">
+                    <i class="fas fa-user-circle"></i>
+                    <span>${escapeHTML(teacher.username)}</span>
+                </div>
+                <button class="nav-link-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>`;
         $('logoutBtn').addEventListener('click', handleLogout);
         D.loginGate.style.display = 'none';
         D.dashboard.style.display = 'block';
@@ -207,22 +208,15 @@ function renderStudents(filter = '') {
     D.studentsGrid.innerHTML   = list.map(buildCardHTML).join('');
 
     list.forEach(s => {
-        // ── Existing ──
         $('edit-btn-' + s.id).addEventListener('click', () => openEditModal(s.id));
         $('del-btn-'  + s.id).addEventListener('click', () => openDeleteModal(s.id, s.name));
         $('chk-a1-'   + s.id).addEventListener('change', e => toggleAssignment(s.id, 'assignment1', e.target.checked));
         $('chk-a2-'   + s.id).addEventListener('change', e => toggleAssignment(s.id, 'assignment2', e.target.checked));
-
-        // ── Highlight / warnings ──
         $('hl-btn-' + s.id).addEventListener('click', () => toggleHighlight(s.id));
         for (let dot = 1; dot <= 3; dot++) {
             $('wdot-' + s.id + '-' + dot).addEventListener('click', () => handleWarningDotClick(s.id, dot));
         }
-
-        // ── Marks button ──
         $('marks-btn-' + s.id).addEventListener('click', () => openMarksModal(s.id));
-
-        // ── Record toggles ──
         $('chk-rec-'  + s.id).addEventListener('change', e => toggleRecord(s.id, 'record_book',   e.target.checked));
         $('chk-obs-'  + s.id).addEventListener('change', e => toggleRecord(s.id, 'obs_book',      e.target.checked));
         $('chk-ppt-'  + s.id).addEventListener('change', e => toggleRecord(s.id, 'ppt_submitted', e.target.checked));
@@ -253,11 +247,9 @@ function buildCardHTML(s) {
         warnBadge = `<span class="warn-badge ${mc}">${s.warnings}/3</span>`;
     }
 
-    // Has-marks indicator for the marks button
     const hasMarks = s.mark_mid1 !== null || s.mark_mid2 !== null ||
                      s.mark_internal_lab !== null || s.mark_external_lab !== null;
 
-    // Marks strip shown on card
     const marksStrip = `
     <div class="marks-strip">
         <div class="mark-chip">
@@ -293,7 +285,6 @@ function buildCardHTML(s) {
             </div>
         </div>
 
-        <!-- Assignments -->
         <div class="section-label"><i class="fas fa-tasks"></i> Assignments</div>
         <div class="assignments">
             <div class="assignment-row">
@@ -318,7 +309,6 @@ function buildCardHTML(s) {
             </div>
         </div>
 
-        <!-- Record / Obs Book / PPT -->
         <div class="section-label"><i class="fas fa-book"></i> Record & Submissions</div>
         <div class="assignments">
             <div class="assignment-row">
@@ -353,11 +343,9 @@ function buildCardHTML(s) {
             </div>
         </div>
 
-        <!-- Marks strip -->
         <div class="section-label"><i class="fas fa-chart-bar"></i> Marks</div>
         ${marksStrip}
 
-        <!-- Highlight + Warnings -->
         <div class="hw-section">
             <button class="btn-highlight ${hlActive}" id="hl-btn-${s.id}">
                 <i class="fas fa-star"></i> ${hlLabel}
@@ -550,7 +538,6 @@ async function saveMarks() {
             mark_internal_lab: internal,
             mark_external_lab: external,
         });
-        // Update local cache
         const idx = allStudents.findIndex(s => s.id === marksStudentId);
         if (idx !== -1) allStudents[idx] = data.student;
         closeMarksModal();
