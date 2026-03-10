@@ -270,7 +270,7 @@ function buildCardHTML(s) {
         </div>
         <div class="mark-chip">
             <span class="mark-chip-label">Int. Lab</span>
-            <span class="mark-chip-value ${s.mark_internal_lab === null || s.mark_internal_lab === undefined ? 'empty' : ''}">${fmt(s.mark_internal_lab)}<small style="font-size:.6rem;font-weight:400;color:var(--text-muted)">/25</small></span>
+            <span class="mark-chip-value ${s.mark_internal_lab === null || s.mark_internal_lab === undefined ? 'empty' : ''}">${fmt(s.mark_internal_lab)}<small style="font-size:.6rem;font-weight:400;color:var(--text-muted)">/50</small></span>
         </div>
         <div class="mark-chip">
             <span class="mark-chip-label">Ext. Lab</span>
