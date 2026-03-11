@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/module.css">
+    <!-- students.css MUST be first — it defines all CSS variables -->
+    <link rel="stylesheet" href="css/students.css">
     <link rel="stylesheet" href="css/classes.css">
-     <link rel="stylesheet" href="css/students.css">
+    <link rel="stylesheet" href="css/module.css">
 </head>
 <body>
 
@@ -107,7 +108,7 @@
             <div class="mod-controls">
                 <div class="search-wrap">
                     <i class="fas fa-search"></i>
-                    <input type="text" class="search-input" id="searchInput" placeholder="Search students…">
+                    <input type="text" class="search-input mod-search" id="searchInput" placeholder="Search students…">
                 </div>
                 <div class="mod-filter-btns">
                     <button class="mf-btn active" id="btnAll">All</button>
@@ -117,14 +118,14 @@
             </div>
 
             <!-- Column headers -->
-            <div class="marks-table-header">
-                <div class="mth-student">Student</div>
-                <div class="mth-col">Mid 1 <span class="mth-max">/30</span></div>
-                <div class="mth-col">Mid 2 <span class="mth-max">/30</span></div>
-                <div class="mth-col">Int. Lab <span class="mth-max">/50</span></div>
-                <div class="mth-col">Ext. Lab <span class="mth-max">/50</span></div>
-                <div class="mth-col">Total <span class="mth-max">/160</span></div>
-                <div class="mth-col">Save</div>
+            <div class="marks-col-header">
+                <span>Student</span>
+                <span>Mid 1 <em style="opacity:.5;font-style:normal">/30</em></span>
+                <span>Mid 2 <em style="opacity:.5;font-style:normal">/30</em></span>
+                <span>Int. Lab <em style="opacity:.5;font-style:normal">/50</em></span>
+                <span>Ext. Lab <em style="opacity:.5;font-style:normal">/50</em></span>
+                <span>Total <em style="opacity:.5;font-style:normal">/160</em></span>
+                <span>Save</span>
             </div>
 
             <div class="marks-list" id="marksList"></div>

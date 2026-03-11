@@ -13,10 +13,7 @@
     background: var(--grad-main);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
-.mod-page-header h1 .page-icon {
-    -webkit-text-fill-color: initial;  /* icon keeps real color */
-    font-size: 1.9rem;
-}
+.mod-page-header h1 .page-icon { -webkit-text-fill-color: initial; font-size: 1.9rem; }
 .mod-page-header p { color: var(--text-secondary); margin-top: .4rem; font-size: .98rem; }
 
 /* ── Stats row ────────────────────────────────────────────────── */
@@ -53,6 +50,47 @@
 .mod-stat-num.c-pink   { color: var(--accent-pink);  }
 .mod-stat-lbl  { font-size: .68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: .3rem; display: block; }
 
+/* ── Stats bar (ms- prefix used in marks/submissions) ─────────── */
+.mod-stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: .8rem;
+    margin-bottom: 2rem;
+}
+.ms-card {
+    background: rgba(22,33,62,.7);
+    border: 1px solid rgba(42,250,223,.1);
+    border-radius: 12px;
+    padding: 1rem .8rem;
+    text-align: center;
+    transition: var(--ease);
+}
+.ms-card:hover { transform: translateY(-3px); border-color: rgba(42,250,223,.3); }
+.ms-card.teal   { border-color: rgba(42,250,223,.2); }
+.ms-card.purple { border-color: rgba(138,43,226,.2); }
+.ms-card.blue   { border-color: rgba(79,195,247,.2); }
+.ms-card.amber  { border-color: rgba(255,154,60,.2); }
+.ms-card.pink   { border-color: rgba(255,46,99,.2); }
+.ms-card.gold   { border-color: rgba(255,215,0,.2); }
+.ms-card.red    { border-color: rgba(255,68,68,.2); }
+.ms-num {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.8rem; font-weight: 800;
+    color: var(--accent-teal); display: block;
+}
+.ms-card.teal   .ms-num { color: var(--accent-teal); }
+.ms-card.purple .ms-num { color: #b06aff; }
+.ms-card.blue   .ms-num { color: var(--accent-blue); }
+.ms-card.amber  .ms-num { color: var(--accent-amber); }
+.ms-card.pink   .ms-num { color: var(--accent-pink); }
+.ms-card.gold   .ms-num { color: var(--accent-gold); }
+.ms-card.red    .ms-num { color: var(--accent-red); }
+.ms-lbl {
+    font-size: .68rem; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-top: .3rem; display: block;
+}
+
 /* ── Search / filter bar ──────────────────────────────────────── */
 .mod-controls { display: flex; gap: 1rem; margin-bottom: 1.4rem; flex-wrap: wrap; align-items: center; }
 .search-wrap  { position: relative; flex: 1; min-width: 200px; }
@@ -66,6 +104,18 @@
 .mod-search:focus { border-color: var(--accent-teal); box-shadow: 0 0 0 3px rgba(42,250,223,.08); }
 .mod-search::placeholder { color: var(--text-muted); }
 
+/* ── Filter buttons (mf- prefix) ─────────────────────────────── */
+.mod-filter-btns { display: flex; gap: .5rem; flex-wrap: wrap; }
+.mf-btn {
+    padding: .5rem 1rem; border-radius: 20px;
+    border: 1px solid rgba(42,250,223,.2);
+    background: rgba(42,250,223,.06); color: var(--text-muted);
+    font-family: 'Inter', sans-serif; font-size: .82rem; font-weight: 600;
+    cursor: pointer; transition: var(--ease);
+}
+.mf-btn:hover  { color: var(--text-primary); border-color: rgba(42,250,223,.4); }
+.mf-btn.active { background: linear-gradient(135deg, #8a2be2, #2afadf); color: #fff; border-color: transparent; }
+
 .filter-btn {
     display: inline-flex; align-items: center; gap: 7px;
     padding: .6rem 1.1rem; border-radius: var(--r-md);
@@ -76,10 +126,6 @@
 }
 .filter-btn:hover   { color: var(--text-primary); border-color: rgba(42,250,223,.4); }
 .filter-btn.active  { background: var(--grad-main); color: #fff; border-color: transparent; }
-.filter-btn.f-gold  { border-color: rgba(255,215,0,.25); background: rgba(255,215,0,.07); color: rgba(255,215,0,.7); }
-.filter-btn.f-gold.active  { background: var(--grad-gold); color: #fff; }
-.filter-btn.f-red   { border-color: rgba(255,68,68,.25);  background: rgba(255,68,68,.07);  color: rgba(255,68,68,.7); }
-.filter-btn.f-red.active   { background: var(--grad-red);  color: #fff; }
 
 /* ── Shared list container ────────────────────────────────────── */
 .mod-list { display: flex; flex-direction: column; gap: .65rem; }
@@ -108,7 +154,6 @@
 /* ══════════════════════════════════════════════════════════════
    HIGHLIGHTS & WARNINGS PAGE
    ══════════════════════════════════════════════════════════════ */
-
 .hl-row {
     display: flex; align-items: center; gap: 1rem;
     padding: .9rem 1.2rem;
@@ -119,19 +164,12 @@
 .hl-row:hover { border-color: rgba(42,250,223,.22); background: rgba(22,33,62,.9); }
 .hl-row.is-highlighted {
     background: rgba(36,30,5,.8); border-color: rgba(255,215,0,.3);
-    border-left-color: var(--accent-gold);
-    box-shadow: 0 0 20px rgba(255,215,0,.07);
+    border-left-color: var(--accent-gold); box-shadow: 0 0 20px rgba(255,215,0,.07);
 }
-.hl-row.is-warned {
-    background: rgba(30,5,5,.8); border-color: rgba(255,68,68,.3);
-    border-left-color: var(--accent-red);
-}
+.hl-row.is-warned { background: rgba(30,5,5,.8); border-color: rgba(255,68,68,.3); border-left-color: var(--accent-red); }
 .hl-row.is-highlighted.is-warned { border-left-color: var(--accent-red); }
-
 .hl-student { flex: 1; min-width: 0; display: flex; align-items: center; gap: .9rem; }
 .hl-student-text { min-width: 0; }
-
-/* Highlight button */
 .hl-btn {
     display: inline-flex; align-items: center; gap: 6px;
     padding: .38rem .9rem; border-radius: 20px;
@@ -140,12 +178,7 @@
     font-family: 'Inter', sans-serif; cursor: pointer; transition: var(--ease); white-space: nowrap;
 }
 .hl-btn:hover { background: rgba(255,215,0,.14); color: var(--accent-gold); border-color: rgba(255,215,0,.5); }
-.hl-btn.active {
-    background: rgba(255,215,0,.18); color: var(--accent-gold);
-    border-color: var(--accent-gold); box-shadow: 0 0 14px rgba(255,215,0,.2);
-}
-
-/* Warning dots area */
+.hl-btn.active { background: rgba(255,215,0,.18); color: var(--accent-gold); border-color: var(--accent-gold); box-shadow: 0 0 14px rgba(255,215,0,.2); }
 .warn-area { display: flex; align-items: center; gap: .6rem; flex-shrink: 0; flex-wrap: wrap; }
 .warn-label { font-size: .76rem; color: var(--text-muted); font-weight: 500; white-space: nowrap; }
 .warn-dots  { display: flex; gap: 5px; }
@@ -161,12 +194,9 @@
 .warn-badge.max { background: rgba(255,68,68,.32); color: #fff; box-shadow: 0 0 10px rgba(255,68,68,.3); animation: warnPulse 1.4s infinite; }
 @keyframes warnPulse { 0%,100%{ opacity:1 } 50%{ opacity:.55 } }
 
-
 /* ══════════════════════════════════════════════════════════════
-   SUBMISSIONS PAGE  (assignments + record + obs + ppt)
+   SUBMISSIONS PAGE
    ══════════════════════════════════════════════════════════════ */
-
-/* Column header row */
 .sub-col-header {
     display: grid;
     grid-template-columns: 220px repeat(5, 1fr);
@@ -178,8 +208,6 @@
     display: flex; align-items: center; justify-content: center; gap: .3rem;
 }
 .sub-col-header span:first-child { justify-content: flex-start; }
-
-/* Submission row */
 .sub-row {
     display: grid;
     grid-template-columns: 220px repeat(5, 1fr);
@@ -190,20 +218,9 @@
     border-radius: var(--r-md); transition: var(--ease); position: relative;
 }
 .sub-row:hover { background: rgba(22,33,62,.9); border-color: rgba(42,250,223,.2); }
-.sub-row.all-done {
-    border-left-color: var(--accent-gold);
-    border-color: rgba(255,215,0,.2);
-    background: rgba(36,30,5,.6);
-}
-
+.sub-row.all-done { border-left-color: var(--accent-gold); border-color: rgba(255,215,0,.2); background: rgba(36,30,5,.6); }
 .sub-student-cell { display: flex; align-items: center; gap: .8rem; min-width: 0; }
-
-/* Each toggle cell */
-.sub-cell {
-    display: flex; flex-direction: column; align-items: center; gap: .3rem;
-}
-
-/* Reuse toggle-switch from students.css — just define colour variants here */
+.sub-cell { display: flex; flex-direction: column; align-items: center; gap: .3rem; }
 .ts-purple input:checked + .toggle-slider { background: rgba(138,43,226,.22); border-color: #b06aff; }
 .ts-purple input:checked + .toggle-slider::before { background: #b06aff; }
 .ts-blue   input:checked + .toggle-slider { background: rgba(79,195,247,.22); border-color: var(--accent-blue); }
@@ -212,29 +229,24 @@
 .ts-amber  input:checked + .toggle-slider::before { background: var(--accent-amber); }
 .ts-pink   input:checked + .toggle-slider { background: rgba(255,46,99,.22); border-color: var(--accent-pink); }
 .ts-pink   input:checked + .toggle-slider::before { background: var(--accent-pink); }
-
-/* Mini status label under each toggle */
-.sub-mini-label {
-    font-size: .62rem; font-weight: 700; padding: 1px 6px; border-radius: 20px;
-    white-space: nowrap; transition: var(--ease);
-}
+.sub-mini-label { font-size: .62rem; font-weight: 700; padding: 1px 6px; border-radius: 20px; white-space: nowrap; transition: var(--ease); }
 .sub-mini-label.pending   { background: rgba(255,154,60,.08); color: rgba(255,154,60,.6);  border: 1px solid rgba(255,154,60,.18); }
 .sub-mini-label.done-teal { background: rgba(42,250,223,.1);  color: var(--accent-teal);   border: 1px solid rgba(42,250,223,.28); }
 .sub-mini-label.done-purple { background: rgba(138,43,226,.1); color: #b06aff;             border: 1px solid rgba(138,43,226,.3); }
 .sub-mini-label.done-blue   { background: rgba(79,195,247,.1); color: var(--accent-blue);  border: 1px solid rgba(79,195,247,.3); }
 .sub-mini-label.done-amber  { background: rgba(255,154,60,.1); color: var(--accent-amber); border: 1px solid rgba(255,154,60,.3); }
-.sub-mini-label.done-pink   { background: rgba(255,46,99,.1);  color: var(--accent-pink);  border: 1px solid rgba(255,46,99,.3);  }
-
+.sub-mini-label.done-pink   { background: rgba(255,46,99,.1);  color: var(--accent-pink);  border: 1px solid rgba(255,46,99,.3); }
 
 /* ══════════════════════════════════════════════════════════════
-   MARKS PAGE
+   MARKS PAGE  — wider student column, overflow protected
    ══════════════════════════════════════════════════════════════ */
 
-/* Column header row for marks */
+/* Column header */
 .marks-col-header {
     display: grid;
-    grid-template-columns: 200px repeat(4,1fr) 90px 80px;
+    grid-template-columns: minmax(180px, 240px) repeat(4, minmax(70px, 1fr)) 90px 80px;
     gap: .5rem; padding: .4rem 1.2rem; margin-bottom: .3rem;
+    overflow: hidden;
 }
 .marks-col-header span {
     font-size: .66rem; font-weight: 700; text-transform: uppercase;
@@ -246,17 +258,25 @@
 /* Marks row */
 .marks-row {
     display: grid;
-    grid-template-columns: 200px repeat(4,1fr) 90px 80px;
+    grid-template-columns: minmax(180px, 240px) repeat(4, minmax(70px, 1fr)) 90px 80px;
     gap: .5rem; align-items: center;
     padding: .75rem 1.2rem;
     background: rgba(22,33,62,.65); border: 1px solid rgba(42,250,223,.08);
     border-left: 3px solid rgba(79,195,247,.25);
     border-radius: var(--r-md); transition: var(--ease);
+    overflow: hidden;
 }
 .marks-row:hover  { background: rgba(22,33,62,.9); border-color: rgba(79,195,247,.22); }
 .marks-row.has-marks { border-left-color: var(--accent-teal); border-color: rgba(42,250,223,.15); }
 
-.marks-student-cell { display: flex; align-items: center; gap: .8rem; min-width: 0; }
+/* Student cell — clamps width so it doesn't push mark inputs off screen */
+.marks-student-cell {
+    display: flex; align-items: center; gap: .7rem;
+    min-width: 0; overflow: hidden;
+}
+.marks-student-cell .mod-avatar,
+.marks-student-cell .mod-avatar-ph { flex-shrink: 0; }
+.marks-student-cell > div { min-width: 0; overflow: hidden; }
 
 /* Mark input cell */
 .mark-cell { display: flex; flex-direction: column; gap: .25rem; }
@@ -265,12 +285,15 @@
     letter-spacing: 1px; color: var(--text-muted); text-align: center;
 }
 .mark-inp {
-    width: 100%; padding: .5rem .4rem;
+    width: 100%; padding: .5rem .3rem;
     background: rgba(10,25,47,.75); border: 1px solid rgba(42,250,223,.14);
     border-radius: var(--r-md); color: var(--text-primary);
-    font-size: .9rem; font-family: 'Inter', sans-serif;
+    font-size: .88rem; font-family: 'Inter', sans-serif;
     text-align: center; outline: none; transition: var(--ease);
+   
 }
+.mark-inp::-webkit-outer-spin-button,
+.mark-inp::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .mark-inp:focus { border-color: var(--accent-teal); box-shadow: 0 0 0 3px rgba(42,250,223,.08); }
 .mark-inp::placeholder { color: rgba(136,146,176,.4); font-size: .75rem; }
 .mark-inp.filled { border-color: rgba(79,195,247,.3); color: var(--accent-blue); font-weight: 700; }
@@ -281,7 +304,7 @@
     background: rgba(79,195,247,.07); border: 1px solid rgba(79,195,247,.18);
     border-radius: var(--r-md); padding: .5rem .4rem; gap: .1rem;
 }
-.marks-total-val   { font-family: 'Poppins', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent-blue); line-height: 1.1; }
+.marks-total-val   { font-family: 'Poppins', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--accent-blue); line-height: 1.1; }
 .marks-total-max   { font-size: .55rem; color: var(--text-muted); }
 .marks-total-label { font-size: .58rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 600; }
 
@@ -289,7 +312,7 @@
 .marks-save-cell { display: flex; justify-content: center; }
 .btn-save-row {
     display: inline-flex; align-items: center; gap: 5px;
-    padding: .42rem .85rem; border-radius: 20px;
+    padding: .42rem .7rem; border-radius: 20px;
     background: rgba(42,250,223,.09); border: 1px solid rgba(42,250,223,.22);
     color: var(--accent-teal); font-size: .74rem; font-weight: 700;
     font-family: 'Inter', sans-serif; cursor: pointer; transition: var(--ease); white-space: nowrap;
@@ -298,34 +321,46 @@
 .btn-save-row:disabled { opacity: .45; cursor: not-allowed; }
 .btn-save-row.saved    { background: rgba(42,250,223,.18); border-color: var(--accent-teal); }
 
-/* Class average bar at top of marks page */
+/* Class average bar */
 .marks-avg-bar {
     display: flex; align-items: center; justify-content: space-between;
     gap: 1rem; flex-wrap: wrap;
     background: rgba(22,33,62,.7); border: 1px solid rgba(79,195,247,.18);
-    border-radius: var(--r-md); padding: 1rem 1.4rem;
-    margin-bottom: 1.4rem;
+    border-radius: var(--r-md); padding: 1rem 1.4rem; margin-bottom: 1.4rem;
 }
 .avg-item { text-align: center; }
 .avg-val  { font-family: 'Poppins', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--accent-blue); display: block; }
 .avg-lbl  { font-size: .68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); display: block; }
 .avg-divider { width: 1px; height: 36px; background: rgba(79,195,247,.15); }
 
+/* ── Tab bar (att-tab-bar used in attendance HTML via classes.css additions) ── */
+.att-tab-bar {
+    display: flex; gap: .6rem; margin-bottom: 2rem;
+    background: rgba(10,25,47,.5); border-radius: 20px; padding: 6px; width: fit-content;
+}
+.att-tab {
+    display: flex; align-items: center; gap: 8px; padding: .7rem 1.5rem;
+    border: none; border-radius: 12px; background: none; color: var(--text-muted);
+    font-family: 'Inter', sans-serif; font-size: .95rem; font-weight: 600;
+    cursor: pointer; transition: var(--ease);
+}
+.att-tab:hover  { color: var(--text-primary); background: rgba(42,250,223,.08); }
+.att-tab.active { background: linear-gradient(135deg, #8a2be2, #2afadf); color: #fff; }
+
 /* ══ Responsive ═══════════════════════════════════════════════ */
-@media(max-width:1050px) {
+@media(max-width:1100px) {
+    .marks-col-header,
+    .marks-row { grid-template-columns: minmax(160px,200px) repeat(4,minmax(60px,1fr)) 80px 70px; }
     .sub-col-header,
     .sub-row { grid-template-columns: 180px repeat(5, 1fr); }
-    .marks-col-header,
-    .marks-row { grid-template-columns: 170px repeat(4,1fr) 80px 70px; }
 }
 @media(max-width:820px) {
+    /* Submissions — collapse to 2-row */
     .sub-col-header { display: none; }
-    .sub-row {
-        grid-template-columns: 1fr 1fr 1fr;
-        grid-template-rows: auto auto;
-    }
+    .sub-row { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto auto; }
     .sub-student-cell { grid-column: 1 / -1; }
 
+    /* Marks — collapse to 2-col card layout */
     .marks-col-header { display: none; }
     .marks-row {
         grid-template-columns: 1fr 1fr;
@@ -341,69 +376,24 @@
     .sub-row { grid-template-columns: 1fr 1fr 1fr; }
     .marks-row { grid-template-columns: 1fr 1fr; }
     .mod-stats { grid-template-columns: repeat(2,1fr); }
+    .mod-stats-bar { grid-template-columns: repeat(2,1fr); }
     .marks-avg-bar { gap: .6rem; }
 }
-/* ══ HIGHLIGHTS PAGE — Mobile responsive fix ══════════════════
-   APPEND this to the bottom of your existing module.css
-   ════════════════════════════════════════════════════════════ */
-@media (max-width: 640px) {
 
-    /* Switch hl-row from single flex line → 2-row grid */
+/* ══ Highlights — mobile fix ══════════════════════════════════ */
+@media (max-width: 640px) {
     .hl-row {
         display: grid !important;
         grid-template-columns: 1fr auto;
         grid-template-rows: auto auto;
-        gap: .65rem;
-        align-items: start;
-        padding: .85rem 1rem;
+        gap: .65rem; align-items: start; padding: .85rem 1rem;
     }
-
-    /* Row 1: avatar + name/roll — spans full width */
-    .hl-student {
-        grid-column: 1 / -1;
-        grid-row: 1;
-        min-width: 0;
-        overflow: hidden;
-    }
-
-    /* Let the text block shrink properly */
-    .hl-student-text {
-        min-width: 0;
-        flex: 1 1 0;
-        overflow: hidden;
-    }
-
-    /* Truncate long names instead of hiding them */
-    .mod-name {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
-        display: block;
-    }
-
-    /* Row 2 left: highlight button */
-    .hl-btn {
-        grid-column: 1;
-        grid-row: 2;
-        justify-self: start;
-        width: auto;
-    }
-
-    /* Row 2 right: warn area */
-    .warn-area {
-        grid-column: 2;
-        grid-row: 2;
-        justify-self: end;
-        align-items: center;
-        flex-wrap: nowrap;
-        gap: .35rem;
-    }
-
-    /* Slightly smaller dots to fit small screens */
+    .hl-student { grid-column: 1 / -1; grid-row: 1; min-width: 0; overflow: hidden; }
+    .hl-student-text { min-width: 0; flex: 1 1 0; overflow: hidden; }
+    .mod-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; display: block; }
+    .hl-btn { grid-column: 1; grid-row: 2; justify-self: start; width: auto; }
+    .warn-area { grid-column: 2; grid-row: 2; justify-self: end; align-items: center; flex-wrap: nowrap; gap: .35rem; }
     .warn-dots { gap: 4px; }
     .w-dot     { width: 20px; height: 20px; }
-
-    /* Hide "Warnings" text label — keep dots + badge */
     .warn-label { display: none; }
 }

@@ -6,11 +6,10 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/attendance.css">
-     <link rel="stylesheet" href="css/students.css">
+    <!-- students.css MUST be first — it defines all CSS variables -->
+    <link rel="stylesheet" href="css/students.css">
     <link rel="stylesheet" href="css/classes.css">
-    <link rel="stylesheet" href="css/module.css">
-    <link rel="stylesheet" href="css/Astyle.css">
+    <link rel="stylesheet" href="css/attendance.css">
 </head>
 <body>
 
@@ -94,31 +93,44 @@
             <div class="active-class-header" id="activeClassHeader" style="display:none;"></div>
 
             <!-- Tabs -->
-            <div class="att-tab-bar">
+            <div class="att-tabs">
                 <button class="att-tab active" id="tabTake"><i class="fas fa-clipboard-list"></i> Take Attendance</button>
                 <button class="att-tab"         id="tabSummary"><i class="fas fa-chart-pie"></i> Summary</button>
             </div>
 
             <!-- ══ TAKE ATTENDANCE PANE ══════════════════════ -->
-            <div id="paneTake">
-                <!-- Date + controls -->
-                <div class="att-controls">
+            <div id="paneTake" class="att-pane">
+
+                <!-- Date + quick actions -->
+                <div class="att-date-row">
                     <div class="att-date-wrap">
-                        <label class="att-date-label"><i class="fas fa-calendar-day"></i> Date</label>
-                        <input type="date" class="att-date-inp" id="attDate">
+                        <i class="fas fa-calendar-day"></i>
+                        <input type="date" class="att-date-input" id="attDate">
                     </div>
-                    <div class="att-quick-btns">
+                    <div class="att-quick-actions">
                         <button class="btn-quick present" id="markAllPresent"><i class="fas fa-check-double"></i> All Present</button>
                         <button class="btn-quick absent"  id="markAllAbsent"><i class="fas fa-times-circle"></i> All Absent</button>
                     </div>
                 </div>
 
                 <!-- Day stats -->
-                <div class="day-stats-bar">
-                    <div class="ds-card present"><span class="ds-num" id="dayPresent">0</span><span class="ds-lbl">Present</span></div>
-                    <div class="ds-card late"><span class="ds-num" id="dayLate">0</span><span class="ds-lbl">Late</span></div>
-                    <div class="ds-card absent"><span class="ds-num" id="dayAbsent">0</span><span class="ds-lbl">Absent</span></div>
-                    <div class="ds-card total"><span class="ds-num" id="dayTotal">0</span><span class="ds-lbl">Total</span></div>
+                <div class="att-day-stats">
+                    <div class="att-day-stat present-stat">
+                        <span class="att-day-num" id="dayPresent">0</span>
+                        <span class="att-day-lbl">Present</span>
+                    </div>
+                    <div class="att-day-stat late-stat">
+                        <span class="att-day-num" id="dayLate">0</span>
+                        <span class="att-day-lbl">Late</span>
+                    </div>
+                    <div class="att-day-stat absent-stat">
+                        <span class="att-day-num" id="dayAbsent">0</span>
+                        <span class="att-day-lbl">Absent</span>
+                    </div>
+                    <div class="att-day-stat total-stat">
+                        <span class="att-day-num" id="dayTotal">0</span>
+                        <span class="att-day-lbl">Total</span>
+                    </div>
                 </div>
 
                 <!-- Student list -->
@@ -139,7 +151,7 @@
             </div>
 
             <!-- ══ SUMMARY PANE ══════════════════════════════ -->
-            <div id="paneSummary" style="display:none;">
+            <div id="paneSummary" style="display:none;" class="att-pane">
                 <div class="summary-grid" id="summaryGrid"></div>
                 <div id="summaryEmpty" class="empty-state" style="display:none;">
                     <i class="fas fa-chart-pie"></i>
