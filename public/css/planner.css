@@ -480,3 +480,12 @@ a.nav-active[href="planner.html"] { color: #00e5ff !important; }
 @media (max-width: 420px) {
     .timetable-grid { grid-template-columns: 1fr; }
 }
+
+
+
+
+
+
+/* ── Topic expand/collapse ── */
+.subtopic-list { display: none; }
+.topic-row.topic-expanded .subtopic-list { display: flex; }
