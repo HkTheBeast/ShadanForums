@@ -12,7 +12,7 @@ window.addEventListener('scroll', () => {
     backToTop.classList.toggle('visible', window.scrollY > 400);
 }, { passive: true });
 
-// ── Hamburger nav (matches students.js / attendance.js) ────
+// ── Hamburger nav ──────────────────────────────────────────
 function initHamburger() {
     const btn   = document.getElementById('navHamburger');
     const links = document.getElementById('navLinks');
@@ -45,7 +45,7 @@ backToTop.addEventListener('click', () => {
 
 // ── Scroll reveal ──────────────────────────────────────────
 const revealEls = document.querySelectorAll(
-    '.how-step, .bento-card, .flv-item, .feature-strip .strip-item'
+    '.how-step, .bento-card, .flv-item, .feature-strip .strip-item, .planner-pill, .planner-mock'
 );
 
 const revealObserver = new IntersectionObserver((entries) => {
@@ -54,7 +54,7 @@ const revealObserver = new IntersectionObserver((entries) => {
             setTimeout(() => {
                 entry.target.style.opacity   = '1';
                 entry.target.style.transform = 'translateY(0)';
-            }, entry.target.dataset.delay || 0);
+            }, parseInt(entry.target.dataset.delay) || 0);
             revealObserver.unobserve(entry.target);
         }
     });
@@ -64,7 +64,7 @@ revealEls.forEach((el, i) => {
     el.style.opacity    = '0';
     el.style.transform  = 'translateY(24px)';
     el.style.transition = 'opacity .55s ease, transform .55s ease';
-    el.dataset.delay    = i * 60;
+    el.dataset.delay    = i * 55;
     revealObserver.observe(el);
 });
 
