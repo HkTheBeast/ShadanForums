@@ -16,7 +16,7 @@
 <div class="bg-glow bg-glow-2"></div>
 <div class="bg-glow bg-glow-3"></div>
 
-<!-- ══ NAVBAR ═══════════════════════════════════════════════════ -->
+<!-- ══ NAVBAR ══════════════════════════════════════════════ -->
 <nav class="navbar" id="navbar">
     <div class="nav-container">
         <a href="Aindex.html" class="logo">
@@ -41,34 +41,443 @@
     </div>
 </nav>
 
+<!-- ══ HERO ════════════════════════════════════════════════ -->
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-eyebrow">
+            <span class="eyebrow-dot"></span>
+            Teacher's Digital Assistant
+        </div>
+        <h1 class="hero-title">
+            Your Classroom,<br>
+            <span class="hero-title-accent">Fully Organised.</span>
+        </h1>
+        <p class="hero-desc">
+            Svlent is a complete classroom management system built for teachers. Track attendance, monitor submissions, manage marks, plan your curriculum — all in one place, beautifully.
+        </p>
+        <div class="hero-cta">
+            <a href="students.html" class="btn-hero-primary">
+                <i class="fas fa-rocket"></i> Get Started
+            </a>
+            <a href="#features" class="btn-hero-secondary">
+                <i class="fas fa-layer-group"></i> Explore Features
+            </a>
+        </div>
+        <div class="hero-stats">
+            <div>
+                <span class="hero-stat-num">7</span>
+                <span class="hero-stat-lbl">Modules</span>
+            </div>
+            <div class="hero-stat-divider"></div>
+            <div>
+                <span class="hero-stat-num">100%</span>
+                <span class="hero-stat-lbl">Free to Use</span>
+            </div>
+            <div class="hero-stat-divider"></div>
+            <div>
+                <span class="hero-stat-num">1</span>
+                <span class="hero-stat-lbl">Login Needed</span>
+            </div>
+        </div>
+    </div>
 
-<b>Development team :
-    Mohd affan ur rahman (Team Lead, Senior developer)
-    roll no : 24081A0526
-    Worked on : HTML, CSS, JS, SQLITE
-    Syed zubair hussain (Junior developer)
-    roll no : 24081A0529
-    Worked on : HTML, CSS
-</b>
+    <!-- Visual panel -->
+    <div class="hero-panel">
+        <div class="panel-card panel-card--1">
+            <div class="panel-card-icon"><i class="fas fa-calendar-check"></i></div>
+            <div class="panel-card-info">
+                <span class="panel-card-label">Today's Attendance</span>
+                <div class="panel-bar-wrap"><div class="panel-bar" style="width:82%"></div></div>
+                <div class="panel-chips">
+                    <span class="chip chip--done">Present 28</span>
+                    <span class="chip chip--pending">Absent 6</span>
+                </div>
+            </div>
+        </div>
+        <div class="panel-card panel-card--2">
+            <div class="panel-card-icon"><i class="fas fa-tasks"></i></div>
+            <div class="panel-card-info">
+                <span class="panel-card-label">Submissions</span>
+                <div class="panel-bar-wrap"><div class="panel-bar" style="width:65%;background:linear-gradient(90deg,#8a2be2,#b06aff)"></div></div>
+                <div class="panel-chips">
+                    <span class="chip chip--done" style="color:#b06aff;border-color:rgba(138,43,226,.4)">Done 21</span>
+                    <span class="chip chip--pending">Pending 13</span>
+                </div>
+            </div>
+        </div>
+        <div class="panel-card panel-card--3">
+            <div class="panel-card-icon"><i class="fas fa-chart-bar"></i></div>
+            <div class="panel-card-info">
+                <span class="panel-card-label">Class Average</span>
+                <span class="panel-card-value">74.2 / 100</span>
+            </div>
+        </div>
+        <div class="panel-card panel-card--4">
+            <div class="panel-card-icon"><i class="fas fa-star"></i></div>
+            <div class="panel-card-info">
+                <span class="panel-card-label">Highlighted Students</span>
+                <span class="panel-card-value panel-card-value--gold">8 Students ⭐</span>
+            </div>
+        </div>
+    </div>
+</section>
 
-<br>
-<b>NOTE:</b>
-<b>Svlent is integrated in 'ShadanForums' website, both are different website</b>
+<!-- ══ FEATURE STRIP ════════════════════════════════════════ -->
+<div class="feature-strip">
+    <div class="strip-item"><i class="fas fa-database"></i> SQLite Database</div>
+    <div class="strip-divider"></div>
+    <div class="strip-item"><i class="fab fa-node-js"></i> Node.js + Express</div>
+    <div class="strip-divider"></div>
+    <div class="strip-item"><i class="fas fa-lock"></i> Session Auth</div>
+    <div class="strip-divider"></div>
+    <div class="strip-item"><i class="fas fa-mobile-alt"></i> Mobile Responsive</div>
+    <div class="strip-divider"></div>
+    <div class="strip-item"><i class="fas fa-bolt"></i> Real-time Saves</div>
+    <div class="strip-divider"></div>
+    <div class="strip-item"><i class="fas fa-users"></i> Multi-class Support</div>
+    <div class="strip-divider"></div>
+    <div class="strip-item"><i class="fas fa-file-upload"></i> Avatar Uploads</div>
+</div>
 
+<!-- ══ WHAT IS SVLENT ══════════════════════════════════════ -->
+<section class="what-section container-wide" id="about">
+    <div>
+        <div class="section-eyebrow">What is Svlent?</div>
+        <h2 class="section-heading">A Digital Monitor<br>for Every Classroom</h2>
+        <p class="section-body">
+            Svlent is a teacher's digital assistant — a web-based classroom management platform that replaces scattered spreadsheets, notebooks, and manual tracking. Built from scratch using modern web technologies, it gives teachers a clean, unified interface to manage every aspect of their class.
+        </p>
+        <p class="section-body">
+            Originally integrated into the ShadanForums platform, Svlent is a standalone system with its own secure teacher login, isolated data per teacher, and a beautiful dark UI designed to work on any device.
+        </p>
+        <a href="students.html" class="btn-outline"><i class="fas fa-arrow-right"></i> Open Dashboard</a>
+    </div>
+    <div class="feature-list-visual">
+        <div class="flv-item flv-item--active">
+            <div class="flv-icon"><i class="fas fa-shield-alt"></i></div>
+            <div class="flv-text">
+                <strong>Secure Teacher Accounts</strong>
+                <span>Each teacher registers independently. Your data is completely isolated — no other teacher can see your students or records.</span>
+            </div>
+            <span class="flv-badge badge--teal">Auth</span>
+        </div>
+        <div class="flv-item">
+            <div class="flv-icon"><i class="fas fa-layer-group"></i></div>
+            <div class="flv-text">
+                <strong>Multi-Class Management</strong>
+                <span>Create unlimited classes, each with their own colour, section, and subject. Switch between classes with one click.</span>
+            </div>
+        </div>
+        <div class="flv-item">
+            <div class="flv-icon flv-icon--blue"><i class="fas fa-bolt"></i></div>
+            <div class="flv-text">
+                <strong>Instant Auto-Save</strong>
+                <span>Every toggle, mark entry, and attendance change saves automatically to the database in real time. No save buttons needed.</span>
+            </div>
+            <span class="flv-badge badge--blue">Live</span>
+        </div>
+        <div class="flv-item">
+            <div class="flv-icon"><i class="fas fa-mobile-alt"></i></div>
+            <div class="flv-text">
+                <strong>Works on Any Device</strong>
+                <span>Fully responsive design from large monitors to iPhone. The interface adapts intelligently — no features lost on mobile.</span>
+            </div>
+        </div>
+        <div class="flv-item">
+            <div class="flv-icon"><i class="fas fa-file-image"></i></div>
+            <div class="flv-text">
+                <strong>Student Avatars & Profiles</strong>
+                <span>Upload student photos, assign roll numbers, and build rich profiles with grades, metrics, and performance chips.</span>
+            </div>
+        </div>
+    </div>
+</section>
 
-<b>svlent is a teacher's assistant or digital class monitor</b>
+<!-- ══ HOW IT WORKS ═════════════════════════════════════════ -->
+<section class="how-section" id="how">
+    <div class="container-wide" style="text-align:center;margin-bottom:3.5rem;">
+        <div class="section-eyebrow" style="justify-content:center;display:flex;">How It Works</div>
+        <h2 class="section-heading" style="max-width:500px;margin:0 auto;">Up and Running in Minutes</h2>
+    </div>
+    <div class="how-steps container-wide">
+        <div class="how-step">
+            <div class="step-num">01</div>
+            <div class="step-icon"><i class="fas fa-user-plus"></i></div>
+            <h3>Create Account</h3>
+            <p>Register a teacher account with a username and password. Your data is private and only accessible to you.</p>
+        </div>
+        <div class="how-connector"><i class="fas fa-chevron-right"></i></div>
+        <div class="how-step">
+            <div class="step-num">02</div>
+            <div class="step-icon"><i class="fas fa-chalkboard"></i></div>
+            <h3>Create Classes</h3>
+            <p>Add your classes with names, sections, subjects, and colours. Manage all of them from one sidebar.</p>
+        </div>
+        <div class="how-connector"><i class="fas fa-chevron-right"></i></div>
+        <div class="how-step">
+            <div class="step-num">03</div>
+            <div class="step-icon"><i class="fas fa-user-graduate"></i></div>
+            <h3>Add Students</h3>
+            <p>Add students with roll numbers and optional photos. Each student gets a full profile card with performance metrics.</p>
+        </div>
+        <div class="how-connector"><i class="fas fa-chevron-right"></i></div>
+        <div class="how-step">
+            <div class="step-num">04</div>
+            <div class="step-icon"><i class="fas fa-chart-line"></i></div>
+            <h3>Track Everything</h3>
+            <p>Mark attendance, toggle submissions, enter marks, add warnings, and plan your curriculum — all in real time.</p>
+        </div>
+    </div>
+</section>
 
+<!-- ══ FEATURES BENTO ═══════════════════════════════════════ -->
+<section class="features-section container-wide" id="features">
+    <div style="text-align:center;margin-bottom:1rem;">
+        <div class="section-eyebrow" style="display:flex;justify-content:center;">Core Modules</div>
+        <h2 class="section-heading">Everything a Teacher Needs</h2>
+    </div>
 
+    <div class="features-bento">
 
+        <!-- Attendance — wide -->
+        <div class="bento-card bento-card--teal bento-card--wide">
+            <div class="bento-icon"><i class="fas fa-calendar-check"></i></div>
+            <h3>Attendance Tracker</h3>
+            <p>Mark each student as Present, Late, or Absent for any date with one tap. View daily stats — total present, absent, late — at a glance. Switch to Summary mode to see full attendance history per student with percentage breakdowns. The system calculates attendance rates automatically.</p>
+            <div class="bento-chips">
+                <span class="bento-chip" style="color:var(--accent-teal);border-color:rgba(42,250,223,.3)">Daily View</span>
+                <span class="bento-chip" style="color:var(--accent-teal);border-color:rgba(42,250,223,.3)">Summary View</span>
+                <span class="bento-chip" style="color:var(--accent-teal);border-color:rgba(42,250,223,.3)">Auto % Calc</span>
+                <span class="bento-chip" style="color:var(--accent-teal);border-color:rgba(42,250,223,.3)">Date Picker</span>
+            </div>
+        </div>
 
+        <!-- Submissions -->
+        <div class="bento-card bento-card--purple">
+            <div class="bento-icon"><i class="fas fa-tasks"></i></div>
+            <h3>Submission Tracker</h3>
+            <p>Track 5 submission types per student — Assignment 1, Assignment 2, Record Book, Observation Book, and PPT. Simple on/off toggles with instant save. Colour-coded status badges and summary stats at the top.</p>
+            <span class="bento-tag" style="color:#b06aff;background:rgba(138,43,226,.1);border-color:rgba(138,43,226,.3)">5 Types Tracked</span>
+        </div>
 
+        <!-- Marks -->
+        <div class="bento-card bento-card--pink">
+            <div class="bento-icon"><i class="fas fa-chart-bar"></i></div>
+            <h3>Marks & Grades</h3>
+            <p>Enter marks for up to 4 assessments per student. The system auto-calculates totals, assigns letter grades (S/A/B/C/D), and shows score rings and metric bars on each student's profile card.</p>
+            <span class="bento-tag" style="color:#ff6b8a;background:rgba(255,46,99,.1);border-color:rgba(255,46,99,.3)">Auto Grading</span>
+        </div>
 
+        <!-- Highlights — tall -->
+        <div class="bento-card bento-card--gold bento-card--tall">
+            <div class="bento-icon"><i class="fas fa-star"></i></div>
+            <h3>Highlights &amp; Warnings</h3>
+            <p>Recognise outstanding students with a gold highlight, or issue up to 3 red warning dots for behavioural or academic concerns. When a student hits 3 warnings the badge pulses as an alert.</p>
+            <p style="margin-top:.8rem;font-size:.85rem;color:var(--text-muted);">Filter the list to see only highlighted or warned students instantly. Warning counts show on the student's profile card across all pages.</p>
+            <div class="bento-chips" style="margin-top:1.2rem;">
+                <span class="bento-chip" style="color:var(--accent-gold);border-color:rgba(255,215,0,.3)">Gold Stars</span>
+                <span class="bento-chip" style="color:var(--accent-gold);border-color:rgba(255,215,0,.3)">3-dot Warnings</span>
+                <span class="bento-chip" style="color:var(--accent-gold);border-color:rgba(255,215,0,.3)">Pulse Alert</span>
+            </div>
+        </div>
 
+        <!-- Students -->
+        <div class="bento-card bento-card--blue">
+            <div class="bento-icon"><i class="fas fa-id-card"></i></div>
+            <h3>Student Profiles</h3>
+            <p>Each student has a rich profile card showing avatar, roll number, grade badge, score ring, metric bars for attendance/submissions/marks/behaviour, and quick-nav buttons to every module.</p>
+            <span class="bento-tag">Full Profiles</span>
+        </div>
 
+        <!-- Planner -->
+        <div class="bento-card bento-card--teal">
+            <div class="bento-icon"><i class="fas fa-calendar-alt"></i></div>
+            <h3>Teaching Planner</h3>
+            <p>Three powerful tools in one: Progress Trackers (custom metric rings with steppers), Curriculum Builder (subjects → topics → subtopics with completion checkboxes), and a Weekly Timetable grid.</p>
+            <span class="bento-tag">3-in-1 Tool</span>
+        </div>
 
+        <!-- Tech stack — wide -->
+        <div class="bento-card bento-card--purple bento-card--wide">
+            <div class="bento-icon"><i class="fas fa-code"></i></div>
+            <h3>Built with Modern Web Technology</h3>
+            <p>Svlent is a full-stack web application built entirely from scratch by a student development team. The backend is <strong style="color:#b06aff">Node.js + Express</strong> with a <strong style="color:#b06aff">SQLite3</strong> database. The frontend is pure <strong style="color:#b06aff">HTML, CSS, and JavaScript</strong> — no frameworks, no dependencies, just clean code. Sessions are managed server-side for security. File uploads (avatars) are handled with Multer and stored in the server filesystem.</p>
+            <div class="bento-chips" style="margin-top:1.2rem;">
+                <span class="bento-chip" style="color:#b06aff;border-color:rgba(138,43,226,.3)">Node.js</span>
+                <span class="bento-chip" style="color:#b06aff;border-color:rgba(138,43,226,.3)">Express.js</span>
+                <span class="bento-chip" style="color:#b06aff;border-color:rgba(138,43,226,.3)">SQLite3</span>
+                <span class="bento-chip" style="color:#b06aff;border-color:rgba(138,43,226,.3)">Vanilla JS</span>
+                <span class="bento-chip" style="color:#b06aff;border-color:rgba(138,43,226,.3)">HTML5 + CSS3</span>
+                <span class="bento-chip" style="color:#b06aff;border-color:rgba(138,43,226,.3)">Multer Uploads</span>
+                <span class="bento-chip" style="color:#b06aff;border-color:rgba(138,43,226,.3)">express-session</span>
+                <span class="bento-chip" style="color:#b06aff;border-color:rgba(138,43,226,.3)">bcryptjs</span>
+            </div>
+        </div>
 
+    </div>
+</section>
 
-<!-- ══ FOOTER ════════════════════════════════════════════════════ -->
+<!-- ══ PLANNER SPOTLIGHT ════════════════════════════════════ -->
+<section class="planner-spotlight" id="planner">
+    <div class="planner-spotlight-inner">
+        <div class="planner-spotlight-text">
+            <div class="section-eyebrow"><i class="fas fa-calendar-alt"></i> Teaching Planner</div>
+            <h2 class="section-heading">Plan Your Entire<br>Teaching Year</h2>
+            <p class="section-body">
+                The Teaching Planner is the most powerful module in Svlent. It combines three tools that every teacher needs but rarely has in one place.
+            </p>
+            <div class="planner-feature-pills">
+                <div class="planner-pill">
+                    <i class="fas fa-chart-line"></i>
+                    <div>
+                        <strong>Progress Trackers</strong>
+                        <span>Create custom trackers for anything — classes completed, syllabus %, chapters done. Each tracker has a progress ring, stepper controls, and a colour theme.</span>
+                    </div>
+                </div>
+                <div class="planner-pill">
+                    <i class="fas fa-book-open"></i>
+                    <div>
+                        <strong>Curriculum Builder</strong>
+                        <span>Organise subjects into topics and subtopics. Mark each item done as you teach. Filter by section. See real-time completion percentages per subject.</span>
+                    </div>
+                </div>
+                <div class="planner-pill">
+                    <i class="fas fa-calendar-week"></i>
+                    <div>
+                        <strong>Weekly Timetable</strong>
+                        <span>Build your weekly schedule visually. Add colour-coded class slots for each day with time, subject, section, and room. Edit or delete with one click.</span>
+                    </div>
+                </div>
+            </div>
+            <a href="planner.html" class="btn-planner"><i class="fas fa-calendar-alt"></i> Open Planner</a>
+        </div>
+
+        <!-- Mock UI -->
+        <div class="planner-spotlight-visual">
+            <div class="planner-mock">
+                <div class="planner-mock-header">
+                    <div class="planner-mock-tabs">
+                        <div class="pmtab active"><i class="fas fa-chart-line"></i> Progress</div>
+                        <div class="pmtab"><i class="fas fa-book-open"></i> Curriculum</div>
+                        <div class="pmtab"><i class="fas fa-calendar-week"></i> Timetable</div>
+                    </div>
+                </div>
+                <div class="planner-mock-body">
+                    <div class="pmock-tracker">
+                        <div class="pmock-tracker-top">
+                            <div class="pmock-tracker-name">Classes Completed</div>
+                            <div class="pmock-tracker-pct">72%</div>
+                        </div>
+                        <div class="pmock-bar-wrap"><div class="pmock-bar" style="width:72%"></div></div>
+                        <div class="pmock-tracker-meta">36 of 50 classes · min: 0</div>
+                        <div class="pmock-stepper">
+                            <div class="pmock-step-btn">−5</div>
+                            <div class="pmock-step-btn">−</div>
+                            <div class="pmock-step-val">36</div>
+                            <div class="pmock-step-btn active">+</div>
+                            <div class="pmock-step-btn active">+5</div>
+                        </div>
+                    </div>
+                    <div class="pmock-tracker" style="border-color:rgba(138,43,226,.2)">
+                        <div class="pmock-tracker-top">
+                            <div class="pmock-tracker-name">Syllabus Coverage</div>
+                            <div class="pmock-tracker-pct" style="color:#b06aff">55%</div>
+                        </div>
+                        <div class="pmock-bar-wrap"><div class="pmock-bar" style="width:55%;background:linear-gradient(90deg,#8a2be2,#b06aff)"></div></div>
+                        <div class="pmock-tracker-meta">11 of 20 chapters · unit: chapters</div>
+                        <div class="pmock-stepper">
+                            <div class="pmock-step-btn">−5</div>
+                            <div class="pmock-step-btn">−</div>
+                            <div class="pmock-step-val">11</div>
+                            <div class="pmock-step-btn active" style="color:#b06aff;border-color:#8a2be2">+</div>
+                            <div class="pmock-step-btn active" style="color:#b06aff;border-color:#8a2be2">+5</div>
+                        </div>
+                    </div>
+                    <div class="pmock-timetable">
+                        <div class="pmock-tt-row">
+                            <div class="pmock-day">MON</div>
+                            <div class="pmock-slot pmock-slot--teal">DS Lab<br><small>9:00 AM · Room 204</small></div>
+                        </div>
+                        <div class="pmock-tt-row">
+                            <div class="pmock-day">TUE</div>
+                            <div class="pmock-slot pmock-slot--purple">DBMS<br><small>10:30 AM · Room 101</small></div>
+                        </div>
+                        <div class="pmock-tt-row">
+                            <div class="pmock-day">WED</div>
+                            <div class="pmock-slot pmock-slot--amber">OS Theory<br><small>11:00 AM · Room 302</small></div>
+                        </div>
+                        <div class="pmock-tt-row">
+                            <div class="pmock-day">THU</div>
+                            <div class="pmock-slot pmock-slot--blue">CN Lab<br><small>2:00 PM · Lab 3</small></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ CTA BAND ══════════════════════════════════════════════ -->
+<section class="cta-band">
+    <div class="cta-band-inner">
+        <div class="cta-band-text">
+            <h2>Ready to organise your classroom?</h2>
+            <p>Log in and get started in under a minute. Everything is free.</p>
+        </div>
+        <div class="cta-band-btns">
+            <a href="students.html" class="btn-hero-primary"><i class="fas fa-rocket"></i> Open Dashboard</a>
+            <a href="attendance.html" class="btn-hero-secondary"><i class="fas fa-calendar-check"></i> Take Attendance</a>
+        </div>
+    </div>
+</section>
+
+<!-- ══ TEAM SECTION ══════════════════════════════════════════ -->
+<section style="position:relative;z-index:1;padding:6rem 2rem;border-top:1px solid rgba(42,250,223,.07);">
+    <div class="container-wide" style="text-align:center;margin-bottom:3rem;">
+        <div class="section-eyebrow" style="display:flex;justify-content:center;">Development Team</div>
+        <h2 class="section-heading">Built by Students,<br>for Teachers</h2>
+        <p style="color:var(--text-secondary);font-size:1rem;max-width:520px;margin:0 auto;line-height:1.7;">
+            Svlent was designed and developed as a student project, integrated into the ShadanForums platform. Built with real-world technologies and production-grade code.
+        </p>
+    </div>
+    <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;max-width:900px;margin:0 auto;">
+
+        <!-- Team Lead -->
+        <div style="flex:1;min-width:280px;max-width:380px;background:rgba(22,33,62,.8);border:1px solid rgba(42,250,223,.15);border-radius:24px;padding:2rem;text-align:center;transition:0.3s ease;">
+            <div style="width:72px;height:72px;border-radius:50%;background:var(--grad-main);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:800;color:#fff;margin:0 auto 1.2rem;box-shadow:0 0 30px rgba(42,250,223,.2);">A</div>
+            <div style="font-family:'Poppins',sans-serif;font-size:1.15rem;font-weight:800;color:var(--text-primary);margin-bottom:.3rem;">Mohd Affan Ur Rahman</div>
+            <div style="font-size:.78rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent-teal);margin-bottom:.8rem;">Team Lead · Senior Developer</div>
+            <div style="font-size:.85rem;color:var(--text-muted);margin-bottom:1.2rem;line-height:1.6;">Roll No: <strong style="color:var(--accent-teal)">24081A0526</strong></div>
+            <div style="display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;">
+                <span style="font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(42,250,223,.1);color:var(--accent-teal);border:1px solid rgba(42,250,223,.25);">HTML</span>
+                <span style="font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(42,250,223,.1);color:var(--accent-teal);border:1px solid rgba(42,250,223,.25);">CSS</span>
+                <span style="font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(42,250,223,.1);color:var(--accent-teal);border:1px solid rgba(42,250,223,.25);">JavaScript</span>
+                <span style="font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(42,250,223,.1);color:var(--accent-teal);border:1px solid rgba(42,250,223,.25);">SQLite</span>
+                <span style="font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(42,250,223,.1);color:var(--accent-teal);border:1px solid rgba(42,250,223,.25);">Node.js</span>
+            </div>
+        </div>
+
+        <!-- Junior Dev -->
+        <div style="flex:1;min-width:280px;max-width:380px;background:rgba(22,33,62,.8);border:1px solid rgba(138,43,226,.2);border-radius:24px;padding:2rem;text-align:center;transition:0.3s ease;">
+            <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#8a2be2,#b06aff);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:800;color:#fff;margin:0 auto 1.2rem;box-shadow:0 0 30px rgba(138,43,226,.25);">S</div>
+            <div style="font-family:'Poppins',sans-serif;font-size:1.15rem;font-weight:800;color:var(--text-primary);margin-bottom:.3rem;">Syed Zubair Hussain</div>
+            <div style="font-size:.78rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#b06aff;margin-bottom:.8rem;">Junior Developer</div>
+            <div style="font-size:.85rem;color:var(--text-muted);margin-bottom:1.2rem;line-height:1.6;">Roll No: <strong style="color:#b06aff">24081A0529</strong></div>
+            <div style="display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;">
+                <span style="font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(138,43,226,.1);color:#b06aff;border:1px solid rgba(138,43,226,.3);">HTML</span>
+                <span style="font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(138,43,226,.1);color:#b06aff;border:1px solid rgba(138,43,226,.3);">CSS</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project note -->
+    <div style="max-width:600px;margin:3rem auto 0;text-align:center;background:rgba(22,33,62,.5);border:1px solid rgba(42,250,223,.1);border-radius:var(--r-lg);padding:1.5rem 2rem;">
+        <div style="font-size:.78rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent-teal);margin-bottom:.8rem;"><i class="fas fa-info-circle"></i> Project Note</div>
+        <p style="font-size:.9rem;color:var(--text-secondary);line-height:1.7;">Svlent is integrated into the <strong style="color:var(--text-primary)">ShadanForums</strong> website but operates as a completely independent system with its own database tables, authentication, and frontend. AI assistance was used during development.</p>
+    </div>
+</section>
+
+<!-- ══ FOOTER ════════════════════════════════════════════════ -->
 <footer class="footer">
     <div class="footer-inner">
         <div class="footer-brand">
@@ -79,7 +488,7 @@
                     <span class="logo-sub">Classroom Hub</span>
                 </div>
             </a>
-            <p class="footer-tagline">Empowering educators.<br>Organizing classrooms.</p>
+            <p class="footer-tagline">Empowering educators.<br>Organising classrooms.</p>
         </div>
         <div class="footer-links">
             <div class="footer-col">
@@ -97,6 +506,14 @@
                 <a href="marks.html">Marks &amp; Grades</a>
                 <a href="highlights.html">Highlights &amp; Warnings</a>
                 <a href="planner.html">Teaching Planner</a>
+            </div>
+            <div class="footer-col">
+                <h4>Tech Stack</h4>
+                <a href="#">Node.js + Express</a>
+                <a href="#">SQLite3 Database</a>
+                <a href="#">Vanilla JS</a>
+                <a href="#">HTML5 + CSS3</a>
+                <a href="#">bcryptjs Auth</a>
             </div>
         </div>
     </div>
