@@ -1,19 +1,12 @@
 /* ============================================================
    highlights.js  —  place in:  public/js/highlights.js
-   Manages highlights + warnings for every student.
-   API used:
-     GET    /api/students
-     PATCH  /api/students/:id/highlight   { value: bool }
-     PATCH  /api/students/:id/warnings    { warnings: 0-3 }
    ============================================================ */
 'use strict';
 
-/* ─── State ──────────────────────────────────────────────────── */
 let allStudents  = [];
-let activeFilter = 'all';   // 'all' | 'highlighted' | 'warned'
+let activeFilter = 'all';
 let D            = {};
 
-/* ─── Tiny helpers ───────────────────────────────────────────── */
 function $(id) { return document.getElementById(id); }
 function escapeHTML(str) {
     const d = document.createElement('div');
@@ -37,7 +30,6 @@ function setLoading(btn, on) {
 function showErr(el, msg) { el.textContent = msg; el.classList.add('show'); }
 function clearErr(el)     { el.textContent = '';  el.classList.remove('show'); }
 
-/* ─── API wrapper (same as students.js) ─────────────────────── */
 async function api(method, path, body) {
     const opts = { method, headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin' };
     if (body !== undefined) opts.body = JSON.stringify(body);
@@ -47,7 +39,32 @@ async function api(method, path, body) {
     return data;
 }
 
-/* ─── Auth ───────────────────────────────────────────────────── */
+// ─── Hamburger nav ────────────────────────────────────────
+function initHamburger() {
+    const btn   = $('navHamburger');
+    const links = $('navLinks');
+    if (!btn || !links) return;
+
+    btn.addEventListener('click', () => {
+        btn.classList.toggle('open');
+        links.classList.toggle('open');
+    });
+
+    links.querySelectorAll('.nav-link-btn').forEach(link => {
+        link.addEventListener('click', () => {
+            btn.classList.remove('open');
+            links.classList.remove('open');
+        });
+    });
+
+    document.addEventListener('click', e => {
+        if (!btn.contains(e.target) && !links.contains(e.target)) {
+            btn.classList.remove('open');
+            links.classList.remove('open');
+        }
+    });
+}
+
 function openAuthModal()  { clearErr(D.authError); D.authModal.classList.add('active'); D.loginUsername.focus(); }
 function closeAuthModal() { D.authModal.classList.remove('active'); }
 
@@ -92,17 +109,14 @@ async function handleLogout() {
     showToast('Logged out.');
 }
 
-/* ─── Page init ──────────────────────────────────────────────── */
 async function initPage() {
     let teacher = null;
     try { const d = await api('GET', '/api/teacher/me'); teacher = d.teacher; } catch (_) {}
 
     if (teacher) {
         D.navUserArea.innerHTML = `
-            <div style="display:flex;align-items:center;gap:.6rem">
-                <div class="nav-user-badge"><i class="fas fa-user-circle"></i><span>${escapeHTML(teacher.username)}</span></div>
-                <button class="nav-link-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-            </div>`;
+            <div class="nav-user-badge"><i class="fas fa-user-circle"></i><span>${escapeHTML(teacher.username)}</span></div>
+            <button class="nav-link-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>`;
         $('logoutBtn').addEventListener('click', handleLogout);
         D.loginGate.style.display  = 'none';
         D.dashboard.style.display  = 'block';
@@ -115,7 +129,6 @@ async function initPage() {
     }
 }
 
-/* ─── Load students ──────────────────────────────────────────── */
 async function loadStudents() {
     try {
         const d = await api('GET', '/api/students');
@@ -124,7 +137,6 @@ async function loadStudents() {
     } catch (e) { showToast('Could not load students: ' + e.message, true); }
 }
 
-/* ─── Stats ──────────────────────────────────────────────────── */
 function updateStats() {
     $('statTotal').textContent = allStudents.length;
     $('statHL').textContent    = allStudents.filter(s => s.highlighted).length;
@@ -134,7 +146,6 @@ function updateStats() {
     $('statW3').textContent    = allStudents.filter(s => s.warnings >= 3).length;
 }
 
-/* ─── Filter helpers ─────────────────────────────────────────── */
 function setFilter(f) {
     activeFilter = f;
     D.btnAll.classList.toggle('active',   f === 'all');
@@ -143,7 +154,6 @@ function setFilter(f) {
     renderList();
 }
 
-/* ─── Render list ────────────────────────────────────────────── */
 function renderList() {
     updateStats();
     const q = D.searchInput.value.toLowerCase().trim();
@@ -156,14 +166,13 @@ function renderList() {
     });
 
     if (list.length === 0) {
-        D.hlList.innerHTML     = '';
+        D.hlList.innerHTML      = '';
         D.hlEmpty.style.display = 'block';
         return;
     }
     D.hlEmpty.style.display = 'none';
     D.hlList.innerHTML = list.map(buildRowHTML).join('');
 
-    // Wire events
     list.forEach(s => {
         $('hl-btn-' + s.id).addEventListener('click', () => toggleHighlight(s.id));
         [1, 2, 3].forEach(dot => {
@@ -172,29 +181,17 @@ function renderList() {
     });
 }
 
-/* ─── Build one row ──────────────────────────────────────────── */
 function buildRowHTML(s) {
     const avatar = s.avatar
         ? `<img src="${s.avatar}" class="mod-avatar" alt="">`
         : `<div class="mod-avatar-ph">${escapeHTML(s.name.charAt(0).toUpperCase())}</div>`;
 
-    const rowClass = [
-        'hl-row',
-        s.highlighted ? 'is-highlighted' : '',
-        s.warnings >= 3 ? 'is-warned' : ''
-    ].filter(Boolean).join(' ');
-
-    const hlClass = 'hl-btn' + (s.highlighted ? ' active' : '');
-    const hlLabel = s.highlighted ? '★ Highlighted' : '☆ Highlight';
-
-    const dots = [1, 2, 3].map(d =>
-        `<div class="w-dot${d <= s.warnings ? ' filled' : ''}" id="wdot-${s.id}-${d}" title="Warning ${d}"></div>`
-    ).join('');
-
-    let warnBadge = '';
-    if (s.warnings > 0) {
-        warnBadge = `<span class="warn-badge${s.warnings >= 3 ? ' max' : ''}">${s.warnings}/3</span>`;
-    }
+    const rowClass = ['hl-row', s.highlighted ? 'is-highlighted' : '', s.warnings >= 3 ? 'is-warned' : ''].filter(Boolean).join(' ');
+    const hlClass  = 'hl-btn' + (s.highlighted ? ' active' : '');
+    const hlLabel  = s.highlighted ? '★ Highlighted' : '☆ Highlight';
+    const dots     = [1,2,3].map(d => `<div class="w-dot${d <= s.warnings ? ' filled' : ''}" id="wdot-${s.id}-${d}" title="Warning ${d}"></div>`).join('');
+    let warnBadge  = '';
+    if (s.warnings > 0) warnBadge = `<span class="warn-badge${s.warnings >= 3 ? ' max' : ''}">${s.warnings}/3</span>`;
 
     return `
     <div class="${rowClass}" id="hl-row-${s.id}">
@@ -215,67 +212,46 @@ function buildRowHTML(s) {
     </div>`;
 }
 
-/* ─── Toggle highlight ───────────────────────────────────────── */
 async function toggleHighlight(id) {
     const s = allStudents.find(x => x.id === id);
     if (!s) return;
     const newVal = !s.highlighted;
     s.highlighted = newVal;
-
-    // Optimistic UI update
     const row = $('hl-row-' + id);
     const btn = $('hl-btn-' + id);
-    if (row) {
-        row.classList.toggle('is-highlighted', newVal);
-    }
-    if (btn) {
-        btn.className = 'hl-btn' + (newVal ? ' active' : '');
-        btn.innerHTML = `<i class="fas fa-star"></i> ${newVal ? '★ Highlighted' : '☆ Highlight'}`;
-    }
+    if (row) row.classList.toggle('is-highlighted', newVal);
+    if (btn) { btn.className = 'hl-btn' + (newVal ? ' active' : ''); btn.innerHTML = `<i class="fas fa-star"></i> ${newVal ? '★ Highlighted' : '☆ Highlight'}`; }
     updateStats();
-
     try {
         await api('PATCH', `/api/students/${id}/highlight`, { value: newVal });
         showToast(newVal ? '⭐ Student highlighted!' : 'Highlight removed.');
     } catch (e) {
-        s.highlighted = !newVal;
-        updateStats();
-        renderList();
+        s.highlighted = !newVal; updateStats(); renderList();
         showToast('Could not save: ' + e.message, true);
     }
 }
 
-/* ─── Warning dots ───────────────────────────────────────────── */
 async function handleWarningClick(id, dot) {
     const s = allStudents.find(x => x.id === id);
     if (!s) return;
-    // Clicking same dot again removes it (toggle down), else set to that dot
     const newW = s.warnings === dot ? dot - 1 : dot;
     const oldW = s.warnings;
     s.warnings = newW;
-
-    // Optimistic UI update
     updateWarningDotsUI(id, newW);
     updateStats();
-
     try {
         await api('PATCH', `/api/students/${id}/warnings`, { warnings: newW });
         if (newW === 3)       showToast('⚠️ Maximum warnings reached!', true);
         else if (newW > oldW) showToast(`Warning ${newW}/3 added.`);
         else                  showToast(`Warning reduced to ${newW}/3.`);
     } catch (e) {
-        s.warnings = oldW;
-        updateWarningDotsUI(id, oldW);
-        updateStats();
+        s.warnings = oldW; updateWarningDotsUI(id, oldW); updateStats();
         showToast('Could not save: ' + e.message, true);
     }
 }
 
 function updateWarningDotsUI(id, warnings) {
-    [1, 2, 3].forEach(d => {
-        const el = $(`wdot-${id}-${d}`);
-        if (el) el.classList.toggle('filled', d <= warnings);
-    });
+    [1,2,3].forEach(d => { const el = $(`wdot-${id}-${d}`); if (el) el.classList.toggle('filled', d <= warnings); });
     const row = $('hl-row-' + id);
     if (row) row.classList.toggle('is-warned', warnings >= 3);
     const labelEl = $('warn-label-' + id);
@@ -286,24 +262,23 @@ function updateWarningDotsUI(id, warnings) {
     }
 }
 
-/* ─── Wire everything ────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
     D = {
-        loginGate:    $('loginGate'),   dashboard:   $('dashboard'),
-        navUserArea:  $('navUserArea'),
-        authModal:    $('authModal'),   authError:   $('authError'),
-        tabLogin:     $('tabLogin'),    tabRegister: $('tabRegister'),
-        loginForm:    $('loginForm'),   registerForm:$('registerForm'),
-        loginUsername:$('loginUsername'),loginPassword:$('loginPassword'), loginBtn: $('loginBtn'),
-        regUsername:  $('regUsername'), regPassword: $('regPassword'),     regConfirm:$('regConfirm'), registerBtn:$('registerBtn'),
-        hlList:       $('hlList'),      hlEmpty:     $('hlEmpty'),
-        searchInput:  $('searchInput'),
-        btnAll:       $('btnAll'),      btnHL:       $('btnHL'),           btnWarn: $('btnWarn'),
-        toast:        $('toast'),       toastIcon:   $('toastIcon'),       toastMsg: $('toastMsg'),
+        loginGate: $('loginGate'), dashboard: $('dashboard'), navUserArea: $('navUserArea'),
+        authModal: $('authModal'), authError: $('authError'),
+        tabLogin: $('tabLogin'), tabRegister: $('tabRegister'),
+        loginForm: $('loginForm'), registerForm: $('registerForm'),
+        loginUsername: $('loginUsername'), loginPassword: $('loginPassword'), loginBtn: $('loginBtn'),
+        regUsername: $('regUsername'), regPassword: $('regPassword'), regConfirm: $('regConfirm'), registerBtn: $('registerBtn'),
+        hlList: $('hlList'), hlEmpty: $('hlEmpty'),
+        searchInput: $('searchInput'),
+        btnAll: $('btnAll'), btnHL: $('btnHL'), btnWarn: $('btnWarn'),
+        toast: $('toast'), toastIcon: $('toastIcon'), toastMsg: $('toastMsg'),
     };
 
-    // Auth modal
-    $('openAuthBtn')  && $('openAuthBtn').addEventListener('click', openAuthModal);
+    initHamburger();
+
+    $('openAuthBtn') && $('openAuthBtn').addEventListener('click', openAuthModal);
     D.tabLogin.addEventListener('click',    () => switchAuthTab('login'));
     D.tabRegister.addEventListener('click', () => switchAuthTab('register'));
     D.loginBtn.addEventListener('click',    handleLogin);
@@ -313,7 +288,6 @@ document.addEventListener('DOMContentLoaded', () => {
     [D.regUsername, D.regPassword, D.regConfirm].forEach(el => el.addEventListener('keydown', e => { if (e.key === 'Enter') handleRegister(); }));
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAuthModal(); });
 
-    // Filters & search
     D.btnAll.addEventListener('click',  () => setFilter('all'));
     D.btnHL.addEventListener('click',   () => setFilter('highlighted'));
     D.btnWarn.addEventListener('click', () => setFilter('warned'));

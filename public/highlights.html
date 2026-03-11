@@ -11,7 +11,6 @@
 </head>
 <body>
 
-<!-- bg -->
 <div class="bg-animation">
     <div class="bg-particle"></div>
     <div class="bg-particle"></div>
@@ -28,22 +27,24 @@
                 <span class="logo-sub">Classroom Hub</span>
             </div>
         </a>
-        <div class="nav-links">
+        <div class="nav-links" id="navLinks">
             <a href="Aindex.html"      class="nav-link-btn"><i class="fas fa-home"></i> Home</a>
             <a href="students.html"    class="nav-link-btn"><i class="fas fa-users"></i> Students</a>
             <a href="attendance.html"  class="nav-link-btn"><i class="fas fa-calendar-check"></i> Attendance</a>
             <a href="submissions.html" class="nav-link-btn"><i class="fas fa-tasks"></i> Submissions</a>
             <a href="marks.html"       class="nav-link-btn"><i class="fas fa-chart-bar"></i> Marks</a>
-            <a href="highlights.html"  class="nav-link-btn" style="color:var(--accent-gold)"><i class="fas fa-star"></i> Highlights</a>
+            <a href="highlights.html"  class="nav-link-btn nav-active"><i class="fas fa-star"></i> Highlights</a>
             <div id="navUserArea"></div>
         </div>
+        <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
     </div>
 </nav>
 
 <!-- ══ MAIN ════════════════════════════════════════════════════ -->
 <main class="main">
 
-    <!-- Login gate -->
     <div id="loginGate" class="login-gate" style="display:none">
         <i class="fas fa-user-shield"></i>
         <h2>Teacher Login Required</h2>
@@ -53,10 +54,8 @@
         </button>
     </div>
 
-    <!-- Dashboard -->
     <div id="dashboard" style="display:none">
 
-        <!-- Page header -->
         <div class="mod-page-header">
             <h1>
                 <i class="fas fa-star page-icon" style="-webkit-text-fill-color:var(--accent-gold)"></i>
@@ -65,7 +64,6 @@
             <p>Star outstanding students and log formal warnings. Everything syncs to the database instantly.</p>
         </div>
 
-        <!-- Stats -->
         <div class="mod-stats">
             <div class="mod-stat">
                 <span class="mod-stat-num" id="statTotal">0</span>
@@ -93,18 +91,16 @@
             </div>
         </div>
 
-        <!-- Controls -->
         <div class="mod-controls">
             <div class="search-wrap">
                 <i class="fas fa-search"></i>
                 <input type="text" class="mod-search" id="searchInput" placeholder="Search by name or roll number…">
             </div>
-            <button class="filter-btn active"  id="btnAll"><i class="fas fa-users"></i> All</button>
+            <button class="filter-btn active" id="btnAll"><i class="fas fa-users"></i> All</button>
             <button class="filter-btn f-gold"  id="btnHL"><i class="fas fa-star"></i> Highlighted</button>
             <button class="filter-btn f-red"   id="btnWarn"><i class="fas fa-exclamation-triangle"></i> Warned</button>
         </div>
 
-        <!-- List -->
         <div id="hlList" class="mod-list"></div>
         <div id="hlEmpty" class="mod-empty" style="display:none">
             <i class="fas fa-star"></i>
@@ -115,7 +111,7 @@
     </div>
 </main>
 
-<!-- ══ AUTH MODAL (identical pattern to students.html) ═══════ -->
+<!-- ══ AUTH MODAL ══════════════════════════════════════════════ -->
 <div class="modal-overlay" id="authModal">
     <div class="auth-modal">
         <div class="modal-header">
@@ -156,7 +152,6 @@
     </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"><i id="toastIcon"></i><span id="toastMsg"></span></div>
 
 <script src="js/highlights.js"></script>

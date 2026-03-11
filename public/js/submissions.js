@@ -1,19 +1,12 @@
 /* ============================================================
    submissions.js  —  place in:  public/js/submissions.js
-   Manages: assignment1, assignment2, record_book, obs_book, ppt_submitted
-   API used:
-     GET    /api/students
-     PATCH  /api/students/:id/assignment  { field: 'assignment1'|'assignment2', value }
-     PATCH  /api/students/:id/record      { field: 'record_book'|'obs_book'|'ppt_submitted', value }
    ============================================================ */
 'use strict';
 
-/* ─── State ──────────────────────────────────────────────────── */
 let allStudents  = [];
-let activeFilter = 'all';   // 'all' | 'pending' | 'complete'
+let activeFilter = 'all';
 let D            = {};
 
-/* ─── Helpers ────────────────────────────────────────────────── */
 function $(id) { return document.getElementById(id); }
 function escapeHTML(str) {
     const d = document.createElement('div'); d.textContent = str; return d.innerHTML;
@@ -35,7 +28,6 @@ function setLoading(btn, on) {
 function showErr(el, msg) { el.textContent = msg; el.classList.add('show'); }
 function clearErr(el)     { el.textContent = '';  el.classList.remove('show'); }
 
-/* ─── API wrapper ────────────────────────────────────────────── */
 async function api(method, path, body) {
     const opts = { method, headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin' };
     if (body !== undefined) opts.body = JSON.stringify(body);
@@ -45,7 +37,32 @@ async function api(method, path, body) {
     return data;
 }
 
-/* ─── Auth ───────────────────────────────────────────────────── */
+// ─── Hamburger nav ────────────────────────────────────────
+function initHamburger() {
+    const btn   = $('navHamburger');
+    const links = $('navLinks');
+    if (!btn || !links) return;
+
+    btn.addEventListener('click', () => {
+        btn.classList.toggle('open');
+        links.classList.toggle('open');
+    });
+
+    links.querySelectorAll('.nav-link-btn').forEach(link => {
+        link.addEventListener('click', () => {
+            btn.classList.remove('open');
+            links.classList.remove('open');
+        });
+    });
+
+    document.addEventListener('click', e => {
+        if (!btn.contains(e.target) && !links.contains(e.target)) {
+            btn.classList.remove('open');
+            links.classList.remove('open');
+        }
+    });
+}
+
 function openAuthModal()  { clearErr(D.authError); D.authModal.classList.add('active'); D.loginUsername.focus(); }
 function closeAuthModal() { D.authModal.classList.remove('active'); }
 
@@ -90,17 +107,14 @@ async function handleLogout() {
     showToast('Logged out.');
 }
 
-/* ─── Page init ──────────────────────────────────────────────── */
 async function initPage() {
     let teacher = null;
     try { const d = await api('GET', '/api/teacher/me'); teacher = d.teacher; } catch (_) {}
 
     if (teacher) {
         D.navUserArea.innerHTML = `
-            <div style="display:flex;align-items:center;gap:.6rem">
-                <div class="nav-user-badge"><i class="fas fa-user-circle"></i><span>${escapeHTML(teacher.username)}</span></div>
-                <button class="nav-link-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-            </div>`;
+            <div class="nav-user-badge"><i class="fas fa-user-circle"></i><span>${escapeHTML(teacher.username)}</span></div>
+            <button class="nav-link-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>`;
         $('logoutBtn').addEventListener('click', handleLogout);
         D.loginGate.style.display = 'none';
         D.dashboard.style.display = 'block';
@@ -113,7 +127,6 @@ async function initPage() {
     }
 }
 
-/* ─── Load ───────────────────────────────────────────────────── */
 async function loadStudents() {
     try {
         const d = await api('GET', '/api/students');
@@ -122,7 +135,6 @@ async function loadStudents() {
     } catch (e) { showToast('Could not load students: ' + e.message, true); }
 }
 
-/* ─── Stats ──────────────────────────────────────────────────── */
 function updateStats() {
     const t = allStudents;
     $('statTotal').textContent   = t.length;
@@ -132,12 +144,9 @@ function updateStats() {
     $('statRec').textContent     = t.filter(s => s.record_book).length;
     $('statObs').textContent     = t.filter(s => s.obs_book).length;
     $('statPpt').textContent     = t.filter(s => s.ppt_submitted).length;
-    $('statAllDone').textContent = t.filter(s =>
-        s.assignment1 && s.assignment2 && s.record_book && s.obs_book && s.ppt_submitted
-    ).length;
+    $('statAllDone').textContent = t.filter(s => s.assignment1 && s.assignment2 && s.record_book && s.obs_book && s.ppt_submitted).length;
 }
 
-/* ─── Filter ─────────────────────────────────────────────────── */
 function setFilter(f) {
     activeFilter = f;
     D.btnAll.classList.toggle('active',      f === 'all');
@@ -146,11 +155,9 @@ function setFilter(f) {
     renderList();
 }
 
-/* ─── Render ─────────────────────────────────────────────────── */
 function renderList() {
     updateStats();
     const q = D.searchInput.value.toLowerCase().trim();
-
     const list = allStudents.filter(s => {
         const matchQ = !q || s.name.toLowerCase().includes(q) || s.roll_number.toLowerCase().includes(q);
         if (!matchQ) return false;
@@ -161,41 +168,35 @@ function renderList() {
     });
 
     if (list.length === 0) {
-        D.subList.innerHTML     = '';
+        D.subList.innerHTML      = '';
         D.subEmpty.style.display = 'block';
         return;
     }
     D.subEmpty.style.display = 'none';
     D.subList.innerHTML = list.map(buildRowHTML).join('');
-
-    // Wire toggles
     list.forEach(s => {
-        wireToggle(s, 'a1',  'assignment1', 'assignment');
-        wireToggle(s, 'a2',  'assignment2', 'assignment');
+        wireToggle(s, 'a1',  'assignment1',   'assignment');
+        wireToggle(s, 'a2',  'assignment2',   'assignment');
         wireToggle(s, 'rec', 'record_book',   'record');
         wireToggle(s, 'obs', 'obs_book',      'record');
         wireToggle(s, 'ppt', 'ppt_submitted', 'record');
     });
 }
 
-/* ─── Wire a single toggle ───────────────────────────────────── */
 function wireToggle(s, key, dbField, apiType) {
     const chk = $(`chk-${key}-${s.id}`);
     if (!chk) return;
     chk.addEventListener('change', () => handleToggle(s.id, key, dbField, apiType, chk.checked));
 }
 
-/* ─── Build one row HTML ─────────────────────────────────────── */
 function buildRowHTML(s) {
     const avatar = s.avatar
         ? `<img src="${s.avatar}" class="mod-avatar" alt="">`
         : `<div class="mod-avatar-ph">${escapeHTML(s.name.charAt(0).toUpperCase())}</div>`;
-
     const allDone = s.assignment1 && s.assignment2 && s.record_book && s.obs_book && s.ppt_submitted;
 
     return `
     <div class="sub-row${allDone ? ' all-done' : ''}" id="sub-row-${s.id}">
-
         <div class="sub-student-cell">
             ${avatar}
             <div>
@@ -203,88 +204,50 @@ function buildRowHTML(s) {
                 <div class="mod-roll"><i class="fas fa-id-badge"></i> ${escapeHTML(s.roll_number)}</div>
             </div>
         </div>
-
-        <!-- Assignment 1 -->
         <div class="sub-cell">
-            <label class="toggle-switch">
-                <input type="checkbox" id="chk-a1-${s.id}" ${s.assignment1 ? 'checked' : ''}>
-                <span class="toggle-slider"></span>
-            </label>
+            <label class="toggle-switch"><input type="checkbox" id="chk-a1-${s.id}" ${s.assignment1 ? 'checked' : ''}><span class="toggle-slider"></span></label>
             <span class="sub-mini-label ${s.assignment1 ? 'done-teal' : 'pending'}" id="lbl-a1-${s.id}">${s.assignment1 ? 'Done' : 'Pending'}</span>
         </div>
-
-        <!-- Assignment 2 -->
         <div class="sub-cell">
-            <label class="toggle-switch ts-purple">
-                <input type="checkbox" id="chk-a2-${s.id}" ${s.assignment2 ? 'checked' : ''}>
-                <span class="toggle-slider"></span>
-            </label>
+            <label class="toggle-switch ts-purple"><input type="checkbox" id="chk-a2-${s.id}" ${s.assignment2 ? 'checked' : ''}><span class="toggle-slider"></span></label>
             <span class="sub-mini-label ${s.assignment2 ? 'done-purple' : 'pending'}" id="lbl-a2-${s.id}">${s.assignment2 ? 'Done' : 'Pending'}</span>
         </div>
-
-        <!-- Record Book -->
         <div class="sub-cell">
-            <label class="toggle-switch ts-blue">
-                <input type="checkbox" id="chk-rec-${s.id}" ${s.record_book ? 'checked' : ''}>
-                <span class="toggle-slider"></span>
-            </label>
+            <label class="toggle-switch ts-blue"><input type="checkbox" id="chk-rec-${s.id}" ${s.record_book ? 'checked' : ''}><span class="toggle-slider"></span></label>
             <span class="sub-mini-label ${s.record_book ? 'done-blue' : 'pending'}" id="lbl-rec-${s.id}">${s.record_book ? 'Submitted' : 'Pending'}</span>
         </div>
-
-        <!-- Obs Book -->
         <div class="sub-cell">
-            <label class="toggle-switch ts-amber">
-                <input type="checkbox" id="chk-obs-${s.id}" ${s.obs_book ? 'checked' : ''}>
-                <span class="toggle-slider"></span>
-            </label>
+            <label class="toggle-switch ts-amber"><input type="checkbox" id="chk-obs-${s.id}" ${s.obs_book ? 'checked' : ''}><span class="toggle-slider"></span></label>
             <span class="sub-mini-label ${s.obs_book ? 'done-amber' : 'pending'}" id="lbl-obs-${s.id}">${s.obs_book ? 'Submitted' : 'Pending'}</span>
         </div>
-
-        <!-- PPT -->
         <div class="sub-cell">
-            <label class="toggle-switch ts-pink">
-                <input type="checkbox" id="chk-ppt-${s.id}" ${s.ppt_submitted ? 'checked' : ''}>
-                <span class="toggle-slider"></span>
-            </label>
+            <label class="toggle-switch ts-pink"><input type="checkbox" id="chk-ppt-${s.id}" ${s.ppt_submitted ? 'checked' : ''}><span class="toggle-slider"></span></label>
             <span class="sub-mini-label ${s.ppt_submitted ? 'done-pink' : 'pending'}" id="lbl-ppt-${s.id}">${s.ppt_submitted ? 'Submitted' : 'Pending'}</span>
         </div>
-
     </div>`;
 }
 
-/* ─── Handle a toggle change ─────────────────────────────────── */
 async function handleToggle(studentId, key, dbField, apiType, value) {
     const s = allStudents.find(x => x.id === studentId);
     if (!s) return;
-
     const old = s[dbField];
     s[dbField] = value;
     updateStats();
-
-    // Update label immediately
     updateToggleLabel(studentId, key, dbField, value);
-
-    // Update all-done row highlight
     const row = $('sub-row-' + studentId);
     if (row) {
         const allDone = s.assignment1 && s.assignment2 && s.record_book && s.obs_book && s.ppt_submitted;
         row.classList.toggle('all-done', !!allDone);
     }
-
-    // API call — assignment1/assignment2 use /assignment, rest use /record
     try {
         if (apiType === 'assignment') {
             await api('PATCH', `/api/students/${studentId}/assignment`, { field: dbField, value });
         } else {
             await api('PATCH', `/api/students/${studentId}/record`, { field: dbField, value });
         }
-        const label = value ? labelDone(key, dbField) : 'Pending';
-        showToast(`${label} updated!`);
+        showToast(`${labelDone(key, dbField)} updated!`);
     } catch (e) {
-        // Rollback
-        s[dbField] = old;
-        updateStats();
-        updateToggleLabel(studentId, key, dbField, old);
+        s[dbField] = old; updateStats(); updateToggleLabel(studentId, key, dbField, old);
         const chk = $(`chk-${key}-${studentId}`);
         if (chk) chk.checked = !!old;
         showToast('Could not save: ' + e.message, true);
@@ -292,39 +255,20 @@ async function handleToggle(studentId, key, dbField, apiType, value) {
 }
 
 function labelDone(key, dbField) {
-    if (dbField === 'assignment1') return 'Assignment 1';
-    if (dbField === 'assignment2') return 'Assignment 2';
-    if (dbField === 'record_book') return 'Record Book';
-    if (dbField === 'obs_book')    return 'Obs. Book';
-    if (dbField === 'ppt_submitted') return 'PPT';
-    return key;
+    const map = { assignment1: 'Assignment 1', assignment2: 'Assignment 2', record_book: 'Record Book', obs_book: 'Obs. Book', ppt_submitted: 'PPT' };
+    return map[dbField] || key;
 }
 
-const DONE_CLASS = {
-    a1:  'done-teal',
-    a2:  'done-purple',
-    rec: 'done-blue',
-    obs: 'done-amber',
-    ppt: 'done-pink',
-};
-const DONE_TEXT = {
-    a1:  'Done',       a2:  'Done',
-    rec: 'Submitted',  obs: 'Submitted', ppt: 'Submitted',
-};
+const DONE_CLASS = { a1: 'done-teal', a2: 'done-purple', rec: 'done-blue', obs: 'done-amber', ppt: 'done-pink' };
+const DONE_TEXT  = { a1: 'Done', a2: 'Done', rec: 'Submitted', obs: 'Submitted', ppt: 'Submitted' };
 
 function updateToggleLabel(studentId, key, dbField, value) {
     const lbl = $(`lbl-${key}-${studentId}`);
     if (!lbl) return;
-    if (value) {
-        lbl.className   = `sub-mini-label ${DONE_CLASS[key]}`;
-        lbl.textContent = DONE_TEXT[key];
-    } else {
-        lbl.className   = 'sub-mini-label pending';
-        lbl.textContent = 'Pending';
-    }
+    if (value) { lbl.className = `sub-mini-label ${DONE_CLASS[key]}`; lbl.textContent = DONE_TEXT[key]; }
+    else       { lbl.className = 'sub-mini-label pending'; lbl.textContent = 'Pending'; }
 }
 
-/* ─── Wire everything ────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
     D = {
         loginGate: $('loginGate'), dashboard: $('dashboard'), navUserArea: $('navUserArea'),
@@ -338,6 +282,8 @@ document.addEventListener('DOMContentLoaded', () => {
         btnAll: $('btnAll'), btnPending: $('btnPending'), btnComplete: $('btnComplete'),
         toast: $('toast'), toastIcon: $('toastIcon'), toastMsg: $('toastMsg'),
     };
+
+    initHamburger();
 
     $('openAuthBtn') && $('openAuthBtn').addEventListener('click', openAuthModal);
     D.tabLogin.addEventListener('click',    () => switchAuthTab('login'));

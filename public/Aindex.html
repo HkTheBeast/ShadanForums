@@ -11,7 +11,6 @@
 </head>
 <body>
 
-<!-- ══ BACKGROUND ═══════════════════════════════════════════════ -->
 <div class="bg-grid"></div>
 <div class="bg-glow bg-glow-1"></div>
 <div class="bg-glow bg-glow-2"></div>
@@ -27,13 +26,15 @@
                 <span class="logo-sub">Classroom Hub</span>
             </div>
         </a>
-        <div class="nav-menu" id="navMenu">
-            <a href="Aindex.html" class="nav-link active"><i class="fas fa-home"></i> Home</a>
-            <a href="highlights.html" class="nav-link"><i class="fas fa-th-large"></i> Dashboard</a>
-            <a href="students.html" class="nav-link"><i class="fas fa-users"></i> Students</a>
-            <a href="attendance.html" class="nav-link"><i class="fas fa-calendar-check"></i> Attendance</a>
+        <div class="nav-links" id="navLinks">
+            <a href="Aindex.html"      class="nav-link-btn nav-active"><i class="fas fa-home"></i> Home</a>
+            <a href="students.html"    class="nav-link-btn"><i class="fas fa-id-card"></i> Students</a>
+            <a href="attendance.html"  class="nav-link-btn"><i class="fas fa-calendar-check"></i> Attendance</a>
+            <a href="submissions.html" class="nav-link-btn"><i class="fas fa-tasks"></i> Submissions</a>
+            <a href="marks.html"       class="nav-link-btn"><i class="fas fa-chart-bar"></i> Marks</a>
+            <a href="highlights.html"  class="nav-link-btn"><i class="fas fa-star"></i> Highlights</a>
         </div>
-        <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+        <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
             <span></span><span></span><span></span>
         </button>
     </div>
@@ -80,15 +81,12 @@
         </div>
     </div>
 
-    <!-- Decorative side panel -->
     <div class="hero-panel">
         <div class="panel-card panel-card--1">
             <div class="panel-card-icon"><i class="fas fa-calendar-check"></i></div>
             <div class="panel-card-info">
                 <span class="panel-card-label">Today's Attendance</span>
-                <div class="panel-bar-wrap">
-                    <div class="panel-bar" style="width:82%"></div>
-                </div>
+                <div class="panel-bar-wrap"><div class="panel-bar" style="width:82%"></div></div>
                 <span class="panel-card-value">82% Present</span>
             </div>
         </div>
@@ -125,7 +123,7 @@
     <div class="strip-divider"></div>
     <div class="strip-item"><i class="fas fa-tasks"></i> Assignment Monitoring</div>
     <div class="strip-divider"></div>
-    <div class="strip-item"><i class="fas fa-chart-bar"></i> Marks & Grades</div>
+    <div class="strip-item"><i class="fas fa-chart-bar"></i> Marks &amp; Grades</div>
     <div class="strip-divider"></div>
     <div class="strip-item"><i class="fas fa-star"></i> Student Highlights</div>
     <div class="strip-divider"></div>
@@ -140,12 +138,12 @@
         <div class="section-eyebrow">What is Svlent?</div>
         <h2 class="section-heading">One place for<br>everything that matters<br>in your classroom.</h2>
         <p class="section-body">
-            Svlent is a dedicated teacher's platform that consolidates daily attendance, 
-            assignment tracking, marks, record submissions, student highlights, and warnings 
+            Svlent is a dedicated teacher's platform that consolidates daily attendance,
+            assignment tracking, marks, record submissions, student highlights, and warnings
             into a single, organized dashboard. No more scattered spreadsheets. No more paper.
         </p>
         <p class="section-body">
-            Every student gets a full profile. Every action is saved instantly. 
+            Every student gets a full profile. Every action is saved instantly.
             You stay in control of your classroom without drowning in admin.
         </p>
         <a href="students.html" class="btn-outline">
@@ -186,7 +184,7 @@
             <div class="flv-item">
                 <div class="flv-icon"><i class="fas fa-star"></i></div>
                 <div class="flv-text">
-                    <strong>Highlights & Warnings</strong>
+                    <strong>Highlights &amp; Warnings</strong>
                     <span>Recognise great work and log concerns formally.</span>
                 </div>
             </div>
@@ -232,43 +230,32 @@
     <h2 class="section-heading">Built for how teachers actually work.</h2>
 
     <div class="features-bento">
-        <!-- Big card: Attendance -->
         <div class="bento-card bento-card--tall bento-card--teal">
             <div class="bento-icon"><i class="fas fa-calendar-check"></i></div>
             <h3>Attendance Tracking</h3>
             <p>Mark the whole class in under a minute. Present, Late, or Absent — all saved to the database. View each student's running percentage and full history at any time.</p>
             <div class="bento-tag">Daily → Database → Percentage</div>
         </div>
-
-        <!-- Medium: Assignments -->
         <div class="bento-card bento-card--purple">
             <div class="bento-icon"><i class="fas fa-tasks"></i></div>
             <h3>Assignment Tracking</h3>
             <p>One toggle per student, per assignment. Instantly see who's done and who isn't.</p>
         </div>
-
-        <!-- Medium: Marks -->
         <div class="bento-card bento-card--pink">
             <div class="bento-icon"><i class="fas fa-chart-bar"></i></div>
-            <h3>Marks & Grades</h3>
+            <h3>Marks &amp; Grades</h3>
             <p>Enter Mid 1, Mid 2, Internal Lab and External Lab marks. Auto-totals, displayed right on the student card.</p>
         </div>
-
-        <!-- Small: Highlights -->
         <div class="bento-card bento-card--gold">
             <div class="bento-icon"><i class="fas fa-star"></i></div>
             <h3>Highlights</h3>
             <p>Star your best performers. Cards glow gold.</p>
         </div>
-
-        <!-- Small: Warnings -->
         <div class="bento-card bento-card--red">
             <div class="bento-icon"><i class="fas fa-exclamation-triangle"></i></div>
             <h3>Warnings</h3>
             <p>Log 1–3 formal warnings. Cards turn red at max.</p>
         </div>
-
-        <!-- Wide: Records -->
         <div class="bento-card bento-card--wide bento-card--blue">
             <div class="bento-icon"><i class="fas fa-book-open"></i></div>
             <h3>Record &amp; Submission Tracking</h3>
@@ -290,12 +277,8 @@
             <p>Start adding students and take your first attendance in under 2 minutes.</p>
         </div>
         <div class="cta-band-btns">
-            <a href="students.html" class="btn-hero-primary">
-                <i class="fas fa-users"></i> Go to Students
-            </a>
-            <a href="attendance.html" class="btn-hero-secondary">
-                <i class="fas fa-calendar-check"></i> Take Attendance
-            </a>
+            <a href="students.html" class="btn-hero-primary"><i class="fas fa-users"></i> Go to Students</a>
+            <a href="attendance.html" class="btn-hero-secondary"><i class="fas fa-calendar-check"></i> Take Attendance</a>
         </div>
     </div>
 </section>
@@ -319,14 +302,14 @@
                 <a href="Aindex.html">Home</a>
                 <a href="students.html">Students</a>
                 <a href="attendance.html">Attendance</a>
-                <a href="Adashboard.html">Dashboard</a>
+                <a href="highlights.html">Highlights</a>
             </div>
             <div class="footer-col">
                 <h4>Features</h4>
-                <a href="students.html">Assignment Tracking</a>
+                <a href="submissions.html">Submissions</a>
                 <a href="attendance.html">Attendance</a>
-                <a href="students.html">Marks & Grades</a>
-                <a href="students.html">Highlights & Warnings</a>
+                <a href="marks.html">Marks &amp; Grades</a>
+                <a href="highlights.html">Highlights &amp; Warnings</a>
             </div>
         </div>
     </div>
@@ -335,12 +318,9 @@
     </div>
 </footer>
 
-<!-- Back to top -->
 <button class="back-to-top" id="backToTop"><i class="fas fa-chevron-up"></i></button>
 
 <script src="js/Amain.js"></script>
-<script>
-    document.getElementById('currentYear').textContent = new Date().getFullYear();
-</script>
+<script>document.getElementById('currentYear').textContent = new Date().getFullYear();</script>
 </body>
 </html>

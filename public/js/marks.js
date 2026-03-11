@@ -1,20 +1,12 @@
 /* ============================================================
    marks.js  —  place in:  public/js/marks.js
-   Inline marks entry for every student — one row per student.
-   API used:
-     GET    /api/students
-     PATCH  /api/students/:id/marks
-       body: { mark_mid1, mark_mid2, mark_internal_lab, mark_external_lab }
-       Limits enforced by server: mid1/mid2 ≤ 30, internal/external ≤ 50
    ============================================================ */
 'use strict';
 
-/* ─── State ──────────────────────────────────────────────────── */
 let allStudents  = [];
-let activeFilter = 'all';   // 'all' | 'missing' | 'entered'
+let activeFilter = 'all';
 let D            = {};
 
-/* ─── Helpers ────────────────────────────────────────────────── */
 function $(id) { return document.getElementById(id); }
 function escapeHTML(str) {
     const d = document.createElement('div'); d.textContent = str; return d.innerHTML;
@@ -48,7 +40,6 @@ function setLoading(btn, on) {
 function showErr(el, msg) { el.textContent = msg; el.classList.add('show'); }
 function clearErr(el)     { el.textContent = '';  el.classList.remove('show'); }
 
-/* ─── API wrapper ────────────────────────────────────────────── */
 async function api(method, path, body) {
     const opts = { method, headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin' };
     if (body !== undefined) opts.body = JSON.stringify(body);
@@ -58,7 +49,32 @@ async function api(method, path, body) {
     return data;
 }
 
-/* ─── Auth ───────────────────────────────────────────────────── */
+// ─── Hamburger nav ────────────────────────────────────────
+function initHamburger() {
+    const btn   = $('navHamburger');
+    const links = $('navLinks');
+    if (!btn || !links) return;
+
+    btn.addEventListener('click', () => {
+        btn.classList.toggle('open');
+        links.classList.toggle('open');
+    });
+
+    links.querySelectorAll('.nav-link-btn').forEach(link => {
+        link.addEventListener('click', () => {
+            btn.classList.remove('open');
+            links.classList.remove('open');
+        });
+    });
+
+    document.addEventListener('click', e => {
+        if (!btn.contains(e.target) && !links.contains(e.target)) {
+            btn.classList.remove('open');
+            links.classList.remove('open');
+        }
+    });
+}
+
 function openAuthModal()  { clearErr(D.authError); D.authModal.classList.add('active'); D.loginUsername.focus(); }
 function closeAuthModal() { D.authModal.classList.remove('active'); }
 
@@ -103,17 +119,14 @@ async function handleLogout() {
     showToast('Logged out.');
 }
 
-/* ─── Page init ──────────────────────────────────────────────── */
 async function initPage() {
     let teacher = null;
     try { const d = await api('GET', '/api/teacher/me'); teacher = d.teacher; } catch (_) {}
 
     if (teacher) {
         D.navUserArea.innerHTML = `
-            <div style="display:flex;align-items:center;gap:.6rem">
-                <div class="nav-user-badge"><i class="fas fa-user-circle"></i><span>${escapeHTML(teacher.username)}</span></div>
-                <button class="nav-link-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-            </div>`;
+            <div class="nav-user-badge"><i class="fas fa-user-circle"></i><span>${escapeHTML(teacher.username)}</span></div>
+            <button class="nav-link-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>`;
         $('logoutBtn').addEventListener('click', handleLogout);
         D.loginGate.style.display = 'none';
         D.dashboard.style.display = 'block';
@@ -126,7 +139,6 @@ async function initPage() {
     }
 }
 
-/* ─── Load ───────────────────────────────────────────────────── */
 async function loadStudents() {
     try {
         const d = await api('GET', '/api/students');
@@ -135,7 +147,6 @@ async function loadStudents() {
     } catch (e) { showToast('Could not load students: ' + e.message, true); }
 }
 
-/* ─── Stats ──────────────────────────────────────────────────── */
 function hasMarks(s) {
     return s.mark_mid1 !== null && s.mark_mid1 !== undefined ||
            s.mark_mid2 !== null && s.mark_mid2 !== undefined ||
@@ -152,12 +163,11 @@ function updateStats() {
 
     const a = (field) => avg(t.map(s => s[field]));
     const a1 = a('mark_mid1'), a2 = a('mark_mid2'), ai = a('mark_internal_lab'), ae = a('mark_external_lab');
-    $('statAvgMid1').textContent  = a1 !== null ? a1 : '—';
-    $('statAvgMid2').textContent  = a2 !== null ? a2 : '—';
-    $('statAvgInt').textContent   = ai !== null ? ai : '—';
-    $('statAvgExt').textContent   = ae !== null ? ae : '—';
+    $('statAvgMid1').textContent = a1 !== null ? a1 : '—';
+    $('statAvgMid2').textContent = a2 !== null ? a2 : '—';
+    $('statAvgInt').textContent  = ai !== null ? ai : '—';
+    $('statAvgExt').textContent  = ae !== null ? ae : '—';
 
-    // Average total = average of all entered totals
     const totals = t.map(s => {
         const vals = [s.mark_mid1, s.mark_mid2, s.mark_internal_lab, s.mark_external_lab]
             .filter(v => v !== null && v !== undefined);
@@ -168,7 +178,6 @@ function updateStats() {
         : '—';
 }
 
-/* ─── Filter ─────────────────────────────────────────────────── */
 function setFilter(f) {
     activeFilter = f;
     D.btnAll.classList.toggle('active',     f === 'all');
@@ -177,11 +186,9 @@ function setFilter(f) {
     renderList();
 }
 
-/* ─── Render ─────────────────────────────────────────────────── */
 function renderList() {
     updateStats();
     const q = D.searchInput.value.toLowerCase().trim();
-
     const list = allStudents.filter(s => {
         const matchQ = !q || s.name.toLowerCase().includes(q) || s.roll_number.toLowerCase().includes(q);
         if (!matchQ) return false;
@@ -198,10 +205,8 @@ function renderList() {
     D.marksEmpty.style.display = 'none';
     D.marksList.innerHTML = list.map(buildRowHTML).join('');
 
-    // Wire inputs + save buttons
     list.forEach(s => {
-        const ids = ['mid1', 'mid2', 'int', 'ext'];
-        ids.forEach(k => {
+        ['mid1','mid2','int','ext'].forEach(k => {
             const inp = $(`inp-${k}-${s.id}`);
             if (inp) {
                 inp.addEventListener('input', () => recalcRow(s.id));
@@ -213,23 +218,17 @@ function renderList() {
     });
 }
 
-/* ─── Build one row HTML ─────────────────────────────────────── */
 function buildRowHTML(s) {
     const avatar = s.avatar
         ? `<img src="${s.avatar}" class="mod-avatar" alt="">`
         : `<div class="mod-avatar-ph">${escapeHTML(s.name.charAt(0).toUpperCase())}</div>`;
-
     const hm = hasMarks(s);
-
-    // Calculate total for display
     const vals = [s.mark_mid1, s.mark_mid2, s.mark_internal_lab, s.mark_external_lab]
         .filter(v => v !== null && v !== undefined);
     const totalDisplay = vals.length ? vals.reduce((a, b) => a + b, 0).toFixed(1).replace(/\.0$/, '') : '—';
-    const maxTotal = 160;
 
     return `
     <div class="marks-row${hm ? ' has-marks' : ''}" id="marks-row-${s.id}">
-
         <div class="marks-student-cell">
             ${avatar}
             <div>
@@ -237,146 +236,92 @@ function buildRowHTML(s) {
                 <div class="mod-roll"><i class="fas fa-id-badge"></i> ${escapeHTML(s.roll_number)}</div>
             </div>
         </div>
-
-        <!-- Mid 1 /30 -->
         <div class="mark-cell">
             <span class="mark-cell-label">Mid 1 /30</span>
-            <input type="number" class="mark-inp${fmtVal(s.mark_mid1) ? ' filled' : ''}"
-                   id="inp-mid1-${s.id}" min="0" max="30" step="0.5"
-                   value="${fmtVal(s.mark_mid1)}" placeholder="—">
+            <input type="number" class="mark-inp${fmtVal(s.mark_mid1) ? ' filled' : ''}" id="inp-mid1-${s.id}" min="0" max="30" step="0.5" value="${fmtVal(s.mark_mid1)}" placeholder="—">
         </div>
-
-        <!-- Mid 2 /30 -->
         <div class="mark-cell">
             <span class="mark-cell-label">Mid 2 /30</span>
-            <input type="number" class="mark-inp${fmtVal(s.mark_mid2) ? ' filled' : ''}"
-                   id="inp-mid2-${s.id}" min="0" max="30" step="0.5"
-                   value="${fmtVal(s.mark_mid2)}" placeholder="—">
+            <input type="number" class="mark-inp${fmtVal(s.mark_mid2) ? ' filled' : ''}" id="inp-mid2-${s.id}" min="0" max="30" step="0.5" value="${fmtVal(s.mark_mid2)}" placeholder="—">
         </div>
-
-        <!-- Int Lab /50 -->
         <div class="mark-cell">
             <span class="mark-cell-label">Int. Lab /50</span>
-            <input type="number" class="mark-inp${fmtVal(s.mark_internal_lab) ? ' filled' : ''}"
-                   id="inp-int-${s.id}" min="0" max="50" step="0.5"
-                   value="${fmtVal(s.mark_internal_lab)}" placeholder="—">
+            <input type="number" class="mark-inp${fmtVal(s.mark_internal_lab) ? ' filled' : ''}" id="inp-int-${s.id}" min="0" max="50" step="0.5" value="${fmtVal(s.mark_internal_lab)}" placeholder="—">
         </div>
-
-        <!-- Ext Lab /50 -->
         <div class="mark-cell">
             <span class="mark-cell-label">Ext. Lab /50</span>
-            <input type="number" class="mark-inp${fmtVal(s.mark_external_lab) ? ' filled' : ''}"
-                   id="inp-ext-${s.id}" min="0" max="50" step="0.5"
-                   value="${fmtVal(s.mark_external_lab)}" placeholder="—">
+            <input type="number" class="mark-inp${fmtVal(s.mark_external_lab) ? ' filled' : ''}" id="inp-ext-${s.id}" min="0" max="50" step="0.5" value="${fmtVal(s.mark_external_lab)}" placeholder="—">
         </div>
-
-        <!-- Total -->
         <div class="marks-total-cell">
             <span class="marks-total-label">Total</span>
             <span class="marks-total-val" id="total-${s.id}">${totalDisplay}</span>
-            <span class="marks-total-max">/ ${maxTotal}</span>
+            <span class="marks-total-max">/ 160</span>
         </div>
-
-        <!-- Save -->
         <div class="marks-save-cell">
-            <button class="btn-save-row" id="save-btn-${s.id}">
-                <i class="fas fa-save"></i> Save
-            </button>
+            <button class="btn-save-row" id="save-btn-${s.id}"><i class="fas fa-save"></i> Save</button>
         </div>
-
     </div>`;
 }
 
-/* ─── Recalc total on input ──────────────────────────────────── */
 function recalcRow(studentId) {
-    const keys = ['mid1', 'mid2', 'int', 'ext'];
+    const keys = ['mid1','mid2','int','ext'];
     const vals = keys.map(k => {
         const el = $(`inp-${k}-${studentId}`);
         if (!el || el.value === '') return null;
         const n = parseFloat(el.value);
         return isNaN(n) ? null : n;
     }).filter(v => v !== null);
-
     const totalEl = $('total-' + studentId);
     if (totalEl) {
-        if (vals.length === 0) {
-            totalEl.textContent = '—';
-        } else {
-            const sum = vals.reduce((a, b) => a + b, 0);
-            totalEl.textContent = sum % 1 === 0 ? String(sum) : sum.toFixed(1);
-        }
+        totalEl.textContent = vals.length === 0 ? '—' : (vals.reduce((a,b) => a+b, 0) % 1 === 0 ? String(vals.reduce((a,b) => a+b, 0)) : vals.reduce((a,b) => a+b, 0).toFixed(1));
     }
-
-    // Update filled class on inputs
     keys.forEach(k => {
         const el = $(`inp-${k}-${studentId}`);
         if (el) el.classList.toggle('filled', el.value !== '');
     });
 }
 
-/* ─── Save one row ───────────────────────────────────────────── */
 async function saveRow(studentId) {
     const s = allStudents.find(x => x.id === studentId);
     if (!s) return;
-
     const btn = $('save-btn-' + studentId);
-
     const toVal = (raw, max) => {
         if (raw === '' || raw === null || raw === undefined) return null;
         const n = parseFloat(raw);
         if (isNaN(n) || n < 0 || n > max) return 'ERR';
         return n;
     };
-
     const mid1     = toVal($(`inp-mid1-${studentId}`).value, 30);
     const mid2     = toVal($(`inp-mid2-${studentId}`).value, 30);
     const internal = toVal($(`inp-int-${studentId}`).value,  50);
     const external = toVal($(`inp-ext-${studentId}`).value,  50);
-
-    if (mid1     === 'ERR') return showToast('Mid 1 must be 0–30.',       true);
-    if (mid2     === 'ERR') return showToast('Mid 2 must be 0–30.',       true);
+    if (mid1     === 'ERR') return showToast('Mid 1 must be 0–30.',        true);
+    if (mid2     === 'ERR') return showToast('Mid 2 must be 0–30.',        true);
     if (internal === 'ERR') return showToast('Internal Lab must be 0–50.', true);
     if (external === 'ERR') return showToast('External Lab must be 0–50.', true);
-
     setLoading(btn, true);
     try {
         const data = await api('PATCH', `/api/students/${studentId}/marks`, {
-            mark_mid1:         mid1,
-            mark_mid2:         mid2,
-            mark_internal_lab: internal,
-            mark_external_lab: external,
+            mark_mid1: mid1, mark_mid2: mid2, mark_internal_lab: internal, mark_external_lab: external,
         });
-        // Update local state with server-returned student
         const idx = allStudents.findIndex(x => x.id === studentId);
         if (idx !== -1) allStudents[idx] = data.student;
-
-        // Update row styling
         const row = $('marks-row-' + studentId);
         if (row) row.classList.toggle('has-marks', hasMarks(data.student));
-
-        // Flash save button green
         btn.classList.add('saved');
         btn.innerHTML = '<i class="fas fa-check"></i> Saved';
-        setTimeout(() => {
-            btn.classList.remove('saved');
-            btn.innerHTML = '<i class="fas fa-save"></i> Save';
-        }, 2000);
-
+        setTimeout(() => { btn.classList.remove('saved'); btn.innerHTML = '<i class="fas fa-save"></i> Save'; }, 2000);
         updateStats();
         showToast(`Marks saved for ${s.name}!`);
     } catch (e) {
         showToast('Could not save: ' + e.message, true);
     } finally {
         setLoading(btn, false);
-        // In case setLoading overwrote the saved state, restore save button
         const b2 = $('save-btn-' + studentId);
-        if (b2 && !b2.dataset.orig) {
-            b2.innerHTML = '<i class="fas fa-save"></i> Save';
-        }
+        if (b2 && !b2.dataset.orig) b2.innerHTML = '<i class="fas fa-save"></i> Save';
     }
 }
 
-/* ─── Wire everything ────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
     D = {
         loginGate: $('loginGate'), dashboard: $('dashboard'), navUserArea: $('navUserArea'),
@@ -390,6 +335,8 @@ document.addEventListener('DOMContentLoaded', () => {
         btnAll: $('btnAll'), btnMissing: $('btnMissing'), btnEntered: $('btnEntered'),
         toast: $('toast'), toastIcon: $('toastIcon'), toastMsg: $('toastMsg'),
     };
+
+    initHamburger();
 
     $('openAuthBtn') && $('openAuthBtn').addEventListener('click', openAuthModal);
     D.tabLogin.addEventListener('click',    () => switchAuthTab('login'));
