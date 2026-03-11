@@ -2,6 +2,11 @@
    classManager.js  —  place in:  public/js/classManager.js
    Shared class selection + management UI.
    Include BEFORE page-specific JS.
+
+   NOTE: Roll numbers are NOT unique — the same roll
+   number can exist in multiple classes and across
+   different teacher accounts. Only login usernames
+   are unique system-wide.
    ============================================== */
 'use strict';
 
@@ -144,17 +149,17 @@ window.ClassManager = (function () {
 
     function resetAddForm() {
         const f = {
-            classNameInp:    document.getElementById('classNameInp'),
-            classSectionInp: document.getElementById('classSectionInp'),
-            classSubjectInp: document.getElementById('classSubjectInp'),
+            classNameInp:      document.getElementById('classNameInp'),
+            classSectionInp:   document.getElementById('classSectionInp'),
+            classSubjectInp:   document.getElementById('classSubjectInp'),
             addClassFormTitle: document.getElementById('addClassFormTitle'),
-            btnAddClass:     document.getElementById('btnAddClass'),
+            btnAddClass:       document.getElementById('btnAddClass'),
         };
-        if (f.classNameInp)    f.classNameInp.value    = '';
-        if (f.classSectionInp) f.classSectionInp.value = '';
-        if (f.classSubjectInp) f.classSubjectInp.value = '';
+        if (f.classNameInp)      f.classNameInp.value    = '';
+        if (f.classSectionInp)   f.classSectionInp.value = '';
+        if (f.classSubjectInp)   f.classSubjectInp.value = '';
         if (f.addClassFormTitle) f.addClassFormTitle.textContent = '+ Add New Class';
-        if (f.btnAddClass) { f.btnAddClass.innerHTML = '<i class="fas fa-plus"></i> Add Class'; }
+        if (f.btnAddClass)       f.btnAddClass.innerHTML = '<i class="fas fa-plus"></i> Add Class';
         _chosenColor = 'teal';
         _editingId   = null;
         syncSwatches();
@@ -171,9 +176,9 @@ window.ClassManager = (function () {
         if (!cls) return;
         _editingId   = id;
         _chosenColor = cls.color || 'teal';
-        const ni = document.getElementById('classNameInp');
-        const si = document.getElementById('classSectionInp');
-        const subi = document.getElementById('classSubjectInp');
+        const ni    = document.getElementById('classNameInp');
+        const si    = document.getElementById('classSectionInp');
+        const subi  = document.getElementById('classSubjectInp');
         const title = document.getElementById('addClassFormTitle');
         const btn   = document.getElementById('btnAddClass');
         if (ni)    ni.value    = cls.name;
@@ -207,7 +212,7 @@ window.ClassManager = (function () {
     }
 
     async function confirmDeleteClass(id, name) {
-        const dm = document.getElementById('deleteClassModal');
+        const dm  = document.getElementById('deleteClassModal');
         const msg = document.getElementById('deleteClassMsg');
         if (!dm) return;
         if (msg) msg.textContent = `Delete class "${name}"? All students and records in this class will be permanently removed.`;
@@ -242,7 +247,7 @@ window.ClassManager = (function () {
         const manageBtn = document.getElementById('btnManageClasses');
         if (manageBtn) manageBtn.addEventListener('click', openManageModal);
 
-        // Modal close
+        // Modal close (backdrop click)
         const mo = document.getElementById('classesModal');
         if (mo) mo.addEventListener('click', e => { if (e.target === mo) closeManageModal(); });
         const closeBtn = document.getElementById('closeClassesModal');
@@ -267,14 +272,14 @@ window.ClassManager = (function () {
         // Delete class modal
         const delModal = document.getElementById('deleteClassModal');
         if (delModal) {
-            const confirmBtn = document.getElementById('confirmDeleteClassBtn');
+            const confirmBtn   = document.getElementById('confirmDeleteClassBtn');
             const cancelDelBtn = document.getElementById('cancelDeleteClassBtn');
-            if (confirmBtn) confirmBtn.addEventListener('click', () => doDeleteClass(options.showToast));
+            if (confirmBtn)   confirmBtn.addEventListener('click', () => doDeleteClass(options.showToast));
             if (cancelDelBtn) cancelDelBtn.addEventListener('click', () => delModal.classList.remove('active'));
             delModal.addEventListener('click', e => { if (e.target === delModal) delModal.classList.remove('active'); });
         }
 
-        // ESC key
+        // ESC key closes modals
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape') {
                 closeManageModal();
@@ -289,8 +294,8 @@ window.ClassManager = (function () {
     return {
         init,
         loadClasses,
-        getActive:            () => _activeClass,
-        getActiveId:          () => _activeClass ? _activeClass.id : null,
+        getActive:   () => _activeClass,
+        getActiveId: () => _activeClass ? _activeClass.id : null,
         startEdit,
         confirmDeleteClass,
         refreshCount: async function (classId, delta) {

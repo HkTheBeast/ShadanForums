@@ -34,7 +34,7 @@ const db     = new sqlite3.Database(dbFile);
 db.serialize(() => {
     db.run('PRAGMA foreign_keys = ON');
 
-    // ── Original forum tables ──────────────────────────────────
+    // ── Forum tables ───────────────────────────────────────────
     db.run(`CREATE TABLE IF NOT EXISTS forum_users (
         id         INTEGER PRIMARY KEY AUTOINCREMENT,
         username   TEXT UNIQUE NOT NULL,
@@ -90,18 +90,20 @@ db.serialize(() => {
         FOREIGN KEY (teacher_id) REFERENCES teacher_accounts(id) ON DELETE CASCADE
     )`);
 
-    // ── Students (now scoped to class) ─────────────────────────
+    // ── Students — NO unique constraint on roll_number ─────────
+    // roll_number can repeat across classes and across teachers.
+    // Only the primary key (id) is unique.
     db.run(`CREATE TABLE IF NOT EXISTS students (
         id                INTEGER PRIMARY KEY AUTOINCREMENT,
         teacher_id        INTEGER NOT NULL,
-        class_id          INTEGER NOT NULL,
+        class_id          INTEGER NOT NULL DEFAULT 0,
         roll_number       TEXT NOT NULL,
         name              TEXT NOT NULL,
         avatar            TEXT,
-        assignment1       INTEGER DEFAULT 0,
-        assignment2       INTEGER DEFAULT 0,
         highlighted       INTEGER DEFAULT 0,
         warnings          INTEGER DEFAULT 0,
+        assignment1       INTEGER DEFAULT 0,
+        assignment2       INTEGER DEFAULT 0,
         mark_mid1         REAL,
         mark_mid2         REAL,
         mark_internal_lab REAL,
@@ -119,7 +121,7 @@ db.serialize(() => {
         id         INTEGER PRIMARY KEY AUTOINCREMENT,
         student_id INTEGER NOT NULL,
         teacher_id INTEGER NOT NULL,
-        class_id   INTEGER NOT NULL,
+        class_id   INTEGER NOT NULL DEFAULT 0,
         date       TEXT NOT NULL,
         status     TEXT NOT NULL DEFAULT 'absent',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -194,7 +196,7 @@ db.serialize(() => {
         FOREIGN KEY (teacher_id) REFERENCES teacher_accounts(id) ON DELETE CASCADE
     )`);
 
-    // ── Safe migrations for old databases ─────────────────────
+    // ── Safe migrations: add columns that may not exist ────────
     const safeAdd = (table, col, type) =>
         db.run(`ALTER TABLE ${table} ADD COLUMN ${col} ${type}`, () => {});
 
@@ -211,27 +213,59 @@ db.serialize(() => {
     safeAdd('attendance', 'class_id',         'INTEGER DEFAULT 0');
     safeAdd('classes', 'subject',             'TEXT DEFAULT ""');
 
-    // -- Drop unique roll_number constraint (allow duplicates) ---
+    // ── Drop ANY unique constraint on roll_number ───────────────
+    // If old DB had UNIQUE(roll_number), UNIQUE(class_id, roll_number),
+    // or similar, recreate the table without it.
     db.get(`SELECT sql FROM sqlite_master WHERE type='table' AND name='students'`, (err, row) => {
-        if (!err && row && row.sql && row.sql.includes('UNIQUE(class_id, roll_number)')) {
-            db.serialize(() => {
-                db.run(`CREATE TABLE IF NOT EXISTS students_new (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT, teacher_id INTEGER NOT NULL,
-                    class_id INTEGER NOT NULL DEFAULT 0, roll_number TEXT NOT NULL,
-                    name TEXT NOT NULL, avatar TEXT, highlighted INTEGER DEFAULT 0,
-                    warnings INTEGER DEFAULT 0, assignment1 INTEGER DEFAULT 0,
-                    assignment2 INTEGER DEFAULT 0, mark_mid1 REAL, mark_mid2 REAL,
-                    mark_internal_lab REAL, mark_external_lab REAL,
-                    record_book INTEGER DEFAULT 0, obs_book INTEGER DEFAULT 0,
-                    ppt_submitted INTEGER DEFAULT 0, created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (teacher_id) REFERENCES teacher_accounts(id) ON DELETE CASCADE,
-                    FOREIGN KEY (class_id) REFERENCES classes(id) ON DELETE CASCADE
-                )`);
-                db.run(`INSERT INTO students_new SELECT id,teacher_id,class_id,roll_number,name,avatar,highlighted,warnings,assignment1,assignment2,mark_mid1,mark_mid2,mark_internal_lab,mark_external_lab,record_book,obs_book,ppt_submitted,created_at FROM students`);
-                db.run('DROP TABLE students');
-                db.run('ALTER TABLE students_new RENAME TO students');
+        if (err || !row) return;
+        const sql = row.sql || '';
+        // Check for any roll_number uniqueness
+        const hasUnique = sql.includes('UNIQUE') && sql.toLowerCase().includes('roll_number');
+        if (!hasUnique) return; // already clean, nothing to do
+
+        db.serialize(() => {
+            db.run(`CREATE TABLE IF NOT EXISTS students_new (
+                id                INTEGER PRIMARY KEY AUTOINCREMENT,
+                teacher_id        INTEGER NOT NULL,
+                class_id          INTEGER NOT NULL DEFAULT 0,
+                roll_number       TEXT NOT NULL,
+                name              TEXT NOT NULL,
+                avatar            TEXT,
+                highlighted       INTEGER DEFAULT 0,
+                warnings          INTEGER DEFAULT 0,
+                assignment1       INTEGER DEFAULT 0,
+                assignment2       INTEGER DEFAULT 0,
+                mark_mid1         REAL,
+                mark_mid2         REAL,
+                mark_internal_lab REAL,
+                mark_external_lab REAL,
+                record_book       INTEGER DEFAULT 0,
+                obs_book          INTEGER DEFAULT 0,
+                ppt_submitted     INTEGER DEFAULT 0,
+                created_at        DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (teacher_id) REFERENCES teacher_accounts(id) ON DELETE CASCADE,
+                FOREIGN KEY (class_id)   REFERENCES classes(id) ON DELETE CASCADE
+            )`);
+            db.run(`INSERT OR IGNORE INTO students_new
+                SELECT id, teacher_id,
+                    COALESCE(class_id, 0),
+                    roll_number, name, avatar,
+                    COALESCE(highlighted, 0),
+                    COALESCE(warnings, 0),
+                    COALESCE(assignment1, 0),
+                    COALESCE(assignment2, 0),
+                    mark_mid1, mark_mid2,
+                    mark_internal_lab, mark_external_lab,
+                    COALESCE(record_book, 0),
+                    COALESCE(obs_book, 0),
+                    COALESCE(ppt_submitted, 0),
+                    created_at
+                FROM students`);
+            db.run('DROP TABLE students');
+            db.run('ALTER TABLE students_new RENAME TO students', () => {
+                console.log('✅ Migrated students table — roll_number uniqueness removed.');
             });
-        }
+        });
     });
 });
 
@@ -527,7 +561,7 @@ app.get('/api/classes', ensureTeacher, (req, res) => {
     const tid = req.session.teacher.id;
     db.all(
         `SELECT c.*,
-            (SELECT COUNT(*) FROM students s WHERE s.class_id = c.id) AS student_count
+            (SELECT COUNT(*) FROM students s WHERE s.class_id = c.id AND s.teacher_id = c.teacher_id) AS student_count
          FROM classes c WHERE c.teacher_id = ? ORDER BY c.created_at ASC`,
         [tid], (err, rows) => {
             if (err) return res.status(500).json({ ok: false, error: 'Server error.' });
@@ -580,7 +614,6 @@ app.delete('/api/classes/:id', ensureTeacher, (req, res) => {
     db.get(`SELECT id FROM classes WHERE id = ? AND teacher_id = ?`, [cid, tid], (err, row) => {
         if (err)  return res.status(500).json({ ok: false, error: 'Server error.' });
         if (!row) return res.status(404).json({ ok: false, error: 'Class not found.' });
-        // Cascade: students + attendance auto-deleted via FK ON DELETE CASCADE
         db.run(`DELETE FROM classes WHERE id = ? AND teacher_id = ?`, [cid, tid], err2 => {
             if (err2) return res.status(500).json({ ok: false, error: 'Server error.' });
             return res.json({ ok: true });
@@ -615,13 +648,12 @@ app.post('/api/classes/:classId/students', ensureTeacher, (req, res) => {
 
     verifyClass(tid, cid, (err) => {
         if (err) return res.status(403).json({ ok: false, error: err.message });
+        // No uniqueness check — same roll number is allowed in any class or across teachers
         db.run(
             `INSERT INTO students (teacher_id, class_id, roll_number, name, avatar) VALUES (?, ?, ?, ?, ?)`,
             [tid, cid, roll_number.trim(), name.trim(), avatar || null],
             function (err2) {
-                if (err2) {
-                    return res.status(500).json({ ok: false, error: 'Server error.' });
-                }
+                if (err2) return res.status(500).json({ ok: false, error: 'Server error: ' + err2.message });
                 db.get(`SELECT * FROM students WHERE id = ?`, [this.lastID], (e, row) => {
                     if (e) return res.status(500).json({ ok: false, error: 'Server error.' });
                     return res.json({ ok: true, student: row });
@@ -649,9 +681,7 @@ app.put('/api/classes/:classId/students/:id', ensureTeacher, (req, res) => {
                     `UPDATE students SET roll_number = ?, name = ?, avatar = ? WHERE id = ? AND teacher_id = ? AND class_id = ?`,
                     [roll_number.trim(), name.trim(), avatar || null, sid, tid, cid],
                     function (err3) {
-                        if (err3) {
-                            return res.status(500).json({ ok: false, error: 'Server error.' });
-                        }
+                        if (err3) return res.status(500).json({ ok: false, error: 'Server error.' });
                         db.get(`SELECT * FROM students WHERE id = ?`, [sid], (e, updated) => {
                             if (e) return res.status(500).json({ ok: false, error: 'Server error.' });
                             return res.json({ ok: true, student: updated });
@@ -685,7 +715,7 @@ app.delete('/api/classes/:classId/students/:id', ensureTeacher, (req, res) => {
     });
 });
 
-// ── Patch helpers (assignment, highlight, warnings, marks, record)
+// ── Patch helper ───────────────────────────────────────────────
 function patchStudent(req, res, fields) {
     const tid = req.session.teacher.id;
     const cid = parseInt(req.params.classId);
