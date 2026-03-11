@@ -1,18 +1,15 @@
 /* ============================================================
-   highlights.js  —  place in:  public/js/highlights.js
+   highlights.js  —  Requires: classManager.js
    ============================================================ */
 'use strict';
 
-let allStudents  = [];
-let activeFilter = 'all';
-let D            = {};
+let allStudents   = [];
+let activeFilter  = 'all';
+let currentClassId = null;
+let D             = {};
 
 function $(id) { return document.getElementById(id); }
-function escapeHTML(str) {
-    const d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
-}
+function escapeHTML(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 
 let _toastTimer;
 function showToast(msg, isError = false) {
@@ -39,29 +36,15 @@ async function api(method, path, body) {
     return data;
 }
 
-// ─── Hamburger nav ────────────────────────────────────────
 function initHamburger() {
     const btn   = $('navHamburger');
     const links = $('navLinks');
     if (!btn || !links) return;
-
-    btn.addEventListener('click', () => {
-        btn.classList.toggle('open');
-        links.classList.toggle('open');
-    });
-
-    links.querySelectorAll('.nav-link-btn').forEach(link => {
-        link.addEventListener('click', () => {
-            btn.classList.remove('open');
-            links.classList.remove('open');
-        });
-    });
-
+    btn.addEventListener('click', () => { btn.classList.toggle('open'); links.classList.toggle('open'); });
+    links.querySelectorAll('.nav-link-btn').forEach(link =>
+        link.addEventListener('click', () => { btn.classList.remove('open'); links.classList.remove('open'); }));
     document.addEventListener('click', e => {
-        if (!btn.contains(e.target) && !links.contains(e.target)) {
-            btn.classList.remove('open');
-            links.classList.remove('open');
-        }
+        if (!btn.contains(e.target) && !links.contains(e.target)) { btn.classList.remove('open'); links.classList.remove('open'); }
     });
 }
 
@@ -72,7 +55,7 @@ function switchAuthTab(tab) {
     const isLogin = tab === 'login';
     D.loginForm.style.display    = isLogin ? 'block' : 'none';
     D.registerForm.style.display = isLogin ? 'none'  : 'block';
-    D.tabLogin.classList.toggle('active',    isLogin);
+    D.tabLogin.classList.toggle('active', isLogin);
     D.tabRegister.classList.toggle('active', !isLogin);
     clearErr(D.authError);
 }
@@ -104,9 +87,8 @@ async function handleRegister() {
 
 async function handleLogout() {
     try { await api('POST', '/api/teacher/logout'); } catch (_) {}
-    allStudents = [];
-    await initPage();
-    showToast('Logged out.');
+    allStudents = []; currentClassId = null;
+    await initPage(); showToast('Logged out.');
 }
 
 async function initPage() {
@@ -118,20 +100,29 @@ async function initPage() {
             <div class="nav-user-badge"><i class="fas fa-user-circle"></i><span>${escapeHTML(teacher.username)}</span></div>
             <button class="nav-link-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>`;
         $('logoutBtn').addEventListener('click', handleLogout);
-        D.loginGate.style.display  = 'none';
-        D.dashboard.style.display  = 'block';
-        await loadStudents();
+        D.loginGate.style.display = 'none';
+        D.dashboard.style.display = 'block';
+        await ClassManager.init({ showToast, onSelect: onClassSelected });
     } else {
         D.navUserArea.innerHTML = `<button class="nav-link-btn" id="navLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>`;
         $('navLoginBtn').addEventListener('click', openAuthModal);
-        D.loginGate.style.display  = 'block';
-        D.dashboard.style.display  = 'none';
+        D.loginGate.style.display = 'block';
+        D.dashboard.style.display = 'none';
     }
 }
 
+async function onClassSelected(cls) {
+    currentClassId = cls ? cls.id : null;
+    D.noClassPlaceholder.style.display = cls ? 'none' : 'block';
+    D.classContent.style.display       = cls ? 'block' : 'none';
+    if (!cls) { allStudents = []; return; }
+    await loadStudents();
+}
+
 async function loadStudents() {
+    if (!currentClassId) return;
     try {
-        const d = await api('GET', '/api/students');
+        const d = await api('GET', `/api/classes/${currentClassId}/students`);
         allStudents = d.students;
         renderList();
     } catch (e) { showToast('Could not load students: ' + e.message, true); }
@@ -148,9 +139,9 @@ function updateStats() {
 
 function setFilter(f) {
     activeFilter = f;
-    D.btnAll.classList.toggle('active',   f === 'all');
-    D.btnHL.classList.toggle('active',    f === 'highlighted');
-    D.btnWarn.classList.toggle('active',  f === 'warned');
+    D.btnAll.classList.toggle('active',  f === 'all');
+    D.btnHL.classList.toggle('active',   f === 'highlighted');
+    D.btnWarn.classList.toggle('active', f === 'warned');
     renderList();
 }
 
@@ -172,10 +163,9 @@ function renderList() {
     }
     D.hlEmpty.style.display = 'none';
     D.hlList.innerHTML = list.map(buildRowHTML).join('');
-
     list.forEach(s => {
         $('hl-btn-' + s.id).addEventListener('click', () => toggleHighlight(s.id));
-        [1, 2, 3].forEach(dot => {
+        [1,2,3].forEach(dot => {
             $(`wdot-${s.id}-${dot}`).addEventListener('click', () => handleWarningClick(s.id, dot));
         });
     });
@@ -185,14 +175,12 @@ function buildRowHTML(s) {
     const avatar = s.avatar
         ? `<img src="${s.avatar}" class="mod-avatar" alt="">`
         : `<div class="mod-avatar-ph">${escapeHTML(s.name.charAt(0).toUpperCase())}</div>`;
-
     const rowClass = ['hl-row', s.highlighted ? 'is-highlighted' : '', s.warnings >= 3 ? 'is-warned' : ''].filter(Boolean).join(' ');
     const hlClass  = 'hl-btn' + (s.highlighted ? ' active' : '');
     const hlLabel  = s.highlighted ? '★ Highlighted' : '☆ Highlight';
     const dots     = [1,2,3].map(d => `<div class="w-dot${d <= s.warnings ? ' filled' : ''}" id="wdot-${s.id}-${d}" title="Warning ${d}"></div>`).join('');
     let warnBadge  = '';
     if (s.warnings > 0) warnBadge = `<span class="warn-badge${s.warnings >= 3 ? ' max' : ''}">${s.warnings}/3</span>`;
-
     return `
     <div class="${rowClass}" id="hl-row-${s.id}">
         <div class="hl-student">
@@ -202,9 +190,7 @@ function buildRowHTML(s) {
                 <div class="mod-roll"><i class="fas fa-id-badge"></i> ${escapeHTML(s.roll_number)}</div>
             </div>
         </div>
-        <button class="${hlClass}" id="hl-btn-${s.id}">
-            <i class="fas fa-star"></i> ${hlLabel}
-        </button>
+        <button class="${hlClass}" id="hl-btn-${s.id}"><i class="fas fa-star"></i> ${hlLabel}</button>
         <div class="warn-area">
             <span class="warn-label" id="warn-label-${s.id}">Warnings ${warnBadge}</span>
             <div class="warn-dots">${dots}</div>
@@ -223,7 +209,7 @@ async function toggleHighlight(id) {
     if (btn) { btn.className = 'hl-btn' + (newVal ? ' active' : ''); btn.innerHTML = `<i class="fas fa-star"></i> ${newVal ? '★ Highlighted' : '☆ Highlight'}`; }
     updateStats();
     try {
-        await api('PATCH', `/api/students/${id}/highlight`, { value: newVal });
+        await api('PATCH', `/api/classes/${currentClassId}/students/${id}/highlight`, { value: newVal });
         showToast(newVal ? '⭐ Student highlighted!' : 'Highlight removed.');
     } catch (e) {
         s.highlighted = !newVal; updateStats(); renderList();
@@ -236,11 +222,10 @@ async function handleWarningClick(id, dot) {
     if (!s) return;
     const newW = s.warnings === dot ? dot - 1 : dot;
     const oldW = s.warnings;
-    s.warnings = newW;
-    updateWarningDotsUI(id, newW);
-    updateStats();
+    s.warnings  = newW;
+    updateWarningDotsUI(id, newW); updateStats();
     try {
-        await api('PATCH', `/api/students/${id}/warnings`, { warnings: newW });
+        await api('PATCH', `/api/classes/${currentClassId}/students/${id}/warnings`, { warnings: newW });
         if (newW === 3)       showToast('⚠️ Maximum warnings reached!', true);
         else if (newW > oldW) showToast(`Warning ${newW}/3 added.`);
         else                  showToast(`Warning reduced to ${newW}/3.`);
@@ -273,11 +258,11 @@ document.addEventListener('DOMContentLoaded', () => {
         hlList: $('hlList'), hlEmpty: $('hlEmpty'),
         searchInput: $('searchInput'),
         btnAll: $('btnAll'), btnHL: $('btnHL'), btnWarn: $('btnWarn'),
+        noClassPlaceholder: $('noClassPlaceholder'), classContent: $('classContent'),
         toast: $('toast'), toastIcon: $('toastIcon'), toastMsg: $('toastMsg'),
     };
 
     initHamburger();
-
     $('openAuthBtn') && $('openAuthBtn').addEventListener('click', openAuthModal);
     D.tabLogin.addEventListener('click',    () => switchAuthTab('login'));
     D.tabRegister.addEventListener('click', () => switchAuthTab('register'));

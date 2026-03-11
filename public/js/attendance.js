@@ -1,20 +1,16 @@
 /* ==============================================
-   attendance.js
+   attendance.js  —  Requires: classManager.js
    ============================================== */
 'use strict';
 
-let attRecords  = {};
-let attStudents = [];
-let summaryData = [];
+let attRecords    = {};
+let attStudents   = [];
+let summaryData   = [];
+let currentClassId = null;
 let D = {};
 
 function $(id) { return document.getElementById(id); }
-
-function escapeHTML(str) {
-    const d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
-}
+function escapeHTML(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 
 let toastTimer;
 function showToast(msg, isError = false) {
@@ -25,18 +21,10 @@ function showToast(msg, isError = false) {
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => D.toast.classList.remove('show'), 3200);
 }
-
 function setLoading(btn, loading) {
-    if (loading) {
-        btn.disabled = true;
-        btn.dataset.original = btn.innerHTML;
-        btn.innerHTML = '<span class="spinner"></span> Please wait…';
-    } else {
-        btn.disabled = false;
-        btn.innerHTML = btn.dataset.original || btn.innerHTML;
-    }
+    if (loading) { btn.disabled = true; btn.dataset.original = btn.innerHTML; btn.innerHTML = '<span class="spinner"></span> Please wait…'; }
+    else         { btn.disabled = false; btn.innerHTML = btn.dataset.original || btn.innerHTML; }
 }
-
 function showError(el, msg) { el.textContent = msg; el.classList.add('show'); }
 function clearError(el)     { el.textContent = '';  el.classList.remove('show'); }
 
@@ -44,7 +32,6 @@ function todayISO() {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
-
 function formatDateDisplay(iso) {
     if (!iso) return '';
     const [y, m, day] = iso.split('-');
@@ -66,33 +53,16 @@ function initHamburger() {
     const btn   = $('navHamburger');
     const links = $('navLinks');
     if (!btn || !links) return;
-
-    btn.addEventListener('click', () => {
-        btn.classList.toggle('open');
-        links.classList.toggle('open');
-    });
-
-    links.querySelectorAll('.nav-link-btn').forEach(link => {
-        link.addEventListener('click', () => {
-            btn.classList.remove('open');
-            links.classList.remove('open');
-        });
-    });
-
+    btn.addEventListener('click', () => { btn.classList.toggle('open'); links.classList.toggle('open'); });
+    links.querySelectorAll('.nav-link-btn').forEach(link =>
+        link.addEventListener('click', () => { btn.classList.remove('open'); links.classList.remove('open'); }));
     document.addEventListener('click', e => {
-        if (!btn.contains(e.target) && !links.contains(e.target)) {
-            btn.classList.remove('open');
-            links.classList.remove('open');
-        }
+        if (!btn.contains(e.target) && !links.contains(e.target)) { btn.classList.remove('open'); links.classList.remove('open'); }
     });
 }
 
 // ─── Auth modal ───────────────────────────────────────────
-function openAuthModal() {
-    clearError(D.authError);
-    D.authModal.classList.add('active');
-    D.loginUsername.focus();
-}
+function openAuthModal()  { clearError(D.authError); D.authModal.classList.add('active'); D.loginUsername.focus(); }
 function closeAuthModal() { D.authModal.classList.remove('active'); }
 
 function switchTab(tab) {
@@ -105,42 +75,34 @@ function switchTab(tab) {
 }
 
 async function handleLogin() {
-    const username = D.loginUsername.value.trim();
-    const password = D.loginPassword.value;
-    if (!username || !password) return showError(D.authError, 'Please fill in all fields.');
-    clearError(D.authError);
-    setLoading(D.loginBtn, true);
+    const u = D.loginUsername.value.trim(), p = D.loginPassword.value;
+    if (!u || !p) return showError(D.authError, 'Please fill in all fields.');
+    clearError(D.authError); setLoading(D.loginBtn, true);
     try {
-        await api('POST', '/api/teacher/login', { username, password });
-        closeAuthModal(); await initPage();
-        showToast('Welcome back, ' + username + '!');
+        await api('POST', '/api/teacher/login', { username: u, password: p });
+        closeAuthModal(); await initPage(); showToast('Welcome back, ' + u + '!');
     } catch (err) { showError(D.authError, err.message); }
     finally { setLoading(D.loginBtn, false); }
 }
 
 async function handleRegister() {
-    const username = D.regUsername.value.trim();
-    const password = D.regPassword.value;
-    const confirm  = D.regConfirm.value;
-    if (!username || !password || !confirm) return showError(D.authError, 'Please fill in all fields.');
-    if (username.length < 3) return showError(D.authError, 'Username must be at least 3 characters.');
-    if (password.length < 6) return showError(D.authError, 'Password must be at least 6 characters.');
-    if (password !== confirm) return showError(D.authError, 'Passwords do not match.');
-    clearError(D.authError);
-    setLoading(D.registerBtn, true);
+    const u = D.regUsername.value.trim(), p = D.regPassword.value, c = D.regConfirm.value;
+    if (!u || !p || !c) return showError(D.authError, 'Please fill in all fields.');
+    if (u.length < 3)   return showError(D.authError, 'Username must be at least 3 characters.');
+    if (p.length < 6)   return showError(D.authError, 'Password must be at least 6 characters.');
+    if (p !== c)        return showError(D.authError, 'Passwords do not match.');
+    clearError(D.authError); setLoading(D.registerBtn, true);
     try {
-        await api('POST', '/api/teacher/register', { username, password });
-        closeAuthModal(); await initPage();
-        showToast('Account created! Welcome, ' + username + '!');
+        await api('POST', '/api/teacher/register', { username: u, password: p });
+        closeAuthModal(); await initPage(); showToast('Account created! Welcome, ' + u + '!');
     } catch (err) { showError(D.authError, err.message); }
     finally { setLoading(D.registerBtn, false); }
 }
 
 async function handleLogout() {
     try { await api('POST', '/api/teacher/logout'); } catch (_) {}
-    attRecords = {}; attStudents = []; summaryData = [];
-    await initPage();
-    showToast('Logged out successfully.');
+    attRecords = {}; attStudents = []; summaryData = []; currentClassId = null;
+    await initPage(); showToast('Logged out successfully.');
 }
 
 // ─── Page init ────────────────────────────────────────────
@@ -150,27 +112,29 @@ async function initPage() {
 
     if (teacher) {
         D.navUserArea.innerHTML = `
-            <div class="nav-user-badge">
-                <i class="fas fa-user-circle"></i>
-                <span>${escapeHTML(teacher.username)}</span>
-            </div>
-            <button class="nav-link-btn" id="logoutBtn">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>`;
+            <div class="nav-user-badge"><i class="fas fa-user-circle"></i><span>${escapeHTML(teacher.username)}</span></div>
+            <button class="nav-link-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>`;
         $('logoutBtn').addEventListener('click', handleLogout);
         D.loginGate.style.display = 'none';
         D.dashboard.style.display = 'block';
-        D.attDate.value = todayISO();
-        await loadAttendanceForDate(D.attDate.value);
+
+        await ClassManager.init({ showToast, onSelect: onClassSelected });
     } else {
-        D.navUserArea.innerHTML = `
-            <button class="nav-link-btn" id="navLoginBtn">
-                <i class="fas fa-sign-in-alt"></i> Login
-            </button>`;
+        D.navUserArea.innerHTML = `<button class="nav-link-btn" id="navLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>`;
         $('navLoginBtn').addEventListener('click', openAuthModal);
         D.loginGate.style.display = 'block';
         D.dashboard.style.display = 'none';
     }
+}
+
+// ─── Class selected ───────────────────────────────────────
+async function onClassSelected(cls) {
+    currentClassId = cls ? cls.id : null;
+    D.noClassPlaceholder.style.display = cls ? 'none' : 'block';
+    D.classContent.style.display       = cls ? 'block' : 'none';
+    if (!cls) { attStudents = []; attRecords = {}; summaryData = []; return; }
+    D.attDate.value = todayISO();
+    await loadAttendanceForDate(D.attDate.value);
 }
 
 // ─── Tab switching ────────────────────────────────────────
@@ -185,9 +149,9 @@ function switchMainTab(tab) {
 
 // ─── Load attendance for date ─────────────────────────────
 async function loadAttendanceForDate(date) {
-    if (!date) return;
+    if (!date || !currentClassId) return;
     try {
-        const data  = await api('GET', `/api/attendance?date=${date}`);
+        const data  = await api('GET', `/api/classes/${currentClassId}/attendance?date=${date}`);
         attStudents = data.attendance;
         attRecords  = {};
         attStudents.forEach(s => { attRecords[s.id] = s.status; });
@@ -205,7 +169,6 @@ function renderAttList() {
     D.attEmpty.style.display   = 'none';
     D.attSaveRow.style.display = 'flex';
     D.attList.innerHTML = attStudents.map(buildAttRowHTML).join('');
-
     attStudents.forEach(s => {
         ['present','late','absent'].forEach(status => {
             const btn = $(`att-${status}-${s.id}`);
@@ -236,11 +199,7 @@ function buildAttRowHTML(s) {
     </div>`;
 }
 
-function setStatus(studentId, status) {
-    attRecords[studentId] = status;
-    reflectStatus(studentId, status);
-    updateDayStats();
-}
+function setStatus(studentId, status) { attRecords[studentId] = status; reflectStatus(studentId, status); updateDayStats(); }
 
 function reflectStatus(studentId, status) {
     const row = $('att-row-' + studentId);
@@ -262,13 +221,14 @@ function updateDayStats() {
 function markAll(status) { attStudents.forEach(s => setStatus(s.id, status)); }
 
 async function saveAttendance() {
+    if (!currentClassId) return showToast('No class selected.', true);
     const date = D.attDate.value;
     if (!date) return showToast('Please select a date.', true);
     if (attStudents.length === 0) return showToast('No students to save.', true);
     const records = attStudents.map(s => ({ student_id: s.id, status: attRecords[s.id] || 'absent' }));
     setLoading(D.saveAttendanceBtn, true);
     try {
-        await api('POST', '/api/attendance', { date, records });
+        await api('POST', `/api/classes/${currentClassId}/attendance`, { date, records });
         showToast(`✅ Attendance saved for ${formatDateDisplay(date)}!`);
     } catch (err) { showToast('Could not save: ' + err.message, true); }
     finally { setLoading(D.saveAttendanceBtn, false); }
@@ -276,8 +236,9 @@ async function saveAttendance() {
 
 // ─── Summary tab ─────────────────────────────────────────
 async function loadSummary() {
+    if (!currentClassId) return;
     try {
-        const data  = await api('GET', '/api/attendance/summary');
+        const data  = await api('GET', `/api/classes/${currentClassId}/attendance/summary`);
         summaryData = data.summary;
         renderSummary();
     } catch (err) { showToast('Could not load summary: ' + err.message, true); }
@@ -304,7 +265,6 @@ function buildSummaryCardHTML(s) {
     const isLow    = !noData && pct < 75;
     const radius = 26, circ = 2 * Math.PI * radius;
     const offset = noData ? circ : circ - (pct / 100) * circ;
-
     const avatar = s.avatar
         ? `<img src="${s.avatar}" class="summary-avatar" alt="${escapeHTML(s.name)}">`
         : `<div class="summary-avatar-placeholder">${escapeHTML(s.name.charAt(0).toUpperCase())}</div>`;
@@ -354,9 +314,8 @@ async function openHistoryModal(studentId, name, roll) {
     D.historyModalSubtitle.textContent = `${name} — ${roll}`;
     D.historyContent.innerHTML         = '<div class="hist-empty"><i class="fas fa-spinner fa-spin"></i> Loading…</div>';
     D.historyModal.classList.add('active');
-
     try {
-        const data    = await api('GET', `/api/attendance/history/${studentId}`);
+        const data    = await api('GET', `/api/classes/${currentClassId}/attendance/history/${studentId}`);
         const history = data.history;
         if (history.length === 0) {
             D.historyContent.innerHTML = '<div class="hist-empty">No records found for this student.</div>';
@@ -371,7 +330,6 @@ async function openHistoryModal(studentId, name, roll) {
         D.historyContent.innerHTML = `<div class="hist-empty" style="color:#ff6b6b">${err.message}</div>`;
     }
 }
-
 function closeHistoryModal() { D.historyModal.classList.remove('active'); }
 
 // ─── Wire everything ──────────────────────────────────────
@@ -389,11 +347,11 @@ document.addEventListener('DOMContentLoaded', () => {
         summaryGrid: $('summaryGrid'), summaryEmpty: $('summaryEmpty'),
         historyModal: $('historyModal'), historyModalTitle: $('historyModalTitle'),
         historyModalSubtitle: $('historyModalSubtitle'), historyContent: $('historyContent'), closeHistoryBtn: $('closeHistoryBtn'),
+        noClassPlaceholder: $('noClassPlaceholder'), classContent: $('classContent'),
         toast: $('toast'), toastIcon: $('toastIcon'), toastMsg: $('toastMsg'),
     };
 
     initHamburger();
-
     D.tabLogin.addEventListener('click',    () => switchTab('login'));
     D.tabRegister.addEventListener('click', () => switchTab('register'));
     D.loginBtn.addEventListener('click',    handleLogin);
@@ -414,11 +372,9 @@ document.addEventListener('DOMContentLoaded', () => {
         el.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); }));
     [D.regUsername, D.regPassword, D.regConfirm].forEach(el =>
         el.addEventListener('keydown', e => { if (e.key === 'Enter') handleRegister(); }));
-
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') { closeAuthModal(); closeHistoryModal(); }
     });
-
     document.addEventListener('click', e => {
         if (e.target && e.target.id === 'openAuthBtn') openAuthModal();
     });

@@ -1,5 +1,6 @@
 /* ==============================================
    students.js  —  Profile Hub + Analytics
+   Requires: classManager.js loaded first
    ============================================== */
 'use strict';
 
@@ -10,10 +11,10 @@ let activeFilter  = 'all';
 let currentEditId = null;
 let pendingDelete = null;
 let pendingAvatar = null;
+let currentClassId = null;
 
 let D = {};
 
-// ─── Helpers ──────────────────────────────────────────────
 function $(id) { return document.getElementById(id); }
 
 function escapeHTML(str) {
@@ -33,26 +34,14 @@ function showToast(msg, isError = false) {
 }
 
 function setLoading(btn, loading) {
-    if (loading) {
-        btn.disabled = true;
-        btn.dataset.original = btn.innerHTML;
-        btn.innerHTML = '<span class="spinner"></span> Please wait…';
-    } else {
-        btn.disabled = false;
-        btn.innerHTML = btn.dataset.original || btn.innerHTML;
-    }
+    if (loading) { btn.disabled = true; btn.dataset.original = btn.innerHTML; btn.innerHTML = '<span class="spinner"></span> Please wait…'; }
+    else         { btn.disabled = false; btn.innerHTML = btn.dataset.original || btn.innerHTML; }
 }
-
 function showError(el, msg) { el.textContent = msg; el.classList.add('show'); }
 function clearError(el)     { el.textContent = '';  el.classList.remove('show'); }
 
-// ─── API wrapper ──────────────────────────────────────────
 async function api(method, path, body) {
-    const opts = {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'same-origin',
-    };
+    const opts = { method, headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin' };
     if (body) opts.body = JSON.stringify(body);
     const res  = await fetch(path, opts);
     const data = await res.json();
@@ -65,139 +54,105 @@ function initHamburger() {
     const btn   = $('navHamburger');
     const links = $('navLinks');
     if (!btn || !links) return;
-
-    btn.addEventListener('click', () => {
-        btn.classList.toggle('open');
-        links.classList.toggle('open');
-    });
-
-    links.querySelectorAll('.nav-link-btn').forEach(link => {
-        link.addEventListener('click', () => {
-            btn.classList.remove('open');
-            links.classList.remove('open');
-        });
-    });
-
+    btn.addEventListener('click', () => { btn.classList.toggle('open'); links.classList.toggle('open'); });
+    links.querySelectorAll('.nav-link-btn').forEach(link =>
+        link.addEventListener('click', () => { btn.classList.remove('open'); links.classList.remove('open'); }));
     document.addEventListener('click', e => {
-        if (!btn.contains(e.target) && !links.contains(e.target)) {
-            btn.classList.remove('open');
-            links.classList.remove('open');
-        }
+        if (!btn.contains(e.target) && !links.contains(e.target)) { btn.classList.remove('open'); links.classList.remove('open'); }
     });
 }
 
 // ─── Auth modal ───────────────────────────────────────────
-function openAuthModal() {
-    clearError(D.authError);
-    D.authModal.classList.add('active');
-    D.loginUsername.focus();
-}
+function openAuthModal()  { clearError(D.authError); D.authModal.classList.add('active'); D.loginUsername.focus(); }
 function closeAuthModal() { D.authModal.classList.remove('active'); }
 
 function switchTab(tab) {
     const isLogin = tab === 'login';
     D.loginForm.style.display    = isLogin ? 'block' : 'none';
     D.registerForm.style.display = isLogin ? 'none'  : 'block';
-    D.tabLogin.classList.toggle('active',    isLogin);
+    D.tabLogin.classList.toggle('active', isLogin);
     D.tabRegister.classList.toggle('active', !isLogin);
     clearError(D.authError);
 }
 
 async function handleLogin() {
-    const username = D.loginUsername.value.trim();
-    const password = D.loginPassword.value;
-    if (!username || !password) return showError(D.authError, 'Please fill in all fields.');
-    clearError(D.authError);
-    setLoading(D.loginBtn, true);
+    const u = D.loginUsername.value.trim(), p = D.loginPassword.value;
+    if (!u || !p) return showError(D.authError, 'Please fill in all fields.');
+    clearError(D.authError); setLoading(D.loginBtn, true);
     try {
-        await api('POST', '/api/teacher/login', { username, password });
-        closeAuthModal();
-        await initPage();
-        showToast('Welcome back, ' + username + '!');
-    } catch (err) {
-        showError(D.authError, err.message);
-    } finally {
-        setLoading(D.loginBtn, false);
-    }
+        await api('POST', '/api/teacher/login', { username: u, password: p });
+        closeAuthModal(); await initPage(); showToast('Welcome back, ' + u + '!');
+    } catch (err) { showError(D.authError, err.message); }
+    finally { setLoading(D.loginBtn, false); }
 }
 
 async function handleRegister() {
-    const username = D.regUsername.value.trim();
-    const password = D.regPassword.value;
-    const confirm  = D.regConfirm.value;
-    if (!username || !password || !confirm) return showError(D.authError, 'Please fill in all fields.');
-    if (username.length < 3) return showError(D.authError, 'Username must be at least 3 characters.');
-    if (password.length < 6) return showError(D.authError, 'Password must be at least 6 characters.');
-    if (password !== confirm) return showError(D.authError, 'Passwords do not match.');
-    clearError(D.authError);
-    setLoading(D.registerBtn, true);
+    const u = D.regUsername.value.trim(), p = D.regPassword.value, c = D.regConfirm.value;
+    if (!u || !p || !c) return showError(D.authError, 'Please fill in all fields.');
+    if (u.length < 3)   return showError(D.authError, 'Username must be at least 3 characters.');
+    if (p.length < 6)   return showError(D.authError, 'Password must be at least 6 characters.');
+    if (p !== c)        return showError(D.authError, 'Passwords do not match.');
+    clearError(D.authError); setLoading(D.registerBtn, true);
     try {
-        await api('POST', '/api/teacher/register', { username, password });
-        closeAuthModal();
-        await initPage();
-        showToast('Account created! Welcome, ' + username + '!');
-    } catch (err) {
-        showError(D.authError, err.message);
-    } finally {
-        setLoading(D.registerBtn, false);
-    }
+        await api('POST', '/api/teacher/register', { username: u, password: p });
+        closeAuthModal(); await initPage(); showToast('Account created! Welcome, ' + u + '!');
+    } catch (err) { showError(D.authError, err.message); }
+    finally { setLoading(D.registerBtn, false); }
 }
 
 async function handleLogout() {
     try { await api('POST', '/api/teacher/logout'); } catch (_) {}
-    allStudents = []; attSummary = {}; compositeData = [];
-    await initPage();
-    showToast('Logged out successfully.');
+    allStudents = []; attSummary = {}; compositeData = []; currentClassId = null;
+    await initPage(); showToast('Logged out successfully.');
 }
 
 // ─── Page init ────────────────────────────────────────────
 async function initPage() {
     let teacher = null;
-    try {
-        const data = await api('GET', '/api/teacher/me');
-        teacher = data.teacher;
-    } catch (_) {}
+    try { const data = await api('GET', '/api/teacher/me'); teacher = data.teacher; } catch (_) {}
 
     if (teacher) {
         D.navUserArea.innerHTML = `
-            <div class="nav-user-badge">
-                <i class="fas fa-user-circle"></i>
-                <span>${escapeHTML(teacher.username)}</span>
-            </div>
-            <button class="nav-link-btn" id="logoutBtn">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>`;
+            <div class="nav-user-badge"><i class="fas fa-user-circle"></i><span>${escapeHTML(teacher.username)}</span></div>
+            <button class="nav-link-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>`;
         $('logoutBtn').addEventListener('click', handleLogout);
-        D.loginGate.style.display = 'none';
-        D.dashboard.style.display = 'block';
-        await loadAll();
+        D.loginGate.style.display  = 'none';
+        D.dashboard.style.display  = 'block';
+
+        // Init class manager
+        await ClassManager.init({
+            showToast,
+            onSelect: onClassSelected
+        });
     } else {
-        D.navUserArea.innerHTML = `
-            <button class="nav-link-btn" id="navLoginBtn">
-                <i class="fas fa-sign-in-alt"></i> Login
-            </button>`;
+        D.navUserArea.innerHTML = `<button class="nav-link-btn" id="navLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>`;
         $('navLoginBtn').addEventListener('click', openAuthModal);
         D.loginGate.style.display = 'block';
         D.dashboard.style.display = 'none';
     }
 }
 
+// ─── Class selected callback ──────────────────────────────
+async function onClassSelected(cls) {
+    currentClassId = cls ? cls.id : null;
+    D.noClassPlaceholder.style.display = cls ? 'none' : 'block';
+    D.classContent.style.display       = cls ? 'block' : 'none';
+    if (!cls) { allStudents = []; compositeData = []; D.profileGrid.innerHTML = ''; return; }
+    await loadAll();
+}
+
 // ─── Load all data ────────────────────────────────────────
 async function loadAll() {
-    D.profileGrid.innerHTML = [1,2,3,4,5,6].map(() =>
-        '<div class="skeleton-card"></div>'
-    ).join('');
-
+    if (!currentClassId) return;
+    D.profileGrid.innerHTML = [1,2,3,4,5,6].map(() => '<div class="skeleton-card"></div>').join('');
     try {
         const [studentsData, summaryRes] = await Promise.all([
-            api('GET', '/api/students'),
-            api('GET', '/api/attendance/summary').catch(() => ({ summary: [] }))
+            api('GET', `/api/classes/${currentClassId}/students`),
+            api('GET', `/api/classes/${currentClassId}/attendance/summary`).catch(() => ({ summary: [] }))
         ]);
-
         allStudents = studentsData.students;
         attSummary  = {};
         (summaryRes.summary || []).forEach(s => { attSummary[s.student_id] = s; });
-
         buildCompositeData();
         renderProfiles();
     } catch (err) {
@@ -206,14 +161,12 @@ async function loadAll() {
     }
 }
 
-// ─── Build composite analytics ───────────────────────────
+// ─── Build composite analytics ────────────────────────────
 function buildCompositeData() {
     compositeData = allStudents.map(s => {
-        const att = attSummary[s.id] || null;
-
+        const att    = attSummary[s.id] || null;
         const attPct = att && att.total_days > 0
-            ? Math.round(((att.present + att.late) / att.total_days) * 100)
-            : null;
+            ? Math.round(((att.present + att.late) / att.total_days) * 100) : null;
 
         const subItems = [s.assignment1, s.assignment2, s.record_book, s.obs_book, s.ppt_submitted];
         const subDone  = subItems.filter(Boolean).length;
@@ -256,7 +209,6 @@ function buildCompositeData() {
 function renderProfiles() {
     updateOverview();
     const q = D.searchInput.value.toLowerCase().trim();
-
     const filtered = compositeData.filter(s => {
         const matchQ = !q || s.name.toLowerCase().includes(q) || s.roll_number.toLowerCase().includes(q);
         if (!matchQ) return false;
@@ -264,13 +216,12 @@ function renderProfiles() {
     });
 
     if (filtered.length === 0) {
-        D.profileGrid.innerHTML    = '';
+        D.profileGrid.innerHTML = '';
         D.emptyState.style.display = 'block';
         return;
     }
     D.emptyState.style.display = 'none';
     D.profileGrid.innerHTML = filtered.map(buildCardHTML).join('');
-
     filtered.forEach(s => {
         $('pc-edit-'   + s.id).addEventListener('click', () => openEditModal(s.id));
         $('pc-delete-' + s.id).addEventListener('click', () => openDeleteModal(s.id, s.name));
@@ -278,29 +229,23 @@ function renderProfiles() {
 }
 
 function updateOverview() {
-    const g = { S: 0, A: 0, B: 0, C: 0, D: 0, N: 0 };
-    compositeData.forEach(s => { g[s.grade] = (g[s.grade] || 0) + 1; });
+    const g = { S:0, A:0, B:0, C:0, D:0, N:0 };
+    compositeData.forEach(s => { g[s.grade] = (g[s.grade]||0)+1; });
     $('ovTotal').textContent = compositeData.length;
-    $('ovS').textContent = g.S; $('ovA').textContent = g.A;
-    $('ovB').textContent = g.B; $('ovC').textContent = g.C;
-    $('ovD').textContent = g.D; $('ovN').textContent = g.N;
+    $('ovS').textContent=g.S; $('ovA').textContent=g.A;
+    $('ovB').textContent=g.B; $('ovC').textContent=g.C;
+    $('ovD').textContent=g.D; $('ovN').textContent=g.N;
 }
 
 function buildCardHTML(s) {
     const avatar = s.avatar
         ? `<img src="${s.avatar}" class="pc-avatar" alt="${escapeHTML(s.name)}">`
         : `<div class="pc-avatar-ph">${escapeHTML(s.name.charAt(0).toUpperCase())}</div>`;
-
-    const r      = 34;
-    const circ   = 2 * Math.PI * r;
-    const pct    = s.composite !== null ? s.composite : 0;
+    const r = 34, circ = 2 * Math.PI * r;
+    const pct = s.composite !== null ? s.composite : 0;
     const offset = circ - (pct / 100) * circ;
-
     const gradeLabel   = s.grade === 'N' ? '<i class="fas fa-question"></i>' : s.grade;
-    const scoreDisplay = s.composite !== null
-        ? `${s.composite}<span>%</span>`
-        : `<span style="font-size:.7rem">N/A</span>`;
-
+    const scoreDisplay = s.composite !== null ? `${s.composite}<span>%</span>` : `<span style="font-size:.7rem">N/A</span>`;
     const attVal = s.attPct  !== null ? s.attPct  + '%' : 'N/A';
     const attW   = s.attPct  !== null ? s.attPct  : 0;
     const markVal = s.markPct !== null ? s.markPct + '%' : 'N/A';
@@ -316,18 +261,16 @@ function buildCardHTML(s) {
             </div>
             <div class="pc-grade-badge">${gradeLabel}</div>
             <div class="pc-actions">
-                <button class="btn-icon" id="pc-edit-${s.id}" title="Edit Profile"><i class="fas fa-pen"></i></button>
+                <button class="btn-icon" id="pc-edit-${s.id}" title="Edit"><i class="fas fa-pen"></i></button>
                 <button class="btn-icon danger" id="pc-delete-${s.id}" title="Delete"><i class="fas fa-trash"></i></button>
             </div>
         </div>
-
         <div class="pc-score-row">
             <div class="pc-score-ring">
                 <svg width="80" height="80" viewBox="0 0 80 80">
                     <circle class="ring-bg" cx="40" cy="40" r="${r}"/>
                     <circle class="ring-fg r${s.grade}" cx="40" cy="40" r="${r}"
-                        stroke-dasharray="${circ.toFixed(2)}"
-                        stroke-dashoffset="${offset.toFixed(2)}"/>
+                        stroke-dasharray="${circ.toFixed(2)}" stroke-dashoffset="${offset.toFixed(2)}"/>
                 </svg>
                 <div class="pc-score-num">${scoreDisplay}</div>
             </div>
@@ -354,10 +297,8 @@ function buildCardHTML(s) {
                 </div>
             </div>
         </div>
-
         <div class="pc-divider"></div>
         <div class="pc-chips">${buildChips(s)}</div>
-
         <div class="pc-nav">
             <a href="attendance.html"  class="pc-nav-btn att"><i class="fas fa-calendar-check"></i> Attendance</a>
             <a href="submissions.html" class="pc-nav-btn sub"><i class="fas fa-tasks"></i> Submissions</a>
@@ -368,26 +309,19 @@ function buildCardHTML(s) {
 
 function buildChips(s) {
     const c = [];
-    if (s.attPct !== null)
-        c.push(`<span class="pc-chip chip-att"><i class="fas fa-calendar-check"></i> ${s.attPct}% Att.</span>`);
-    else
-        c.push(`<span class="pc-chip chip-nodata"><i class="fas fa-calendar-times"></i> No Att. Data</span>`);
-
-    if (s.markPct !== null)
-        c.push(`<span class="pc-chip chip-marks"><i class="fas fa-chart-bar"></i> ${s.markTotal}/${s.markMax} Marks</span>`);
-    else
-        c.push(`<span class="pc-chip chip-nodata"><i class="fas fa-file-alt"></i> No Marks</span>`);
-
+    if (s.attPct !== null)  c.push(`<span class="pc-chip chip-att"><i class="fas fa-calendar-check"></i> ${s.attPct}% Att.</span>`);
+    else                    c.push(`<span class="pc-chip chip-nodata"><i class="fas fa-calendar-times"></i> No Att. Data</span>`);
+    if (s.markPct !== null) c.push(`<span class="pc-chip chip-marks"><i class="fas fa-chart-bar"></i> ${s.markTotal}/${s.markMax} Marks</span>`);
+    else                    c.push(`<span class="pc-chip chip-nodata"><i class="fas fa-file-alt"></i> No Marks</span>`);
     c.push(`<span class="pc-chip chip-sub"><i class="fas fa-tasks"></i> ${s.subDone}/5 Subs.</span>`);
-    if (s.highlighted)
-        c.push(`<span class="pc-chip chip-hl"><i class="fas fa-star"></i> Highlighted</span>`);
-    if (s.warnings > 0)
-        c.push(`<span class="pc-chip chip-warn"><i class="fas fa-exclamation-triangle"></i> ${s.warnings}/3 Warnings</span>`);
+    if (s.highlighted)  c.push(`<span class="pc-chip chip-hl"><i class="fas fa-star"></i> Highlighted</span>`);
+    if (s.warnings > 0) c.push(`<span class="pc-chip chip-warn"><i class="fas fa-exclamation-triangle"></i> ${s.warnings}/3 Warnings</span>`);
     return c.join('');
 }
 
 // ─── Add / Edit modal ─────────────────────────────────────
 function openAddModal() {
+    if (!currentClassId) return showToast('Please select a class first.', true);
     currentEditId = null; pendingAvatar = null;
     D.studentModalTitle.textContent = 'Add Student';
     D.studentRoll.value = ''; D.studentName.value = '';
@@ -411,12 +345,10 @@ function openEditModal(id) {
     D.studentName.focus();
 }
 
-function closeStudentModal() {
-    D.studentModal.classList.remove('active');
-    pendingAvatar = null; currentEditId = null;
-}
+function closeStudentModal() { D.studentModal.classList.remove('active'); pendingAvatar = null; currentEditId = null; }
 
 async function saveStudent() {
+    if (!currentClassId) return;
     const roll = D.studentRoll.value.trim();
     const name = D.studentName.value.trim();
     if (!roll || !name) return showError(D.studentError, 'Roll number and name are required.');
@@ -424,23 +356,21 @@ async function saveStudent() {
     setLoading(D.saveStudentBtn, true);
     try {
         if (currentEditId) {
-            const data = await api('PUT', `/api/students/${currentEditId}`, { roll_number: roll, name, avatar: pendingAvatar });
-            const idx = allStudents.findIndex(s => s.id === currentEditId);
+            const data = await api('PUT', `/api/classes/${currentClassId}/students/${currentEditId}`, { roll_number: roll, name, avatar: pendingAvatar });
+            const idx  = allStudents.findIndex(s => s.id === currentEditId);
             if (idx !== -1) allStudents[idx] = data.student;
             showToast('Profile updated!');
         } else {
-            const data = await api('POST', '/api/students', { roll_number: roll, name, avatar: pendingAvatar });
+            const data = await api('POST', `/api/classes/${currentClassId}/students`, { roll_number: roll, name, avatar: pendingAvatar });
             allStudents.push(data.student);
+            ClassManager.refreshCount(currentClassId, 1);
             showToast('Student added!');
         }
         closeStudentModal();
         buildCompositeData();
         renderProfiles();
-    } catch (err) {
-        showError(D.studentError, err.message);
-    } finally {
-        setLoading(D.saveStudentBtn, false);
-    }
+    } catch (err) { showError(D.studentError, err.message); }
+    finally { setLoading(D.saveStudentBtn, false); }
 }
 
 function handleAvatarUpload(e) {
@@ -464,22 +394,20 @@ function openDeleteModal(id, name) {
 function closeDeleteModal() { pendingDelete = null; D.deleteModal.classList.remove('active'); }
 
 async function confirmDelete() {
-    if (!pendingDelete) return;
+    if (!pendingDelete || !currentClassId) return;
     const id = pendingDelete;
     setLoading(D.confirmDeleteBtn, true);
     try {
-        await api('DELETE', `/api/students/${id}`);
+        await api('DELETE', `/api/classes/${currentClassId}/students/${id}`);
         allStudents = allStudents.filter(s => s.id !== id);
         delete attSummary[id];
+        ClassManager.refreshCount(currentClassId, -1);
         closeDeleteModal();
         buildCompositeData();
         renderProfiles();
         showToast('Student deleted.');
-    } catch (err) {
-        showToast('Delete failed: ' + err.message, true);
-    } finally {
-        setLoading(D.confirmDeleteBtn, false);
-    }
+    } catch (err) { showToast('Delete failed: ' + err.message, true); }
+    finally { setLoading(D.confirmDeleteBtn, false); }
 }
 
 // ─── Grade filter ─────────────────────────────────────────
@@ -505,6 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
         studentRoll: $('studentRoll'), studentName: $('studentName'), saveStudentBtn: $('saveStudentBtn'), cancelStudentBtn: $('cancelStudentBtn'),
         deleteModal: $('deleteModal'), deleteModalMsg: $('deleteModalMsg'), confirmDeleteBtn: $('confirmDeleteBtn'), cancelDeleteBtn: $('cancelDeleteBtn'),
         addStudentBtn: $('addStudentBtn'), searchInput: $('searchInput'), profileGrid: $('profileGrid'), emptyState: $('emptyState'),
+        noClassPlaceholder: $('noClassPlaceholder'), classContent: $('classContent'),
         toast: $('toast'), toastIcon: $('toastIcon'), toastMsg: $('toastMsg'),
     };
 
@@ -545,7 +474,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') { closeAuthModal(); closeStudentModal(); closeDeleteModal(); }
     });
-
     document.addEventListener('click', e => {
         if (e.target && e.target.id === 'openAuthBtn') openAuthModal();
     });

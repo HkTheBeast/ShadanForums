@@ -5,9 +5,9 @@
     <title>Svlent | Marks</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/students.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/module.css">
+    <link rel="stylesheet" href="css/classes.css">
 </head>
 <body>
 
@@ -17,10 +17,10 @@
     <div class="bg-particle"></div>
 </div>
 
-<!-- ══ NAVBAR ══════════════════════════════════════════════════ -->
-<nav class="navbar" id="navbar">
+<!-- ══ NAVBAR ══════════════════════════════════════════════ -->
+<nav class="navbar">
     <div class="nav-container">
-        <a href="Aindex.html" class="logo" style="text-decoration:none">
+        <a href="Aindex.html" class="logo">
             <div class="logo-icon"><i class="fas fa-chalkboard-teacher"></i></div>
             <div class="logo-text">
                 <span class="logo-main">Svlent</span>
@@ -29,7 +29,7 @@
         </a>
         <div class="nav-links" id="navLinks">
             <a href="Aindex.html"      class="nav-link-btn"><i class="fas fa-home"></i> Home</a>
-            <a href="students.html"    class="nav-link-btn"><i class="fas fa-users"></i> Students</a>
+            <a href="students.html"    class="nav-link-btn"><i class="fas fa-id-card"></i> Students</a>
             <a href="attendance.html"  class="nav-link-btn"><i class="fas fa-calendar-check"></i> Attendance</a>
             <a href="submissions.html" class="nav-link-btn"><i class="fas fa-tasks"></i> Submissions</a>
             <a href="marks.html"       class="nav-link-btn nav-active"><i class="fas fa-chart-bar"></i> Marks</a>
@@ -43,91 +43,170 @@
     </div>
 </nav>
 
-<!-- ══ MAIN ════════════════════════════════════════════════════ -->
+<!-- ══ MAIN ════════════════════════════════════════════════ -->
 <main class="main">
 
-    <div id="loginGate" class="login-gate" style="display:none">
+    <div id="loginGate" class="login-gate" style="display:none;">
         <i class="fas fa-user-shield"></i>
         <h2>Teacher Login Required</h2>
-        <p>Please log in to enter marks.</p>
+        <p>Log in to enter and review student marks.</p>
         <button class="btn-login-gate" id="openAuthBtn">
             <i class="fas fa-sign-in-alt"></i> Login / Register
         </button>
     </div>
 
-    <div id="dashboard" style="display:none">
+    <div id="dashboard" style="display:none;">
 
-        <div class="mod-page-header">
-            <h1><i class="fas fa-chart-bar page-icon" style="-webkit-text-fill-color:var(--accent-blue)"></i> Marks</h1>
-            <p>Enter Mid 1 (/30), Mid 2 (/30), Internal Lab (/50), and External Lab (/50) for every student. Save per row.</p>
+        <div class="page-header">
+            <h1><i class="fas fa-chart-bar"></i> Marks</h1>
+            <p>Select a class to enter and view student assessment marks.</p>
         </div>
 
-        <div class="mod-stats">
-            <div class="mod-stat">
-                <span class="mod-stat-num"        id="statTotal">0</span>
-                <span class="mod-stat-lbl">Total Students</span>
+        <!-- ══ CLASS SELECTOR BAR ══════════════════════════ -->
+        <div class="class-selector-bar">
+            <div class="class-selector-left">
+                <span class="class-selector-label"><i class="fas fa-chalkboard"></i> Class</span>
+                <div class="class-chips" id="classChipsWrap">
+                    <span style="font-size:.85rem;color:var(--text-muted)">Loading classes…</span>
+                </div>
             </div>
-            <div class="mod-stat s-blue">
-                <span class="mod-stat-num c-blue"  id="statEntered">0</span>
-                <span class="mod-stat-lbl">Marks Entered</span>
-            </div>
-            <div class="mod-stat">
-                <span class="mod-stat-num"         id="statPending">0</span>
-                <span class="mod-stat-lbl">No Marks Yet</span>
-            </div>
-            <div class="mod-stat s-blue">
-                <span class="mod-stat-num c-blue"  id="statAvgMid1">—</span>
-                <span class="mod-stat-lbl">Avg Mid 1</span>
-            </div>
-            <div class="mod-stat s-blue">
-                <span class="mod-stat-num c-blue"  id="statAvgMid2">—</span>
-                <span class="mod-stat-lbl">Avg Mid 2</span>
-            </div>
-            <div class="mod-stat s-blue">
-                <span class="mod-stat-num c-blue"  id="statAvgInt">—</span>
-                <span class="mod-stat-lbl">Avg Int. Lab</span>
-            </div>
-            <div class="mod-stat s-blue">
-                <span class="mod-stat-num c-blue"  id="statAvgExt">—</span>
-                <span class="mod-stat-lbl">Avg Ext. Lab</span>
-            </div>
-            <div class="mod-stat s-gold">
-                <span class="mod-stat-num c-gold"  id="statAvgTotal">—</span>
-                <span class="mod-stat-lbl">Avg Total</span>
-            </div>
+            <button class="btn-manage-classes" id="btnManageClasses">
+                <i class="fas fa-cog"></i> Manage Classes
+            </button>
         </div>
 
-        <div class="mod-controls">
-            <div class="search-wrap">
-                <i class="fas fa-search"></i>
-                <input type="text" class="mod-search" id="searchInput" placeholder="Search by name or roll number…">
-            </div>
-            <button class="filter-btn active" id="btnAll"><i class="fas fa-users"></i> All</button>
-            <button class="filter-btn"        id="btnMissing"><i class="fas fa-clock"></i> No Marks Yet</button>
-            <button class="filter-btn s-blue" id="btnEntered"><i class="fas fa-check"></i> Marks Entered</button>
-        </div>
-
-        <div class="marks-col-header">
-            <span>Student</span>
-            <span><i class="fas fa-file-alt" style="color:var(--accent-teal)"></i>   Mid 1 <small style="color:var(--text-muted)">/30</small></span>
-            <span><i class="fas fa-file-alt" style="color:#b06aff"></i>              Mid 2 <small style="color:var(--text-muted)">/30</small></span>
-            <span><i class="fas fa-flask"    style="color:var(--accent-amber)"></i>  Int. Lab <small style="color:var(--text-muted)">/50</small></span>
-            <span><i class="fas fa-vial"     style="color:var(--accent-blue)"></i>   Ext. Lab <small style="color:var(--text-muted)">/50</small></span>
-            <span><i class="fas fa-sigma"    style="color:var(--accent-blue)"></i>   Total</span>
-            <span>Save</span>
-        </div>
-
-        <div id="marksList" class="mod-list"></div>
-        <div id="marksEmpty" class="mod-empty" style="display:none">
+        <!-- No class selected -->
+        <div id="noClassPlaceholder" class="no-class-placeholder" style="display:none;">
             <i class="fas fa-chart-bar"></i>
-            <h3>No students found</h3>
-            <p>Add students from the <a href="students.html">Students</a> page first.</p>
+            <h3>Select or Create a Class</h3>
+            <p>Choose a class above to enter marks, or create one via <strong style="color:var(--accent-teal)">Manage Classes</strong>.</p>
+            <button class="btn-manage-classes" onclick="document.getElementById('btnManageClasses').click()" style="margin:0 auto;">
+                <i class="fas fa-plus"></i> Create a Class
+            </button>
         </div>
 
-    </div>
+        <!-- Class content -->
+        <div id="classContent" style="display:none;">
+
+            <div class="active-class-header" id="activeClassHeader" style="display:none;"></div>
+
+            <!-- Stats overview -->
+            <div class="mod-stats-bar">
+                <div class="ms-card"><span class="ms-num" id="statTotal">0</span><span class="ms-lbl">Total</span></div>
+                <div class="ms-card teal"><span class="ms-num" id="statEntered">0</span><span class="ms-lbl">Entered</span></div>
+                <div class="ms-card amber"><span class="ms-num" id="statPending">0</span><span class="ms-lbl">Pending</span></div>
+                <div class="ms-card purple"><span class="ms-num" id="statAvgMid1">—</span><span class="ms-lbl">Avg Mid 1</span></div>
+                <div class="ms-card blue"><span class="ms-num" id="statAvgMid2">—</span><span class="ms-lbl">Avg Mid 2</span></div>
+                <div class="ms-card"><span class="ms-num" id="statAvgInt">—</span><span class="ms-lbl">Avg Int.</span></div>
+                <div class="ms-card"><span class="ms-num" id="statAvgExt">—</span><span class="ms-lbl">Avg Ext.</span></div>
+                <div class="ms-card gold"><span class="ms-num" id="statAvgTotal">—</span><span class="ms-lbl">Avg Total</span></div>
+            </div>
+
+            <!-- Controls -->
+            <div class="mod-controls">
+                <div class="search-wrap">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search students…">
+                </div>
+                <div class="mod-filter-btns">
+                    <button class="mf-btn active" id="btnAll">All</button>
+                    <button class="mf-btn"         id="btnMissing">Missing</button>
+                    <button class="mf-btn"         id="btnEntered">Entered</button>
+                </div>
+            </div>
+
+            <!-- Column headers -->
+            <div class="marks-table-header">
+                <div class="mth-student">Student</div>
+                <div class="mth-col">Mid 1 <span class="mth-max">/30</span></div>
+                <div class="mth-col">Mid 2 <span class="mth-max">/30</span></div>
+                <div class="mth-col">Int. Lab <span class="mth-max">/50</span></div>
+                <div class="mth-col">Ext. Lab <span class="mth-max">/50</span></div>
+                <div class="mth-col">Total <span class="mth-max">/160</span></div>
+                <div class="mth-col">Save</div>
+            </div>
+
+            <div class="marks-list" id="marksList"></div>
+
+            <div id="marksEmpty" class="empty-state" style="display:none;">
+                <i class="fas fa-chart-bar"></i>
+                <h3>No students found</h3>
+                <p>Try a different filter or search term.</p>
+            </div>
+
+        </div><!-- /classContent -->
+    </div><!-- /dashboard -->
 </main>
 
-<!-- ══ AUTH MODAL ══════════════════════════════════════════════ -->
+<!-- ══ MANAGE CLASSES MODAL ════════════════════════════════ -->
+<div class="modal-overlay" id="classesModal">
+    <div class="auth-modal classes-modal">
+        <div class="modal-header">
+            <h2><i class="fas fa-chalkboard"></i> Manage Classes</h2>
+            <p>Create and organise your classes.</p>
+        </div>
+        <div class="class-list-manage" id="classManageList">
+            <div class="classes-empty"><i class="fas fa-chalkboard"></i>No classes yet.</div>
+        </div>
+        <div class="add-class-form">
+            <div class="add-class-form-title" id="addClassFormTitle">
+                <i class="fas fa-plus-circle" style="color:var(--accent-teal)"></i> Add New Class
+            </div>
+            <div class="form-group">
+                <label>Class Name <span class="required">*</span></label>
+                <input type="text" class="form-input" id="classNameInp" placeholder="e.g. CSE-A 2024">
+            </div>
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label>Section / Batch</label>
+                    <input type="text" class="form-input" id="classSectionInp" placeholder="e.g. Section A">
+                </div>
+                <div class="form-group">
+                    <label>Subject</label>
+                    <input type="text" class="form-input" id="classSubjectInp" placeholder="e.g. Data Structures">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Color</label>
+                <div class="color-picker-row">
+                    <div class="color-swatch sw-teal   active" data-color="teal"   title="Teal"></div>
+                    <div class="color-swatch sw-purple"        data-color="purple" title="Purple"></div>
+                    <div class="color-swatch sw-pink"          data-color="pink"   title="Pink"></div>
+                    <div class="color-swatch sw-amber"         data-color="amber"  title="Amber"></div>
+                    <div class="color-swatch sw-blue"          data-color="blue"   title="Blue"></div>
+                    <div class="color-swatch sw-gold"          data-color="gold"   title="Gold"></div>
+                    <div class="color-swatch sw-red"           data-color="red"    title="Red"></div>
+                    <div class="color-swatch sw-green"         data-color="green"  title="Green"></div>
+                </div>
+            </div>
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
+                <button class="btn-add-class" id="btnAddClass"><i class="fas fa-plus"></i> Add Class</button>
+                <button class="btn-cancel" id="btnCancelEditClass" style="flex:0 0 auto;padding:.75rem 1.2rem;margin-top:.8rem;">
+                    <i class="fas fa-times"></i> Cancel Edit
+                </button>
+            </div>
+        </div>
+        <div class="modal-buttons" style="margin-top:1.2rem;">
+            <button class="btn-cancel" id="closeClassesModal" style="flex:1;"><i class="fas fa-times"></i> Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══ DELETE CLASS CONFIRM MODAL ══════════════════════════ -->
+<div class="modal-overlay" id="deleteClassModal">
+    <div class="auth-modal delete-class-modal">
+        <div class="modal-header">
+            <h2 class="danger-title"><i class="fas fa-trash"></i> Delete Class</h2>
+            <p id="deleteClassMsg">Are you sure? All students and records will be deleted.</p>
+        </div>
+        <div class="modal-buttons">
+            <button class="btn-danger" id="confirmDeleteClassBtn"><i class="fas fa-trash"></i> Yes, Delete</button>
+            <button class="btn-cancel" id="cancelDeleteClassBtn"><i class="fas fa-times"></i> Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══ AUTH MODAL ══════════════════════════════════════════ -->
 <div class="modal-overlay" id="authModal">
     <div class="auth-modal">
         <div class="modal-header">
@@ -136,13 +215,13 @@
         </div>
         <div class="modal-tabs">
             <button class="modal-tab active" id="tabLogin">Login</button>
-            <button class="modal-tab"        id="tabRegister">Register</button>
+            <button class="modal-tab" id="tabRegister">Register</button>
         </div>
         <div class="auth-error" id="authError"></div>
         <div id="loginForm">
             <div class="form-group">
                 <label>Username</label>
-                <input type="text"     class="form-input" id="loginUsername" placeholder="Your username">
+                <input type="text" class="form-input" id="loginUsername" placeholder="Your username">
             </div>
             <div class="form-group">
                 <label>Password</label>
@@ -150,10 +229,10 @@
             </div>
             <button class="btn-auth" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
         </div>
-        <div id="registerForm" style="display:none">
+        <div id="registerForm" style="display:none;">
             <div class="form-group">
                 <label>Username</label>
-                <input type="text"     class="form-input" id="regUsername" placeholder="Min 3 characters">
+                <input type="text" class="form-input" id="regUsername" placeholder="Min 3 characters">
             </div>
             <div class="form-group">
                 <label>Password</label>
@@ -168,8 +247,13 @@
     </div>
 </div>
 
-<div class="toast" id="toast"><i id="toastIcon"></i><span id="toastMsg"></span></div>
+<!-- ══ TOAST ════════════════════════════════════════════════ -->
+<div class="toast" id="toast">
+    <i id="toastIcon"></i>
+    <span id="toastMsg"></span>
+</div>
 
+<script src="js/classManager.js"></script>
 <script src="js/marks.js"></script>
 </body>
 </html>

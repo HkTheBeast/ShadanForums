@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/students.css">
+    <link rel="stylesheet" href="css/classes.css">
 </head>
 <body>
 
@@ -45,6 +46,7 @@
 <!-- ══ MAIN ════════════════════════════════════════════════ -->
 <main class="main">
 
+    <!-- Login gate -->
     <div id="loginGate" class="login-gate" style="display:none;">
         <i class="fas fa-user-shield"></i>
         <h2>Teacher Login Required</h2>
@@ -54,54 +56,165 @@
         </button>
     </div>
 
+    <!-- Dashboard -->
     <div id="dashboard" style="display:none;">
 
         <div class="page-header">
             <h1><i class="fas fa-id-card"></i> Student Profiles</h1>
-            <p>Create and manage student profiles. Performance analytics are calculated from all modules.</p>
+            <p>Select a class to manage student profiles and view performance analytics.</p>
         </div>
 
-        <div class="overview-bar" id="overviewBar">
-            <div class="ov-card"><div class="ov-num" id="ovTotal">0</div><div class="ov-lbl">Total</div></div>
-            <div class="ov-card gold"><div class="ov-num gold" id="ovS">0</div><div class="ov-lbl">Grade S</div></div>
-            <div class="ov-card"><div class="ov-num" id="ovA">0</div><div class="ov-lbl">Grade A</div></div>
-            <div class="ov-card"><div class="ov-num blue" id="ovB">0</div><div class="ov-lbl">Grade B</div></div>
-            <div class="ov-card"><div class="ov-num purple" id="ovC">0</div><div class="ov-lbl">Grade C</div></div>
-            <div class="ov-card red"><div class="ov-num red" id="ovD">0</div><div class="ov-lbl">Grade D</div></div>
-            <div class="ov-card"><div class="ov-num" id="ovN">0</div><div class="ov-lbl">No Data</div></div>
-        </div>
-
-        <div class="controls-bar">
-            <div class="search-wrap">
-                <i class="fas fa-search"></i>
-                <input type="text" class="search-input" id="searchInput" placeholder="Search by name or roll number…">
+        <!-- ══ CLASS SELECTOR BAR ══════════════════════════ -->
+        <div class="class-selector-bar">
+            <div class="class-selector-left">
+                <span class="class-selector-label"><i class="fas fa-chalkboard"></i> Class</span>
+                <div class="class-chips" id="classChipsWrap">
+                    <span style="font-size:.85rem;color:var(--text-muted)">Loading classes…</span>
+                </div>
             </div>
-            <button class="btn-add" id="addStudentBtn">
-                <i class="fas fa-plus"></i> Add Student
+            <button class="btn-manage-classes" id="btnManageClasses">
+                <i class="fas fa-cog"></i> Manage Classes
             </button>
         </div>
 
-        <div class="grade-filter-bar">
-            <span style="font-size:.78rem;color:var(--text-muted);font-weight:600;margin-right:.2rem">Filter:</span>
-            <button class="gf-btn active" id="gfAll">All</button>
-            <button class="gf-btn gS" id="gfS"><i class="fas fa-crown" style="color:var(--accent-gold)"></i> S</button>
-            <button class="gf-btn"    id="gfA"><i class="fas fa-star"  style="color:var(--accent-teal)"></i> A</button>
-            <button class="gf-btn"    id="gfB"><i class="fas fa-thumbs-up" style="color:var(--accent-blue)"></i> B</button>
-            <button class="gf-btn"    id="gfC">C</button>
-            <button class="gf-btn gD" id="gfD"><i class="fas fa-exclamation-triangle" style="color:var(--accent-red)"></i> D</button>
-            <button class="gf-btn"    id="gfN">No Data</button>
+        <!-- No class selected -->
+        <div id="noClassPlaceholder" class="no-class-placeholder" style="display:none;">
+            <i class="fas fa-chalkboard"></i>
+            <h3>Select or Create a Class</h3>
+            <p>Choose a class from above, or click <strong style="color:var(--accent-teal)">Manage Classes</strong> to create your first class.</p>
+            <button class="btn-manage-classes" onclick="document.getElementById('btnManageClasses').click()" style="margin:0 auto;">
+                <i class="fas fa-plus"></i> Create a Class
+            </button>
         </div>
 
-        <div class="profile-grid" id="profileGrid"></div>
+        <!-- Class content -->
+        <div id="classContent" style="display:none;">
 
-        <div id="emptyState" class="empty-state" style="display:none;">
-            <i class="fas fa-user-graduate"></i>
-            <h3>No students yet</h3>
-            <p>Click "Add Student" to create your first profile.</p>
-        </div>
+            <!-- Active class header -->
+            <div class="active-class-header" id="activeClassHeader" style="display:none;"></div>
 
-    </div>
+            <!-- Overview stats -->
+            <div class="overview-bar" id="overviewBar">
+                <div class="ov-card"><div class="ov-num" id="ovTotal">0</div><div class="ov-lbl">Total</div></div>
+                <div class="ov-card gold"><div class="ov-num gold" id="ovS">0</div><div class="ov-lbl">Grade S</div></div>
+                <div class="ov-card"><div class="ov-num" id="ovA">0</div><div class="ov-lbl">Grade A</div></div>
+                <div class="ov-card"><div class="ov-num blue" id="ovB">0</div><div class="ov-lbl">Grade B</div></div>
+                <div class="ov-card"><div class="ov-num purple" id="ovC">0</div><div class="ov-lbl">Grade C</div></div>
+                <div class="ov-card red"><div class="ov-num red" id="ovD">0</div><div class="ov-lbl">Grade D</div></div>
+                <div class="ov-card"><div class="ov-num" id="ovN">0</div><div class="ov-lbl">No Data</div></div>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls-bar">
+                <div class="search-wrap">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search by name or roll number…">
+                </div>
+                <button class="btn-add" id="addStudentBtn">
+                    <i class="fas fa-plus"></i> Add Student
+                </button>
+            </div>
+
+            <!-- Grade filter -->
+            <div class="grade-filter-bar">
+                <span style="font-size:.78rem;color:var(--text-muted);font-weight:600;margin-right:.2rem">Filter:</span>
+                <button class="gf-btn active" id="gfAll">All</button>
+                <button class="gf-btn gS" id="gfS"><i class="fas fa-crown" style="color:var(--accent-gold)"></i> S</button>
+                <button class="gf-btn"    id="gfA"><i class="fas fa-star"  style="color:var(--accent-teal)"></i> A</button>
+                <button class="gf-btn"    id="gfB"><i class="fas fa-thumbs-up" style="color:var(--accent-blue)"></i> B</button>
+                <button class="gf-btn"    id="gfC">C</button>
+                <button class="gf-btn gD" id="gfD"><i class="fas fa-exclamation-triangle" style="color:var(--accent-red)"></i> D</button>
+                <button class="gf-btn"    id="gfN">No Data</button>
+            </div>
+
+            <div class="profile-grid" id="profileGrid"></div>
+
+            <div id="emptyState" class="empty-state" style="display:none;">
+                <i class="fas fa-user-graduate"></i>
+                <h3>No students yet</h3>
+                <p>Click "Add Student" to create your first profile in this class.</p>
+            </div>
+
+        </div><!-- /classContent -->
+    </div><!-- /dashboard -->
 </main>
+
+<!-- ══ MANAGE CLASSES MODAL ════════════════════════════════ -->
+<div class="modal-overlay" id="classesModal">
+    <div class="auth-modal classes-modal">
+        <div class="modal-header">
+            <h2><i class="fas fa-chalkboard"></i> Manage Classes</h2>
+            <p>Create and organise your classes. All student data is scoped per class.</p>
+        </div>
+
+        <!-- Existing classes list -->
+        <div class="class-list-manage" id="classManageList">
+            <div class="classes-empty"><i class="fas fa-chalkboard"></i>No classes yet.</div>
+        </div>
+
+        <!-- Add / Edit class form -->
+        <div class="add-class-form">
+            <div class="add-class-form-title" id="addClassFormTitle">
+                <i class="fas fa-plus-circle" style="color:var(--accent-teal)"></i> Add New Class
+            </div>
+            <div class="form-group">
+                <label>Class Name <span class="required">*</span></label>
+                <input type="text" class="form-input" id="classNameInp" placeholder="e.g. CSE-A 2024">
+            </div>
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label>Section / Batch</label>
+                    <input type="text" class="form-input" id="classSectionInp" placeholder="e.g. Section A">
+                </div>
+                <div class="form-group">
+                    <label>Subject</label>
+                    <input type="text" class="form-input" id="classSubjectInp" placeholder="e.g. Data Structures">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Color</label>
+                <div class="color-picker-row">
+                    <div class="color-swatch sw-teal   active" data-color="teal"   title="Teal"></div>
+                    <div class="color-swatch sw-purple"        data-color="purple" title="Purple"></div>
+                    <div class="color-swatch sw-pink"          data-color="pink"   title="Pink"></div>
+                    <div class="color-swatch sw-amber"         data-color="amber"  title="Amber"></div>
+                    <div class="color-swatch sw-blue"          data-color="blue"   title="Blue"></div>
+                    <div class="color-swatch sw-gold"          data-color="gold"   title="Gold"></div>
+                    <div class="color-swatch sw-red"           data-color="red"    title="Red"></div>
+                    <div class="color-swatch sw-green"         data-color="green"  title="Green"></div>
+                </div>
+            </div>
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
+                <button class="btn-add-class" id="btnAddClass">
+                    <i class="fas fa-plus"></i> Add Class
+                </button>
+                <button class="btn-cancel" id="btnCancelEditClass" style="flex:0 0 auto;padding:.75rem 1.2rem;margin-top:.8rem;">
+                    <i class="fas fa-times"></i> Cancel Edit
+                </button>
+            </div>
+        </div>
+
+        <div class="modal-buttons" style="margin-top:1.2rem;">
+            <button class="btn-cancel" id="closeClassesModal" style="flex:1;">
+                <i class="fas fa-times"></i> Close
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ══ DELETE CLASS CONFIRM MODAL ══════════════════════════ -->
+<div class="modal-overlay" id="deleteClassModal">
+    <div class="auth-modal delete-class-modal">
+        <div class="modal-header">
+            <h2 class="danger-title"><i class="fas fa-trash"></i> Delete Class</h2>
+            <p id="deleteClassMsg">Are you sure? All students and records will be deleted.</p>
+        </div>
+        <div class="modal-buttons">
+            <button class="btn-danger" id="confirmDeleteClassBtn"><i class="fas fa-trash"></i> Yes, Delete</button>
+            <button class="btn-cancel" id="cancelDeleteClassBtn"><i class="fas fa-times"></i> Cancel</button>
+        </div>
+    </div>
+</div>
 
 <!-- ══ AUTH MODAL ══════════════════════════════════════════ -->
 <div class="modal-overlay" id="authModal">
@@ -176,7 +289,7 @@
     </div>
 </div>
 
-<!-- ══ DELETE CONFIRM MODAL ════════════════════════════════ -->
+<!-- ══ DELETE STUDENT CONFIRM MODAL ════════════════════════ -->
 <div class="modal-overlay" id="deleteModal">
     <div class="auth-modal delete-modal">
         <div class="modal-header">
@@ -196,6 +309,7 @@
     <span id="toastMsg"></span>
 </div>
 
+<script src="js/classManager.js"></script>
 <script src="js/students.js"></script>
 </body>
 </html>

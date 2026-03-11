@@ -1,16 +1,15 @@
 /* ============================================================
-   marks.js  —  place in:  public/js/marks.js
+   marks.js  —  Requires: classManager.js
    ============================================================ */
 'use strict';
 
-let allStudents  = [];
-let activeFilter = 'all';
-let D            = {};
+let allStudents   = [];
+let activeFilter  = 'all';
+let currentClassId = null;
+let D             = {};
 
 function $(id) { return document.getElementById(id); }
-function escapeHTML(str) {
-    const d = document.createElement('div'); d.textContent = str; return d.innerHTML;
-}
+function escapeHTML(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 function fmtVal(val) {
     if (val === null || val === undefined || val === '') return '';
     const n = parseFloat(val);
@@ -49,29 +48,15 @@ async function api(method, path, body) {
     return data;
 }
 
-// ─── Hamburger nav ────────────────────────────────────────
 function initHamburger() {
     const btn   = $('navHamburger');
     const links = $('navLinks');
     if (!btn || !links) return;
-
-    btn.addEventListener('click', () => {
-        btn.classList.toggle('open');
-        links.classList.toggle('open');
-    });
-
-    links.querySelectorAll('.nav-link-btn').forEach(link => {
-        link.addEventListener('click', () => {
-            btn.classList.remove('open');
-            links.classList.remove('open');
-        });
-    });
-
+    btn.addEventListener('click', () => { btn.classList.toggle('open'); links.classList.toggle('open'); });
+    links.querySelectorAll('.nav-link-btn').forEach(link =>
+        link.addEventListener('click', () => { btn.classList.remove('open'); links.classList.remove('open'); }));
     document.addEventListener('click', e => {
-        if (!btn.contains(e.target) && !links.contains(e.target)) {
-            btn.classList.remove('open');
-            links.classList.remove('open');
-        }
+        if (!btn.contains(e.target) && !links.contains(e.target)) { btn.classList.remove('open'); links.classList.remove('open'); }
     });
 }
 
@@ -114,9 +99,8 @@ async function handleRegister() {
 
 async function handleLogout() {
     try { await api('POST', '/api/teacher/logout'); } catch (_) {}
-    allStudents = [];
-    await initPage();
-    showToast('Logged out.');
+    allStudents = []; currentClassId = null;
+    await initPage(); showToast('Logged out.');
 }
 
 async function initPage() {
@@ -130,7 +114,7 @@ async function initPage() {
         $('logoutBtn').addEventListener('click', handleLogout);
         D.loginGate.style.display = 'none';
         D.dashboard.style.display = 'block';
-        await loadStudents();
+        await ClassManager.init({ showToast, onSelect: onClassSelected });
     } else {
         D.navUserArea.innerHTML = `<button class="nav-link-btn" id="navLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>`;
         $('navLoginBtn').addEventListener('click', openAuthModal);
@@ -139,19 +123,28 @@ async function initPage() {
     }
 }
 
+async function onClassSelected(cls) {
+    currentClassId = cls ? cls.id : null;
+    D.noClassPlaceholder.style.display = cls ? 'none' : 'block';
+    D.classContent.style.display       = cls ? 'block' : 'none';
+    if (!cls) { allStudents = []; return; }
+    await loadStudents();
+}
+
 async function loadStudents() {
+    if (!currentClassId) return;
     try {
-        const d = await api('GET', '/api/students');
+        const d = await api('GET', `/api/classes/${currentClassId}/students`);
         allStudents = d.students;
         renderList();
     } catch (e) { showToast('Could not load students: ' + e.message, true); }
 }
 
 function hasMarks(s) {
-    return s.mark_mid1 !== null && s.mark_mid1 !== undefined ||
-           s.mark_mid2 !== null && s.mark_mid2 !== undefined ||
-           s.mark_internal_lab !== null && s.mark_internal_lab !== undefined ||
-           s.mark_external_lab !== null && s.mark_external_lab !== undefined;
+    return (s.mark_mid1 !== null && s.mark_mid1 !== undefined) ||
+           (s.mark_mid2 !== null && s.mark_mid2 !== undefined) ||
+           (s.mark_internal_lab !== null && s.mark_internal_lab !== undefined) ||
+           (s.mark_external_lab !== null && s.mark_external_lab !== undefined);
 }
 
 function updateStats() {
@@ -174,8 +167,7 @@ function updateStats() {
         return vals.length ? vals.reduce((a, b) => a + b, 0) : null;
     }).filter(v => v !== null);
     $('statAvgTotal').textContent = totals.length
-        ? (totals.reduce((a, b) => a + b, 0) / totals.length).toFixed(1)
-        : '—';
+        ? (totals.reduce((a, b) => a + b, 0) / totals.length).toFixed(1) : '—';
 }
 
 function setFilter(f) {
@@ -204,7 +196,6 @@ function renderList() {
     }
     D.marksEmpty.style.display = 'none';
     D.marksList.innerHTML = list.map(buildRowHTML).join('');
-
     list.forEach(s => {
         ['mid1','mid2','int','ext'].forEach(k => {
             const inp = $(`inp-${k}-${s.id}`);
@@ -225,7 +216,7 @@ function buildRowHTML(s) {
     const hm = hasMarks(s);
     const vals = [s.mark_mid1, s.mark_mid2, s.mark_internal_lab, s.mark_external_lab]
         .filter(v => v !== null && v !== undefined);
-    const totalDisplay = vals.length ? vals.reduce((a, b) => a + b, 0).toFixed(1).replace(/\.0$/, '') : '—';
+    const totalDisplay = vals.length ? vals.reduce((a,b)=>a+b,0).toFixed(1).replace(/\.0$/, '') : '—';
 
     return `
     <div class="marks-row${hm ? ' has-marks' : ''}" id="marks-row-${s.id}">
@@ -238,19 +229,19 @@ function buildRowHTML(s) {
         </div>
         <div class="mark-cell">
             <span class="mark-cell-label">Mid 1 /30</span>
-            <input type="number" class="mark-inp${fmtVal(s.mark_mid1) ? ' filled' : ''}" id="inp-mid1-${s.id}" min="0" max="30" step="0.5" value="${fmtVal(s.mark_mid1)}" placeholder="—">
+            <input type="number" class="mark-inp${fmtVal(s.mark_mid1)?' filled':''}" id="inp-mid1-${s.id}" min="0" max="30" step="0.5" value="${fmtVal(s.mark_mid1)}" placeholder="—">
         </div>
         <div class="mark-cell">
             <span class="mark-cell-label">Mid 2 /30</span>
-            <input type="number" class="mark-inp${fmtVal(s.mark_mid2) ? ' filled' : ''}" id="inp-mid2-${s.id}" min="0" max="30" step="0.5" value="${fmtVal(s.mark_mid2)}" placeholder="—">
+            <input type="number" class="mark-inp${fmtVal(s.mark_mid2)?' filled':''}" id="inp-mid2-${s.id}" min="0" max="30" step="0.5" value="${fmtVal(s.mark_mid2)}" placeholder="—">
         </div>
         <div class="mark-cell">
             <span class="mark-cell-label">Int. Lab /50</span>
-            <input type="number" class="mark-inp${fmtVal(s.mark_internal_lab) ? ' filled' : ''}" id="inp-int-${s.id}" min="0" max="50" step="0.5" value="${fmtVal(s.mark_internal_lab)}" placeholder="—">
+            <input type="number" class="mark-inp${fmtVal(s.mark_internal_lab)?' filled':''}" id="inp-int-${s.id}" min="0" max="50" step="0.5" value="${fmtVal(s.mark_internal_lab)}" placeholder="—">
         </div>
         <div class="mark-cell">
             <span class="mark-cell-label">Ext. Lab /50</span>
-            <input type="number" class="mark-inp${fmtVal(s.mark_external_lab) ? ' filled' : ''}" id="inp-ext-${s.id}" min="0" max="50" step="0.5" value="${fmtVal(s.mark_external_lab)}" placeholder="—">
+            <input type="number" class="mark-inp${fmtVal(s.mark_external_lab)?' filled':''}" id="inp-ext-${s.id}" min="0" max="50" step="0.5" value="${fmtVal(s.mark_external_lab)}" placeholder="—">
         </div>
         <div class="marks-total-cell">
             <span class="marks-total-label">Total</span>
@@ -273,7 +264,10 @@ function recalcRow(studentId) {
     }).filter(v => v !== null);
     const totalEl = $('total-' + studentId);
     if (totalEl) {
-        totalEl.textContent = vals.length === 0 ? '—' : (vals.reduce((a,b) => a+b, 0) % 1 === 0 ? String(vals.reduce((a,b) => a+b, 0)) : vals.reduce((a,b) => a+b, 0).toFixed(1));
+        totalEl.textContent = vals.length === 0 ? '—'
+            : (vals.reduce((a,b)=>a+b,0) % 1 === 0
+                ? String(vals.reduce((a,b)=>a+b,0))
+                : vals.reduce((a,b)=>a+b,0).toFixed(1));
     }
     keys.forEach(k => {
         const el = $(`inp-${k}-${studentId}`);
@@ -282,6 +276,7 @@ function recalcRow(studentId) {
 }
 
 async function saveRow(studentId) {
+    if (!currentClassId) return;
     const s = allStudents.find(x => x.id === studentId);
     if (!s) return;
     const btn = $('save-btn-' + studentId);
@@ -301,7 +296,7 @@ async function saveRow(studentId) {
     if (external === 'ERR') return showToast('External Lab must be 0–50.', true);
     setLoading(btn, true);
     try {
-        const data = await api('PATCH', `/api/students/${studentId}/marks`, {
+        const data = await api('PATCH', `/api/classes/${currentClassId}/students/${studentId}/marks`, {
             mark_mid1: mid1, mark_mid2: mid2, mark_internal_lab: internal, mark_external_lab: external,
         });
         const idx = allStudents.findIndex(x => x.id === studentId);
@@ -333,11 +328,11 @@ document.addEventListener('DOMContentLoaded', () => {
         marksList: $('marksList'), marksEmpty: $('marksEmpty'),
         searchInput: $('searchInput'),
         btnAll: $('btnAll'), btnMissing: $('btnMissing'), btnEntered: $('btnEntered'),
+        noClassPlaceholder: $('noClassPlaceholder'), classContent: $('classContent'),
         toast: $('toast'), toastIcon: $('toastIcon'), toastMsg: $('toastMsg'),
     };
 
     initHamburger();
-
     $('openAuthBtn') && $('openAuthBtn').addEventListener('click', openAuthModal);
     D.tabLogin.addEventListener('click',    () => switchAuthTab('login'));
     D.tabRegister.addEventListener('click', () => switchAuthTab('register'));

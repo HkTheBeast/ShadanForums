@@ -5,9 +5,9 @@
     <title>Svlent | Attendance</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/students.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/attendance.css">
+    <link rel="stylesheet" href="css/classes.css">
 </head>
 <body>
 
@@ -47,9 +47,9 @@
 <main class="main">
 
     <div id="loginGate" class="login-gate" style="display:none;">
-        <i class="fas fa-calendar-check"></i>
+        <i class="fas fa-user-shield"></i>
         <h2>Teacher Login Required</h2>
-        <p>Log in to take and view attendance.</p>
+        <p>Log in to take and review attendance.</p>
         <button class="btn-login-gate" id="openAuthBtn">
             <i class="fas fa-sign-in-alt"></i> Login / Register
         </button>
@@ -59,83 +59,163 @@
 
         <div class="page-header">
             <h1><i class="fas fa-calendar-check"></i> Attendance</h1>
-            <p>Mark daily attendance and track each student's presence over time.</p>
+            <p>Select a class, then mark and review daily attendance.</p>
         </div>
 
-        <div class="att-tabs">
-            <button class="att-tab active" id="tabTake">
-                <i class="fas fa-pen-alt"></i> Take Attendance
-            </button>
-            <button class="att-tab" id="tabSummary">
-                <i class="fas fa-chart-pie"></i> Summary &amp; History
+        <!-- ══ CLASS SELECTOR BAR ══════════════════════════ -->
+        <div class="class-selector-bar">
+            <div class="class-selector-left">
+                <span class="class-selector-label"><i class="fas fa-chalkboard"></i> Class</span>
+                <div class="class-chips" id="classChipsWrap">
+                    <span style="font-size:.85rem;color:var(--text-muted)">Loading classes…</span>
+                </div>
+            </div>
+            <button class="btn-manage-classes" id="btnManageClasses">
+                <i class="fas fa-cog"></i> Manage Classes
             </button>
         </div>
 
-        <!-- ══ TAB: TAKE ATTENDANCE ══════════════════════ -->
-        <div id="paneTake" class="att-pane">
+        <!-- No class selected -->
+        <div id="noClassPlaceholder" class="no-class-placeholder" style="display:none;">
+            <i class="fas fa-calendar-check"></i>
+            <h3>Select or Create a Class</h3>
+            <p>Choose a class above to take attendance, or create one via <strong style="color:var(--accent-teal)">Manage Classes</strong>.</p>
+            <button class="btn-manage-classes" onclick="document.getElementById('btnManageClasses').click()" style="margin:0 auto;">
+                <i class="fas fa-plus"></i> Create a Class
+            </button>
+        </div>
 
-            <div class="att-date-row">
-                <div class="att-date-wrap">
-                    <i class="fas fa-calendar-alt"></i>
-                    <input type="date" id="attDate" class="att-date-input">
+        <!-- Class content -->
+        <div id="classContent" style="display:none;">
+
+            <div class="active-class-header" id="activeClassHeader" style="display:none;"></div>
+
+            <!-- Tabs -->
+            <div class="att-tab-bar">
+                <button class="att-tab active" id="tabTake"><i class="fas fa-clipboard-list"></i> Take Attendance</button>
+                <button class="att-tab"         id="tabSummary"><i class="fas fa-chart-pie"></i> Summary</button>
+            </div>
+
+            <!-- ══ TAKE ATTENDANCE PANE ══════════════════════ -->
+            <div id="paneTake">
+                <!-- Date + controls -->
+                <div class="att-controls">
+                    <div class="att-date-wrap">
+                        <label class="att-date-label"><i class="fas fa-calendar-day"></i> Date</label>
+                        <input type="date" class="att-date-inp" id="attDate">
+                    </div>
+                    <div class="att-quick-btns">
+                        <button class="btn-quick present" id="markAllPresent"><i class="fas fa-check-double"></i> All Present</button>
+                        <button class="btn-quick absent"  id="markAllAbsent"><i class="fas fa-times-circle"></i> All Absent</button>
+                    </div>
                 </div>
-                <div class="att-quick-actions">
-                    <button class="btn-quick present" id="markAllPresent">
-                        <i class="fas fa-check-double"></i> All Present
+
+                <!-- Day stats -->
+                <div class="day-stats-bar">
+                    <div class="ds-card present"><span class="ds-num" id="dayPresent">0</span><span class="ds-lbl">Present</span></div>
+                    <div class="ds-card late"><span class="ds-num" id="dayLate">0</span><span class="ds-lbl">Late</span></div>
+                    <div class="ds-card absent"><span class="ds-num" id="dayAbsent">0</span><span class="ds-lbl">Absent</span></div>
+                    <div class="ds-card total"><span class="ds-num" id="dayTotal">0</span><span class="ds-lbl">Total</span></div>
+                </div>
+
+                <!-- Student list -->
+                <div class="att-list" id="attList"></div>
+
+                <div id="attEmpty" class="empty-state" style="display:none;">
+                    <i class="fas fa-users"></i>
+                    <h3>No students in this class</h3>
+                    <p>Add students from the <a href="students.html" style="color:var(--accent-teal)">Students</a> page first.</p>
+                </div>
+
+                <!-- Save row -->
+                <div class="att-save-row" id="attSaveRow" style="display:none;">
+                    <button class="btn-save-att" id="saveAttendanceBtn">
+                        <i class="fas fa-save"></i> Save Attendance
                     </button>
-                    <button class="btn-quick absent" id="markAllAbsent">
-                        <i class="fas fa-times"></i> All Absent
-                    </button>
                 </div>
             </div>
 
-            <div class="att-day-stats">
-                <div class="att-day-stat present-stat">
-                    <span class="att-day-num" id="dayPresent">0</span>
-                    <span class="att-day-lbl">Present</span>
-                </div>
-                <div class="att-day-stat late-stat">
-                    <span class="att-day-num" id="dayLate">0</span>
-                    <span class="att-day-lbl">Late</span>
-                </div>
-                <div class="att-day-stat absent-stat">
-                    <span class="att-day-num" id="dayAbsent">0</span>
-                    <span class="att-day-lbl">Absent</span>
-                </div>
-                <div class="att-day-stat total-stat">
-                    <span class="att-day-num" id="dayTotal">0</span>
-                    <span class="att-day-lbl">Total</span>
+            <!-- ══ SUMMARY PANE ══════════════════════════════ -->
+            <div id="paneSummary" style="display:none;">
+                <div class="summary-grid" id="summaryGrid"></div>
+                <div id="summaryEmpty" class="empty-state" style="display:none;">
+                    <i class="fas fa-chart-pie"></i>
+                    <h3>No attendance records yet</h3>
+                    <p>Take attendance for this class to see a summary here.</p>
                 </div>
             </div>
 
-            <div id="attList" class="att-list"></div>
+        </div><!-- /classContent -->
+    </div><!-- /dashboard -->
+</main>
 
-            <div id="attEmpty" class="empty-state" style="display:none;">
-                <i class="fas fa-user-graduate"></i>
-                <h3>No students found</h3>
-                <p>Add students from the <a href="students.html" style="color:var(--accent-teal)">Students</a> page first.</p>
+<!-- ══ MANAGE CLASSES MODAL ════════════════════════════════ -->
+<div class="modal-overlay" id="classesModal">
+    <div class="auth-modal classes-modal">
+        <div class="modal-header">
+            <h2><i class="fas fa-chalkboard"></i> Manage Classes</h2>
+            <p>Create and organise your classes.</p>
+        </div>
+        <div class="class-list-manage" id="classManageList">
+            <div class="classes-empty"><i class="fas fa-chalkboard"></i>No classes yet.</div>
+        </div>
+        <div class="add-class-form">
+            <div class="add-class-form-title" id="addClassFormTitle">
+                <i class="fas fa-plus-circle" style="color:var(--accent-teal)"></i> Add New Class
             </div>
-
-            <div class="att-save-row" id="attSaveRow" style="display:none;">
-                <button class="btn-save-att" id="saveAttendanceBtn">
-                    <i class="fas fa-save"></i> Save Attendance for this Day
+            <div class="form-group">
+                <label>Class Name <span class="required">*</span></label>
+                <input type="text" class="form-input" id="classNameInp" placeholder="e.g. CSE-A 2024">
+            </div>
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label>Section / Batch</label>
+                    <input type="text" class="form-input" id="classSectionInp" placeholder="e.g. Section A">
+                </div>
+                <div class="form-group">
+                    <label>Subject</label>
+                    <input type="text" class="form-input" id="classSubjectInp" placeholder="e.g. Data Structures">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Color</label>
+                <div class="color-picker-row">
+                    <div class="color-swatch sw-teal   active" data-color="teal"   title="Teal"></div>
+                    <div class="color-swatch sw-purple"        data-color="purple" title="Purple"></div>
+                    <div class="color-swatch sw-pink"          data-color="pink"   title="Pink"></div>
+                    <div class="color-swatch sw-amber"         data-color="amber"  title="Amber"></div>
+                    <div class="color-swatch sw-blue"          data-color="blue"   title="Blue"></div>
+                    <div class="color-swatch sw-gold"          data-color="gold"   title="Gold"></div>
+                    <div class="color-swatch sw-red"           data-color="red"    title="Red"></div>
+                    <div class="color-swatch sw-green"         data-color="green"  title="Green"></div>
+                </div>
+            </div>
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
+                <button class="btn-add-class" id="btnAddClass"><i class="fas fa-plus"></i> Add Class</button>
+                <button class="btn-cancel" id="btnCancelEditClass" style="flex:0 0 auto;padding:.75rem 1.2rem;margin-top:.8rem;">
+                    <i class="fas fa-times"></i> Cancel Edit
                 </button>
             </div>
-
         </div>
-
-        <!-- ══ TAB: SUMMARY & HISTORY ═══════════════════ -->
-        <div id="paneSummary" class="att-pane" style="display:none;">
-            <div id="summaryGrid" class="summary-grid"></div>
-            <div id="summaryEmpty" class="empty-state" style="display:none;">
-                <i class="fas fa-calendar-times"></i>
-                <h3>No attendance data yet</h3>
-                <p>Take attendance first to see summaries here.</p>
-            </div>
+        <div class="modal-buttons" style="margin-top:1.2rem;">
+            <button class="btn-cancel" id="closeClassesModal" style="flex:1;"><i class="fas fa-times"></i> Close</button>
         </div>
-
     </div>
-</main>
+</div>
+
+<!-- ══ DELETE CLASS CONFIRM MODAL ══════════════════════════ -->
+<div class="modal-overlay" id="deleteClassModal">
+    <div class="auth-modal delete-class-modal">
+        <div class="modal-header">
+            <h2 class="danger-title"><i class="fas fa-trash"></i> Delete Class</h2>
+            <p id="deleteClassMsg">Are you sure? All students and records will be deleted.</p>
+        </div>
+        <div class="modal-buttons">
+            <button class="btn-danger" id="confirmDeleteClassBtn"><i class="fas fa-trash"></i> Yes, Delete</button>
+            <button class="btn-cancel" id="cancelDeleteClassBtn"><i class="fas fa-times"></i> Cancel</button>
+        </div>
+    </div>
+</div>
 
 <!-- ══ AUTH MODAL ══════════════════════════════════════════ -->
 <div class="modal-overlay" id="authModal">
@@ -178,15 +258,15 @@
     </div>
 </div>
 
-<!-- ══ HISTORY MODAL ══════════════════════════════════════ -->
+<!-- ══ ATTENDANCE HISTORY MODAL ════════════════════════════ -->
 <div class="modal-overlay" id="historyModal">
     <div class="auth-modal history-modal">
         <div class="modal-header">
             <h2 id="historyModalTitle"><i class="fas fa-history"></i> Attendance History</h2>
             <p id="historyModalSubtitle"></p>
         </div>
-        <div id="historyContent" class="history-content"></div>
-        <div class="modal-buttons" style="margin-top:1.2rem;">
+        <div class="history-content" id="historyContent"></div>
+        <div class="modal-buttons" style="margin-top:1rem;">
             <button class="btn-cancel" id="closeHistoryBtn" style="flex:1;"><i class="fas fa-times"></i> Close</button>
         </div>
     </div>
@@ -198,6 +278,7 @@
     <span id="toastMsg"></span>
 </div>
 
+<script src="js/classManager.js"></script>
 <script src="js/attendance.js"></script>
 </body>
 </html>

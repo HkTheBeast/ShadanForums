@@ -1,16 +1,15 @@
 /* ============================================================
-   submissions.js  —  place in:  public/js/submissions.js
+   submissions.js  —  Requires: classManager.js
    ============================================================ */
 'use strict';
 
-let allStudents  = [];
-let activeFilter = 'all';
-let D            = {};
+let allStudents   = [];
+let activeFilter  = 'all';
+let currentClassId = null;
+let D             = {};
 
 function $(id) { return document.getElementById(id); }
-function escapeHTML(str) {
-    const d = document.createElement('div'); d.textContent = str; return d.innerHTML;
-}
+function escapeHTML(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 
 let _toastTimer;
 function showToast(msg, isError = false) {
@@ -37,29 +36,15 @@ async function api(method, path, body) {
     return data;
 }
 
-// ─── Hamburger nav ────────────────────────────────────────
 function initHamburger() {
     const btn   = $('navHamburger');
     const links = $('navLinks');
     if (!btn || !links) return;
-
-    btn.addEventListener('click', () => {
-        btn.classList.toggle('open');
-        links.classList.toggle('open');
-    });
-
-    links.querySelectorAll('.nav-link-btn').forEach(link => {
-        link.addEventListener('click', () => {
-            btn.classList.remove('open');
-            links.classList.remove('open');
-        });
-    });
-
+    btn.addEventListener('click', () => { btn.classList.toggle('open'); links.classList.toggle('open'); });
+    links.querySelectorAll('.nav-link-btn').forEach(link =>
+        link.addEventListener('click', () => { btn.classList.remove('open'); links.classList.remove('open'); }));
     document.addEventListener('click', e => {
-        if (!btn.contains(e.target) && !links.contains(e.target)) {
-            btn.classList.remove('open');
-            links.classList.remove('open');
-        }
+        if (!btn.contains(e.target) && !links.contains(e.target)) { btn.classList.remove('open'); links.classList.remove('open'); }
     });
 }
 
@@ -102,9 +87,8 @@ async function handleRegister() {
 
 async function handleLogout() {
     try { await api('POST', '/api/teacher/logout'); } catch (_) {}
-    allStudents = [];
-    await initPage();
-    showToast('Logged out.');
+    allStudents = []; currentClassId = null;
+    await initPage(); showToast('Logged out.');
 }
 
 async function initPage() {
@@ -118,7 +102,7 @@ async function initPage() {
         $('logoutBtn').addEventListener('click', handleLogout);
         D.loginGate.style.display = 'none';
         D.dashboard.style.display = 'block';
-        await loadStudents();
+        await ClassManager.init({ showToast, onSelect: onClassSelected });
     } else {
         D.navUserArea.innerHTML = `<button class="nav-link-btn" id="navLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>`;
         $('navLoginBtn').addEventListener('click', openAuthModal);
@@ -127,9 +111,18 @@ async function initPage() {
     }
 }
 
+async function onClassSelected(cls) {
+    currentClassId = cls ? cls.id : null;
+    D.noClassPlaceholder.style.display = cls ? 'none' : 'block';
+    D.classContent.style.display       = cls ? 'block' : 'none';
+    if (!cls) { allStudents = []; return; }
+    await loadStudents();
+}
+
 async function loadStudents() {
+    if (!currentClassId) return;
     try {
-        const d = await api('GET', '/api/students');
+        const d = await api('GET', `/api/classes/${currentClassId}/students`);
         allStudents = d.students;
         renderList();
     } catch (e) { showToast('Could not load students: ' + e.message, true); }
@@ -228,9 +221,10 @@ function buildRowHTML(s) {
 }
 
 async function handleToggle(studentId, key, dbField, apiType, value) {
+    if (!currentClassId) return;
     const s = allStudents.find(x => x.id === studentId);
     if (!s) return;
-    const old = s[dbField];
+    const old  = s[dbField];
     s[dbField] = value;
     updateStats();
     updateToggleLabel(studentId, key, dbField, value);
@@ -241,11 +235,11 @@ async function handleToggle(studentId, key, dbField, apiType, value) {
     }
     try {
         if (apiType === 'assignment') {
-            await api('PATCH', `/api/students/${studentId}/assignment`, { field: dbField, value });
+            await api('PATCH', `/api/classes/${currentClassId}/students/${studentId}/assignment`, { field: dbField, value });
         } else {
-            await api('PATCH', `/api/students/${studentId}/record`, { field: dbField, value });
+            await api('PATCH', `/api/classes/${currentClassId}/students/${studentId}/record`, { field: dbField, value });
         }
-        showToast(`${labelDone(key, dbField)} updated!`);
+        showToast(`${labelDone(dbField)} updated!`);
     } catch (e) {
         s[dbField] = old; updateStats(); updateToggleLabel(studentId, key, dbField, old);
         const chk = $(`chk-${key}-${studentId}`);
@@ -254,13 +248,13 @@ async function handleToggle(studentId, key, dbField, apiType, value) {
     }
 }
 
-function labelDone(key, dbField) {
-    const map = { assignment1: 'Assignment 1', assignment2: 'Assignment 2', record_book: 'Record Book', obs_book: 'Obs. Book', ppt_submitted: 'PPT' };
-    return map[dbField] || key;
+function labelDone(dbField) {
+    const map = { assignment1:'Assignment 1', assignment2:'Assignment 2', record_book:'Record Book', obs_book:'Obs. Book', ppt_submitted:'PPT' };
+    return map[dbField] || dbField;
 }
 
-const DONE_CLASS = { a1: 'done-teal', a2: 'done-purple', rec: 'done-blue', obs: 'done-amber', ppt: 'done-pink' };
-const DONE_TEXT  = { a1: 'Done', a2: 'Done', rec: 'Submitted', obs: 'Submitted', ppt: 'Submitted' };
+const DONE_CLASS = { a1:'done-teal', a2:'done-purple', rec:'done-blue', obs:'done-amber', ppt:'done-pink' };
+const DONE_TEXT  = { a1:'Done', a2:'Done', rec:'Submitted', obs:'Submitted', ppt:'Submitted' };
 
 function updateToggleLabel(studentId, key, dbField, value) {
     const lbl = $(`lbl-${key}-${studentId}`);
@@ -280,11 +274,11 @@ document.addEventListener('DOMContentLoaded', () => {
         subList: $('subList'), subEmpty: $('subEmpty'),
         searchInput: $('searchInput'),
         btnAll: $('btnAll'), btnPending: $('btnPending'), btnComplete: $('btnComplete'),
+        noClassPlaceholder: $('noClassPlaceholder'), classContent: $('classContent'),
         toast: $('toast'), toastIcon: $('toastIcon'), toastMsg: $('toastMsg'),
     };
 
     initHamburger();
-
     $('openAuthBtn') && $('openAuthBtn').addEventListener('click', openAuthModal);
     D.tabLogin.addEventListener('click',    () => switchAuthTab('login'));
     D.tabRegister.addEventListener('click', () => switchAuthTab('register'));
