@@ -100,6 +100,7 @@ a.nav-active[href="attendance.html"]  { color: var(--accent-teal)   !important; 
 a.nav-active[href="submissions.html"] { color: var(--accent-blue)   !important; }
 a.nav-active[href="marks.html"]       { color: var(--accent-amber)  !important; }
 a.nav-active[href="highlights.html"]  { color: var(--accent-gold)   !important; }
+a.nav-active[href="planner.html"]     { color: #00e5ff              !important; }
 
 /* ── Hamburger button ─────────────────────────────────────── */
 .nav-hamburger {

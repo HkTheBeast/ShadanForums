@@ -93,32 +93,29 @@ db.serialize(() => {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
-    // Full students table with all columns
     db.run(`CREATE TABLE IF NOT EXISTS students (
-        id              INTEGER PRIMARY KEY AUTOINCREMENT,
-        teacher_id      INTEGER NOT NULL,
-        roll_number     TEXT NOT NULL,
-        name            TEXT NOT NULL,
-        avatar          TEXT,
-        assignment1     INTEGER DEFAULT 0,
-        assignment2     INTEGER DEFAULT 0,
-        highlighted     INTEGER DEFAULT 0,
-        warnings        INTEGER DEFAULT 0,
-        mark_mid1       REAL,
-        mark_mid2       REAL,
+        id                INTEGER PRIMARY KEY AUTOINCREMENT,
+        teacher_id        INTEGER NOT NULL,
+        roll_number       TEXT NOT NULL,
+        name              TEXT NOT NULL,
+        avatar            TEXT,
+        assignment1       INTEGER DEFAULT 0,
+        assignment2       INTEGER DEFAULT 0,
+        highlighted       INTEGER DEFAULT 0,
+        warnings          INTEGER DEFAULT 0,
+        mark_mid1         REAL,
+        mark_mid2         REAL,
         mark_internal_lab REAL,
         mark_external_lab REAL,
-        record_book     INTEGER DEFAULT 0,
-        obs_book        INTEGER DEFAULT 0,
-        ppt_submitted   INTEGER DEFAULT 0,
-        created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
+        record_book       INTEGER DEFAULT 0,
+        obs_book          INTEGER DEFAULT 0,
+        ppt_submitted     INTEGER DEFAULT 0,
+        created_at        DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (teacher_id) REFERENCES teacher_accounts(id) ON DELETE CASCADE,
         UNIQUE(teacher_id, roll_number)
     )`);
 
     // ── Attendance table ───────────────────────────────────────
-    // Each row = one student's status on one date
-    // status: 'present' | 'absent' | 'late'
     db.run(`CREATE TABLE IF NOT EXISTS attendance (
         id         INTEGER PRIMARY KEY AUTOINCREMENT,
         student_id INTEGER NOT NULL,
@@ -131,7 +128,72 @@ db.serialize(() => {
         UNIQUE(student_id, date)
     )`);
 
-    // Safe migration for databases created before these columns existed
+    // ── Planner tables ─────────────────────────────────────────
+    db.run(`CREATE TABLE IF NOT EXISTS planner_trackers (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        teacher_id  INTEGER NOT NULL,
+        name        TEXT NOT NULL,
+        description TEXT DEFAULT '',
+        current_val REAL DEFAULT 0,
+        min_val     REAL DEFAULT 0,
+        max_val     REAL DEFAULT 100,
+        unit        TEXT DEFAULT '',
+        color       TEXT DEFAULT 'teal',
+        created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (teacher_id) REFERENCES teacher_accounts(id) ON DELETE CASCADE
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS planner_subjects (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        teacher_id  INTEGER NOT NULL,
+        name        TEXT NOT NULL,
+        section     TEXT DEFAULT '',
+        color       TEXT DEFAULT 'teal',
+        created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (teacher_id) REFERENCES teacher_accounts(id) ON DELETE CASCADE
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS planner_topics (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        subject_id  INTEGER NOT NULL,
+        teacher_id  INTEGER NOT NULL,
+        name        TEXT NOT NULL,
+        notes       TEXT DEFAULT '',
+        done        INTEGER DEFAULT 0,
+        sort_order  INTEGER DEFAULT 0,
+        created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (subject_id) REFERENCES planner_subjects(id) ON DELETE CASCADE,
+        FOREIGN KEY (teacher_id) REFERENCES teacher_accounts(id) ON DELETE CASCADE
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS planner_subtopics (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        topic_id    INTEGER NOT NULL,
+        teacher_id  INTEGER NOT NULL,
+        name        TEXT NOT NULL,
+        section     TEXT DEFAULT '',
+        done        INTEGER DEFAULT 0,
+        sort_order  INTEGER DEFAULT 0,
+        created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (topic_id)   REFERENCES planner_topics(id) ON DELETE CASCADE,
+        FOREIGN KEY (teacher_id) REFERENCES teacher_accounts(id) ON DELETE CASCADE
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS planner_slots (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        teacher_id  INTEGER NOT NULL,
+        day         TEXT NOT NULL,
+        time_period TEXT NOT NULL,
+        subject     TEXT NOT NULL,
+        section     TEXT DEFAULT '',
+        room        TEXT DEFAULT '',
+        color       TEXT DEFAULT 'teal',
+        sort_order  INTEGER DEFAULT 0,
+        created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (teacher_id) REFERENCES teacher_accounts(id) ON DELETE CASCADE
+    )`);
+
+    // ── Safe migration for databases created before these columns existed ──
     const safeAdd = (col, type) =>
         db.run(`ALTER TABLE students ADD COLUMN ${col} ${type}`, () => {});
 
@@ -643,14 +705,11 @@ app.delete('/api/students/:id', ensureTeacher, (req, res) => {
 // ATTENDANCE  /api/attendance/...
 // ================================================================
 
-// GET attendance for a specific date (returns all students with their status for that day)
-// GET /api/attendance?date=2024-01-15
 app.get('/api/attendance', ensureTeacher, (req, res) => {
     const teacherId = req.session.teacher.id;
     const date      = req.query.date;
     if (!date) return res.status(400).json({ ok: false, error: 'date query param required (YYYY-MM-DD).' });
 
-    // Get all students for this teacher, left-join attendance for the given date
     db.all(
         `SELECT s.id, s.name, s.roll_number, s.avatar,
                 COALESCE(a.status, 'absent') AS status
@@ -666,8 +725,6 @@ app.get('/api/attendance', ensureTeacher, (req, res) => {
     );
 });
 
-// POST /api/attendance  — bulk save attendance for a date
-// body: { date: "YYYY-MM-DD", records: [ { student_id, status }, ... ] }
 app.post('/api/attendance', ensureTeacher, (req, res) => {
     const teacherId = req.session.teacher.id;
     const { date, records } = req.body;
@@ -681,7 +738,6 @@ app.post('/api/attendance', ensureTeacher, (req, res) => {
             return res.status(400).json({ ok: false, error: 'Each record needs student_id and valid status.' });
     }
 
-    // Use a transaction for atomicity
     db.serialize(() => {
         db.run('BEGIN TRANSACTION');
         let errored = false;
@@ -711,8 +767,6 @@ app.post('/api/attendance', ensureTeacher, (req, res) => {
     });
 });
 
-// GET /api/attendance/summary — attendance percentage for every student
-// Returns: [{ student_id, name, roll_number, total_days, present, late, absent, percentage }]
 app.get('/api/attendance/summary', ensureTeacher, (req, res) => {
     const teacherId = req.session.teacher.id;
 
@@ -745,12 +799,10 @@ app.get('/api/attendance/summary', ensureTeacher, (req, res) => {
     );
 });
 
-// GET /api/attendance/history/:studentId — full date-by-date history for one student
 app.get('/api/attendance/history/:studentId', ensureTeacher, (req, res) => {
     const teacherId = req.session.teacher.id;
     const studentId = parseInt(req.params.studentId);
 
-    // Verify ownership
     db.get(`SELECT id FROM students WHERE id = ? AND teacher_id = ?`, [studentId, teacherId],
         (err, row) => {
             if (err)  return res.status(500).json({ ok: false, error: 'Server error.' });
@@ -770,19 +822,283 @@ app.get('/api/attendance/history/:studentId', ensureTeacher, (req, res) => {
     );
 });
 
-// GET /api/attendance/dates — list of all dates attendance was taken for this teacher
 app.get('/api/attendance/dates', ensureTeacher, (req, res) => {
     const teacherId = req.session.teacher.id;
 
     db.all(
-        `SELECT DISTINCT date FROM attendance
-         WHERE teacher_id = ?
-         ORDER BY date DESC`,
+        `SELECT DISTINCT date FROM attendance WHERE teacher_id = ? ORDER BY date DESC`,
         [teacherId],
         (err, rows) => {
             if (err) return res.status(500).json({ ok: false, error: 'Server error.' });
             return res.json({ ok: true, dates: rows.map(r => r.date) });
         }
+    );
+});
+
+// ================================================================
+// PLANNER — TRACKERS  /api/planner/trackers
+// ================================================================
+
+app.get('/api/planner/trackers', ensureTeacher, (req, res) => {
+    db.all(`SELECT * FROM planner_trackers WHERE teacher_id = ? ORDER BY created_at ASC`,
+        [req.session.teacher.id], (err, rows) => {
+            if (err) return res.status(500).json({ ok: false, error: err.message });
+            return res.json({ ok: true, trackers: rows });
+        }
+    );
+});
+
+app.post('/api/planner/trackers', ensureTeacher, (req, res) => {
+    const { name, description = '', current_val = 0, min_val = 0, max_val = 100, unit = '', color = 'teal' } = req.body;
+    if (!name) return res.status(400).json({ ok: false, error: 'Name is required.' });
+    db.run(
+        `INSERT INTO planner_trackers (teacher_id, name, description, current_val, min_val, max_val, unit, color)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [req.session.teacher.id, name, description, current_val, min_val, max_val, unit, color],
+        function (err) {
+            if (err) return res.status(500).json({ ok: false, error: err.message });
+            db.get(`SELECT * FROM planner_trackers WHERE id = ?`, [this.lastID], (e, row) =>
+                res.json({ ok: true, tracker: row })
+            );
+        }
+    );
+});
+
+app.put('/api/planner/trackers/:id', ensureTeacher, (req, res) => {
+    const { name, description = '', current_val, min_val, max_val, unit = '', color = 'teal' } = req.body;
+    if (!name) return res.status(400).json({ ok: false, error: 'Name is required.' });
+    db.run(
+        `UPDATE planner_trackers SET name=?, description=?, current_val=?, min_val=?, max_val=?, unit=?, color=?
+         WHERE id=? AND teacher_id=?`,
+        [name, description, current_val, min_val, max_val, unit, color, req.params.id, req.session.teacher.id],
+        err => res.json(err ? { ok: false, error: err.message } : { ok: true })
+    );
+});
+
+app.patch('/api/planner/trackers/:id/value', ensureTeacher, (req, res) => {
+    const { current_val } = req.body;
+    db.run(`UPDATE planner_trackers SET current_val=? WHERE id=? AND teacher_id=?`,
+        [current_val, req.params.id, req.session.teacher.id],
+        err => res.json(err ? { ok: false, error: err.message } : { ok: true })
+    );
+});
+
+app.delete('/api/planner/trackers/:id', ensureTeacher, (req, res) => {
+    db.run(`DELETE FROM planner_trackers WHERE id=? AND teacher_id=?`,
+        [req.params.id, req.session.teacher.id],
+        err => res.json(err ? { ok: false, error: err.message } : { ok: true })
+    );
+});
+
+// ================================================================
+// PLANNER — SUBJECTS  /api/planner/subjects
+// ================================================================
+
+app.get('/api/planner/subjects', ensureTeacher, (req, res) => {
+    const tid = req.session.teacher.id;
+    db.all(`SELECT * FROM planner_subjects WHERE teacher_id=? ORDER BY created_at ASC`, [tid], (err, subjs) => {
+        if (err) return res.status(500).json({ ok: false, error: err.message });
+        if (subjs.length === 0) return res.json({ ok: true, subjects: [] });
+
+        db.all(`SELECT * FROM planner_topics WHERE teacher_id=? ORDER BY sort_order ASC, created_at ASC`, [tid], (err2, topics) => {
+            if (err2) return res.status(500).json({ ok: false, error: err2.message });
+
+            db.all(`SELECT * FROM planner_subtopics WHERE teacher_id=? ORDER BY sort_order ASC, created_at ASC`, [tid], (err3, subtopics) => {
+                if (err3) return res.status(500).json({ ok: false, error: err3.message });
+
+                topics.forEach(t => {
+                    t.done      = !!t.done;
+                    t.subtopics = subtopics
+                        .filter(st => st.topic_id === t.id)
+                        .map(st => ({ ...st, done: !!st.done }));
+                });
+                subjs.forEach(s => { s.topics = topics.filter(t => t.subject_id === s.id); });
+                return res.json({ ok: true, subjects: subjs });
+            });
+        });
+    });
+});
+
+app.post('/api/planner/subjects', ensureTeacher, (req, res) => {
+    const { name, section = '', color = 'teal' } = req.body;
+    if (!name) return res.status(400).json({ ok: false, error: 'Name is required.' });
+    db.run(`INSERT INTO planner_subjects (teacher_id, name, section, color) VALUES (?,?,?,?)`,
+        [req.session.teacher.id, name, section, color],
+        function (err) {
+            if (err) return res.status(500).json({ ok: false, error: err.message });
+            db.get(`SELECT * FROM planner_subjects WHERE id=?`, [this.lastID], (e, row) =>
+                res.json({ ok: true, subject: row })
+            );
+        }
+    );
+});
+
+app.put('/api/planner/subjects/:id', ensureTeacher, (req, res) => {
+    const { name, section = '', color = 'teal' } = req.body;
+    if (!name) return res.status(400).json({ ok: false, error: 'Name is required.' });
+    db.run(`UPDATE planner_subjects SET name=?, section=?, color=? WHERE id=? AND teacher_id=?`,
+        [name, section, color, req.params.id, req.session.teacher.id],
+        err => res.json(err ? { ok: false, error: err.message } : { ok: true })
+    );
+});
+
+app.delete('/api/planner/subjects/:id', ensureTeacher, (req, res) => {
+    const sid = req.params.id;
+    const tid = req.session.teacher.id;
+    db.all(`SELECT id FROM planner_topics WHERE subject_id=? AND teacher_id=?`, [sid, tid], (err, topics) => {
+        const topicIds = topics ? topics.map(t => t.id) : [];
+        const doDelete = () => {
+            db.run(`DELETE FROM planner_subjects WHERE id=? AND teacher_id=?`, [sid, tid],
+                err2 => res.json(err2 ? { ok: false, error: err2.message } : { ok: true })
+            );
+        };
+        if (topicIds.length === 0) return doDelete();
+        const ph = topicIds.map(() => '?').join(',');
+        db.run(`DELETE FROM planner_subtopics WHERE topic_id IN (${ph})`, topicIds, () => {
+            db.run(`DELETE FROM planner_topics WHERE subject_id=? AND teacher_id=?`, [sid, tid], doDelete);
+        });
+    });
+});
+
+// ================================================================
+// PLANNER — TOPICS  /api/planner/topics
+// ================================================================
+
+app.post('/api/planner/topics', ensureTeacher, (req, res) => {
+    const { name, notes = '', subject_id } = req.body;
+    if (!name)       return res.status(400).json({ ok: false, error: 'Name is required.' });
+    if (!subject_id) return res.status(400).json({ ok: false, error: 'subject_id is required.' });
+    db.run(`INSERT INTO planner_topics (teacher_id, subject_id, name, notes) VALUES (?,?,?,?)`,
+        [req.session.teacher.id, subject_id, name, notes],
+        function (err) {
+            if (err) return res.status(500).json({ ok: false, error: err.message });
+            db.get(`SELECT * FROM planner_topics WHERE id=?`, [this.lastID], (e, row) =>
+                res.json({ ok: true, topic: { ...row, done: !!row.done, subtopics: [] } })
+            );
+        }
+    );
+});
+
+app.put('/api/planner/topics/:id', ensureTeacher, (req, res) => {
+    const { name, notes = '' } = req.body;
+    if (!name) return res.status(400).json({ ok: false, error: 'Name is required.' });
+    db.run(`UPDATE planner_topics SET name=?, notes=? WHERE id=? AND teacher_id=?`,
+        [name, notes, req.params.id, req.session.teacher.id],
+        err => res.json(err ? { ok: false, error: err.message } : { ok: true })
+    );
+});
+
+app.patch('/api/planner/topics/:id/done', ensureTeacher, (req, res) => {
+    const { done } = req.body;
+    db.run(`UPDATE planner_topics SET done=? WHERE id=? AND teacher_id=?`,
+        [done ? 1 : 0, req.params.id, req.session.teacher.id],
+        err => res.json(err ? { ok: false, error: err.message } : { ok: true })
+    );
+});
+
+app.delete('/api/planner/topics/:id', ensureTeacher, (req, res) => {
+    const topicId = req.params.id;
+    db.run(`DELETE FROM planner_subtopics WHERE topic_id=?`, [topicId], () => {
+        db.run(`DELETE FROM planner_topics WHERE id=? AND teacher_id=?`,
+            [topicId, req.session.teacher.id],
+            err => res.json(err ? { ok: false, error: err.message } : { ok: true })
+        );
+    });
+});
+
+// ================================================================
+// PLANNER — SUBTOPICS  /api/planner/subtopics
+// ================================================================
+
+app.post('/api/planner/subtopics', ensureTeacher, (req, res) => {
+    const { name, section = '', topic_id } = req.body;
+    if (!name)     return res.status(400).json({ ok: false, error: 'Name is required.' });
+    if (!topic_id) return res.status(400).json({ ok: false, error: 'topic_id is required.' });
+    db.run(`INSERT INTO planner_subtopics (teacher_id, topic_id, name, section) VALUES (?,?,?,?)`,
+        [req.session.teacher.id, topic_id, name, section],
+        function (err) {
+            if (err) return res.status(500).json({ ok: false, error: err.message });
+            db.get(`SELECT * FROM planner_subtopics WHERE id=?`, [this.lastID], (e, row) =>
+                res.json({ ok: true, subtopic: { ...row, done: !!row.done } })
+            );
+        }
+    );
+});
+
+app.put('/api/planner/subtopics/:id', ensureTeacher, (req, res) => {
+    const { name, section = '' } = req.body;
+    if (!name) return res.status(400).json({ ok: false, error: 'Name is required.' });
+    db.run(`UPDATE planner_subtopics SET name=?, section=? WHERE id=? AND teacher_id=?`,
+        [name, section, req.params.id, req.session.teacher.id],
+        err => res.json(err ? { ok: false, error: err.message } : { ok: true })
+    );
+});
+
+app.patch('/api/planner/subtopics/:id/done', ensureTeacher, (req, res) => {
+    const { done } = req.body;
+    db.run(`UPDATE planner_subtopics SET done=? WHERE id=? AND teacher_id=?`,
+        [done ? 1 : 0, req.params.id, req.session.teacher.id],
+        err => res.json(err ? { ok: false, error: err.message } : { ok: true })
+    );
+});
+
+app.delete('/api/planner/subtopics/:id', ensureTeacher, (req, res) => {
+    db.run(`DELETE FROM planner_subtopics WHERE id=? AND teacher_id=?`,
+        [req.params.id, req.session.teacher.id],
+        err => res.json(err ? { ok: false, error: err.message } : { ok: true })
+    );
+});
+
+// ================================================================
+// PLANNER — TIMETABLE SLOTS  /api/planner/slots
+// ================================================================
+
+app.get('/api/planner/slots', ensureTeacher, (req, res) => {
+    db.all(
+        `SELECT * FROM planner_slots WHERE teacher_id=? ORDER BY day ASC, sort_order ASC, created_at ASC`,
+        [req.session.teacher.id],
+        (err, rows) => res.json(err ? { ok: false, error: err.message } : { ok: true, slots: rows })
+    );
+});
+
+app.post('/api/planner/slots', ensureTeacher, (req, res) => {
+    const { day, time_period, subject, section = '', room = '', color = 'teal' } = req.body;
+    if (!day || !time_period || !subject)
+        return res.status(400).json({ ok: false, error: 'Day, time, and subject are required.' });
+    db.run(
+        `INSERT INTO planner_slots (teacher_id, day, time_period, subject, section, room, color)
+         VALUES (?,?,?,?,?,?,?)`,
+        [req.session.teacher.id, day, time_period, subject, section, room, color],
+        function (err) {
+            if (err) return res.status(500).json({ ok: false, error: err.message });
+            db.get(`SELECT * FROM planner_slots WHERE id=?`, [this.lastID], (e, row) =>
+                res.json({ ok: true, slot: row })
+            );
+        }
+    );
+});
+
+app.put('/api/planner/slots/:id', ensureTeacher, (req, res) => {
+    const { day, time_period, subject, section = '', room = '', color = 'teal' } = req.body;
+    if (!day || !time_period || !subject)
+        return res.status(400).json({ ok: false, error: 'Day, time, and subject are required.' });
+    db.run(
+        `UPDATE planner_slots SET day=?, time_period=?, subject=?, section=?, room=?, color=?
+         WHERE id=? AND teacher_id=?`,
+        [day, time_period, subject, section, room, color, req.params.id, req.session.teacher.id],
+        err => {
+            if (err) return res.status(500).json({ ok: false, error: err.message });
+            db.get(`SELECT * FROM planner_slots WHERE id=?`, [req.params.id], (e, row) =>
+                res.json({ ok: true, slot: row })
+            );
+        }
+    );
+});
+
+app.delete('/api/planner/slots/:id', ensureTeacher, (req, res) => {
+    db.run(`DELETE FROM planner_slots WHERE id=? AND teacher_id=?`,
+        [req.params.id, req.session.teacher.id],
+        err => res.json(err ? { ok: false, error: err.message } : { ok: true })
     );
 });
 
