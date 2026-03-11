@@ -111,8 +111,7 @@ db.serialize(() => {
         ppt_submitted     INTEGER DEFAULT 0,
         created_at        DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (teacher_id) REFERENCES teacher_accounts(id) ON DELETE CASCADE,
-        FOREIGN KEY (class_id)   REFERENCES classes(id) ON DELETE CASCADE,
-        UNIQUE(class_id, roll_number)
+        FOREIGN KEY (class_id)   REFERENCES classes(id) ON DELETE CASCADE
     )`);
 
     // ── Attendance ─────────────────────────────────────────────
@@ -211,6 +210,29 @@ db.serialize(() => {
     safeAdd('students', 'ppt_submitted',      'INTEGER DEFAULT 0');
     safeAdd('attendance', 'class_id',         'INTEGER DEFAULT 0');
     safeAdd('classes', 'subject',             'TEXT DEFAULT ""');
+
+    // -- Drop unique roll_number constraint (allow duplicates) ---
+    db.get(`SELECT sql FROM sqlite_master WHERE type='table' AND name='students'`, (err, row) => {
+        if (!err && row && row.sql && row.sql.includes('UNIQUE(class_id, roll_number)')) {
+            db.serialize(() => {
+                db.run(`CREATE TABLE IF NOT EXISTS students_new (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT, teacher_id INTEGER NOT NULL,
+                    class_id INTEGER NOT NULL DEFAULT 0, roll_number TEXT NOT NULL,
+                    name TEXT NOT NULL, avatar TEXT, highlighted INTEGER DEFAULT 0,
+                    warnings INTEGER DEFAULT 0, assignment1 INTEGER DEFAULT 0,
+                    assignment2 INTEGER DEFAULT 0, mark_mid1 REAL, mark_mid2 REAL,
+                    mark_internal_lab REAL, mark_external_lab REAL,
+                    record_book INTEGER DEFAULT 0, obs_book INTEGER DEFAULT 0,
+                    ppt_submitted INTEGER DEFAULT 0, created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (teacher_id) REFERENCES teacher_accounts(id) ON DELETE CASCADE,
+                    FOREIGN KEY (class_id) REFERENCES classes(id) ON DELETE CASCADE
+                )`);
+                db.run(`INSERT INTO students_new SELECT id,teacher_id,class_id,roll_number,name,avatar,highlighted,warnings,assignment1,assignment2,mark_mid1,mark_mid2,mark_internal_lab,mark_external_lab,record_book,obs_book,ppt_submitted,created_at FROM students`);
+                db.run('DROP TABLE students');
+                db.run('ALTER TABLE students_new RENAME TO students');
+            });
+        }
+    });
 });
 
 // ================================================================
@@ -598,8 +620,6 @@ app.post('/api/classes/:classId/students', ensureTeacher, (req, res) => {
             [tid, cid, roll_number.trim(), name.trim(), avatar || null],
             function (err2) {
                 if (err2) {
-                    if (err2.message.includes('UNIQUE'))
-                        return res.status(409).json({ ok: false, error: 'A student with this roll number already exists in this class.' });
                     return res.status(500).json({ ok: false, error: 'Server error.' });
                 }
                 db.get(`SELECT * FROM students WHERE id = ?`, [this.lastID], (e, row) => {
@@ -630,8 +650,6 @@ app.put('/api/classes/:classId/students/:id', ensureTeacher, (req, res) => {
                     [roll_number.trim(), name.trim(), avatar || null, sid, tid, cid],
                     function (err3) {
                         if (err3) {
-                            if (err3.message.includes('UNIQUE'))
-                                return res.status(409).json({ ok: false, error: 'Another student already has this roll number in this class.' });
                             return res.status(500).json({ ok: false, error: 'Server error.' });
                         }
                         db.get(`SELECT * FROM students WHERE id = ?`, [sid], (e, updated) => {
