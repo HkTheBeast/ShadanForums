@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Svlent | Classroom Management Hub</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="Svlent - Classroom management platform for teachers. Track attendance, assignments, performance, and student progress.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/Astyle.css">
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow bg-glow-1"></div>
+<div class="bg-glow bg-glow-2"></div>
+<div class="bg-glow bg-glow-3"></div>
+
+<!-- ══ NAVBAR ═══════════════════════════════════════════════════ -->
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <a href="Aindex.html" class="logo">
+            <div class="logo-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+            <div class="logo-text">
+                <span class="logo-main">Svlent</span>
+                <span class="logo-sub">Classroom Hub</span>
+            </div>
+        </a>
+        <div class="nav-links" id="navLinks">
+            <a href="Aindex.html"      class="nav-link-btn nav-active"><i class="fas fa-home"></i> Home</a>
+            <a href="students.html"    class="nav-link-btn"><i class="fas fa-id-card"></i> Students</a>
+            <a href="attendance.html"  class="nav-link-btn"><i class="fas fa-calendar-check"></i> Attendance</a>
+            <a href="submissions.html" class="nav-link-btn"><i class="fas fa-tasks"></i> Submissions</a>
+            <a href="marks.html"       class="nav-link-btn"><i class="fas fa-chart-bar"></i> Marks</a>
+            <a href="highlights.html"  class="nav-link-btn"><i class="fas fa-star"></i> Highlights</a>
+            <a href="planner.html"     class="nav-link-btn"><i class="fas fa-calendar-alt"></i> Planner</a>
+        </div>
+        <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+
+<b>Development team :
+    Mohd affan ur rahman (Team Lead, Senior developer)
+    roll no : 24081A0526
+    Worked on : HTML, CSS, JS, SQLITE
+    Syed zubair hussain (Junior developer)
+    roll no : 24081A0529
+    Worked on : HTML, CSS
+</b>
+
+<br>
+<b>NOTE:</b>
+<b>Svlent is integrated in 'ShadanForums' website, both are different website</b>
+
+
+<b>svlent is a teacher's assistant or digital class monitor</b>
+
+
+
+
+
+
+
+
+
+
+
+<!-- ══ FOOTER ════════════════════════════════════════════════════ -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <a href="Aindex.html" class="logo" style="text-decoration:none">
+                <div class="logo-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                <div class="logo-text">
+                    <span class="logo-main">Svlent</span>
+                    <span class="logo-sub">Classroom Hub</span>
+                </div>
+            </a>
+            <p class="footer-tagline">Empowering educators.<br>Organizing classrooms.</p>
+        </div>
+        <div class="footer-links">
+            <div class="footer-col">
+                <h4>Pages</h4>
+                <a href="Aindex.html">Home</a>
+                <a href="students.html">Students</a>
+                <a href="attendance.html">Attendance</a>
+                <a href="planner.html">Planner</a>
+                <a href="highlights.html">Highlights</a>
+            </div>
+            <div class="footer-col">
+                <h4>Features</h4>
+                <a href="submissions.html">Submissions</a>
+                <a href="attendance.html">Attendance</a>
+                <a href="marks.html">Marks &amp; Grades</a>
+                <a href="highlights.html">Highlights &amp; Warnings</a>
+                <a href="planner.html">Teaching Planner</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; <span id="currentYear"></span> Svlent Classroom Management System. Designed for educators.</p>
+    </div>
+</footer>
+
+<button class="back-to-top" id="backToTop"><i class="fas fa-chevron-up"></i></button>
+
+<script src="js/Amain.js"></script>
+<script>document.getElementById('currentYear').textContent = new Date().getFullYear();</script>
+</body>
+</html>
