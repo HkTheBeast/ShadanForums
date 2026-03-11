@@ -522,7 +522,6 @@ a.nav-active[href="planner.html"]   { color: #00e5ff              !important; }
 .features-bento {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: auto auto auto;
     gap: 1.2rem;
     margin-top: 3rem;
 }
@@ -552,7 +551,7 @@ a.nav-active[href="planner.html"]   { color: #00e5ff              !important; }
 .bento-card--blue::after  { background:var(--grad-blue); }
 .bento-card--blue:hover   { box-shadow:0 0 30px rgba(79,195,247,.15); }
 
-/* Layout: attendance tall (rows 1-2, col 1), planner wide (row 1, cols 2-3), then rest */
+/* Layout spanning */
 .bento-card--tall { grid-row: span 2; }
 .bento-card--wide { grid-column: span 2; }
 
